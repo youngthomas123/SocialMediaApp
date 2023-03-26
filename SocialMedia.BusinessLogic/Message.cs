@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic
 {
-	public class Messsage
+	public class Message
 	{
-		public Messsage(DateTime dateCreated, string messageId, string subject, string body, string senderName, string recipientName)
+
+		public Message() { }
+		public Message(DateTime dateCreated, string subject, string body, string senderName, string recipientName)
 		{
+			Guid guid = Guid.NewGuid();
+
 			DateCreated = dateCreated;
-			MessageId = messageId;
+			MessageId = guid;
 			Subject = subject;
 			Body = body;
 			SenderName = senderName;
@@ -21,7 +25,7 @@ namespace SocialMedia.BusinessLogic
 
 		public DateTime DateCreated { get; set; }
 
-		public string MessageId { get; set; }
+		public Guid MessageId { get; set; }
 
 		public string Subject { get; set; }
 

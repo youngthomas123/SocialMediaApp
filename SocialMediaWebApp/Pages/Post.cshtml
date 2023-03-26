@@ -2,11 +2,25 @@
 @model SocialMediaWebApp.Pages.PostModel
 @{
 }
-<form method="post" > 
-	<label for="title">Title:</label><br>
-	<input type="text" id="title" name="title"><br>
-	<label for="description">Description:</label><br>
-	<textarea id="description" name="description" rows="4" cols="50"></textarea><br>
-	<button type="submit">Post</button>
 
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="PostData.Title" class="form-label"></label>
+        <input asp-for="PostData.Title" class="form-control">
+        <span asp-validation-for="PostData.Title"></span>
+    </div>
+    <div class="mb-3" >
+        <label asp-for="PostData.Body" class="form-label"></label>
+        <textarea asp-for="PostData.Body" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="PostData.Body"></span>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
+

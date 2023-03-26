@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +9,15 @@ namespace SocialMedia.BusinessLogic
 {
 	public class Comment
 	{
-		public Comment(string commentId, string creator, string body)
+
+		public Comment() { }
+		public Comment(string creator, string body)
 		{
-			DateCreated = DateTime.Now;
-			CommentId = commentId;
-			Creator = creator;
+            Guid guid = Guid.NewGuid();
+
+            DateCreated = DateTime.Now;
+			CommentId = guid;
+            Creator = creator;
 			Body = body;
 			Upvotes = 0;
 			Downvotes = 0;
@@ -20,14 +25,16 @@ namespace SocialMedia.BusinessLogic
 
 		public DateTime DateCreated { get; set; }
 
-		public string CommentId { get; set; }
+		public Guid CommentId { get; set; }
 
 		public string Creator { get; set; }
 
 		public string Body { get; set; }
 
-		public int Upvotes { get; private set; }
+		public int Upvotes { get;  set; }
 
-		public int Downvotes { get; private set; } 
+		public int Downvotes { get;  set; } 
+
+
 	}
 }

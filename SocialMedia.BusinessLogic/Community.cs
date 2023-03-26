@@ -8,20 +8,25 @@ namespace SocialMedia.BusinessLogic
 {
 	public class Community
 	{
-		public Community(DateTime dateCreated, string communityId, string creator, string name, string description, List<string> rules)
+
+		public Community() { }	
+		public Community(DateTime dateCreated, string creator, string name, string description, List<string> rules)
 		{
+			Guid guid = Guid.NewGuid();
+
 			DateCreated = dateCreated;
-			CommunityId = communityId;
+			CommunityId = guid;
 			Creator = creator;
 			Name = name;
 			Description = description;
 			Rules = rules;
 			Members = null;
+			Posts = null;
 		}
 
 		public DateTime DateCreated { get; set; }
 
-		public string CommunityId { get; set; }	
+		public Guid CommunityId { get; set; }	
 
 		public string Creator { get; set; }
 
@@ -31,6 +36,8 @@ namespace SocialMedia.BusinessLogic
 
 		public List<string> Rules { get; set; }	
 
-		public List<string>? Members { get; set; }
+		public List<string>? Members { get; set; } // usernames
+
+		public List <string>? Posts { get; set; } // post Ids
 	} 
 }

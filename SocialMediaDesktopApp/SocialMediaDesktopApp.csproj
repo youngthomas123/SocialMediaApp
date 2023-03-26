@@ -79,5 +79,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SocialMedia.BusinessLogic\SocialMedia.BusinessLogic.csproj">
+      <Project>{d0f4a86c-c9c1-4a6d-abec-b9ea24c5fdfb}</Project>
+      <Name>SocialMedia.BusinessLogic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
