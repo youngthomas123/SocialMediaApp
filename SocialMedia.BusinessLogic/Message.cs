@@ -10,11 +10,11 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		public Message() { }
-		public Message(DateTime dateCreated, string subject, string body, string senderName, string recipientName)
+		public Message( string subject, string body, string senderName, string recipientName)
 		{
 			Guid guid = Guid.NewGuid();
 
-			DateCreated = dateCreated;
+			DateCreated = DateTime.Now;
 			MessageId = guid;
 			Subject = subject;
 			Body = body;

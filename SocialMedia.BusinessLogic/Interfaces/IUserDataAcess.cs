@@ -14,7 +14,7 @@ namespace SocialMedia.BusinessLogic.Interfaces
 
         List<User> LoadUser();
 
-        void DeleteUser(Guid id);
+        void DeleteUser(string username);
 
 
 

@@ -34,10 +34,10 @@ namespace SocialMedia.BusinessLogic
 
 		public string Body { get; set; }
 
-		public int Upvotes { get; private set; }
+		public int Upvotes { get;  set; }
 
-		public int Downvotes { get; private set; }
+		public int Downvotes { get;  set; }
 
-		public Guid CommunityId { get; private set; }
+		public Guid CommunityId { get;  set; }
 	}
 }

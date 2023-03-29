@@ -8,6 +8,7 @@ namespace SocialMedia.BusinessLogic
 {
 	public class User
 	{
+		public User() { }
 		public User(string userName, string password, string email)
 		{
 			UserName = userName;

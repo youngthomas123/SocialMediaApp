@@ -11,7 +11,7 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		public Comment() { }
-		public Comment(string creator, string body)
+		public Comment(string creator, string body, Guid postId)
 		{
             Guid guid = Guid.NewGuid();
 
@@ -21,6 +21,7 @@ namespace SocialMedia.BusinessLogic
 			Body = body;
 			Upvotes = 0;
 			Downvotes = 0;
+			PostId = postId;
 		}
 
 		public DateTime DateCreated { get; set; }
@@ -35,6 +36,7 @@ namespace SocialMedia.BusinessLogic
 
 		public int Downvotes { get;  set; } 
 
+		public Guid PostId { get; set; }	
 
 	}
 }

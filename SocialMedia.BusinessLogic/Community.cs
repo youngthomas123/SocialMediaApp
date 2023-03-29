@@ -10,11 +10,11 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		public Community() { }	
-		public Community(DateTime dateCreated, string creator, string name, string description, List<string> rules)
+		public Community(string creator, string name, string description, List<string> rules)
 		{
 			Guid guid = Guid.NewGuid();
 
-			DateCreated = dateCreated;
+			DateCreated = DateTime.Now;
 			CommunityId = guid;
 			Creator = creator;
 			Name = name;

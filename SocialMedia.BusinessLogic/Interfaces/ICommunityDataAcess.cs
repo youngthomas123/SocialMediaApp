@@ -8,7 +8,7 @@ namespace SocialMedia.BusinessLogic.Interfaces
 {
     public interface ICommunityDataAcess
     {
-        void SaveCommunity();
+        void SaveCommunity(Community community);
 
         void UpdateCommunity(Community community);
 
