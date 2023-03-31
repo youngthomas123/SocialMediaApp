@@ -15,6 +15,10 @@ namespace SocialMediaWebApp.ViewModels
 		public string Body { get; set; }
 
 
+		public Guid Community { get; set; }
+
+
+
 
 	}
 }

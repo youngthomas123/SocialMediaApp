@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SocialMedia.BusinessLogic\SocialMedia.BusinessLogic.csproj" />
+    <ProjectReference Include="..\SocialMedia.DataAccess\SocialMedia.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

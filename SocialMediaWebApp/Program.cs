@@ -1,7 +1,18 @@
+using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.DataAccess;
+using SocialMediaWebApp.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddTransient<IPostContainer,PostContainer>();
+builder.Services.AddTransient<IPostDataAcess, PostDB>();
+
+
 
 var app = builder.Build();
 

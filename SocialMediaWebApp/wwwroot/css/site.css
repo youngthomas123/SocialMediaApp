@@ -44,3 +44,38 @@ body {
 .dropdown:hover .dropdown-content{
     display: block;
 }
+
+.PostCard{
+   background-color : aqua;
+   border-color : black;
+   margin-left : 4px;
+   margin-top : 4px;
+   
+
+
+}
+.Postbutton{
+    margin-left : auto;
+    color : coral;
+
+}
+.PostCardTitle{
+    font : 200;
+    
+}
+.PostCardBody{
+    text-align : left;
+
+}
+.PostCardFooter{
+    margin-bottom : auto;
+    border-inline-width : thick;
+    padding-bottom : inherit;
+}
+.CommentBoxButton{
+    align-self : auto;
+}
+.PostDate{
+    text-shadow : inherit;
+    text-emphasis-position : left;
+}

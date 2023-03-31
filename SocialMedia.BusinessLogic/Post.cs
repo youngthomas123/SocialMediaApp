@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace SocialMedia.BusinessLogic
 {
@@ -39,5 +40,16 @@ namespace SocialMedia.BusinessLogic
 		public int Downvotes { get;  set; }
 
 		public Guid CommunityId { get;  set; }
-	}
+
+		public int Score { get;set; }
+
+
+        public int CalculateAndReturnScore()
+        {
+            Score = Upvotes - Downvotes;
+			return Score;
+
+        }
+    }
+	
 }

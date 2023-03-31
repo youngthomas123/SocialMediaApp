@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
-    public class PostContainer
+    public class PostContainer : IPostContainer
     {
 
         private readonly IPostDataAcess postDataAcess;
@@ -15,6 +15,13 @@ namespace SocialMedia.BusinessLogic.Containers
         public PostContainer(IPostDataAcess dataAcess)
         {
             postDataAcess = dataAcess;
+        }
+
+        public List<Post> LoadAllPosts()
+        {
+            List<Post>posts = new List<Post>();
+            posts = postDataAcess.LoadPost();
+            return posts;
         }
     }
 }
