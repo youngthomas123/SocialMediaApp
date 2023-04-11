@@ -24,17 +24,19 @@ namespace SocialMedia.DataAccess
 
             
             string sql = $"delete from CommunityMembers " +
-                         $"where CommunityId = '{id}'; " +
+                         $"where CommunityId = @Id; " +
                          
                          $"delete from CommunityRules " +
-                         $"where CommunityId = '{id}'; " +
+                         $"where CommunityId = @Id; " +
                         
                          $"delete from Communities " +
-                         $"where CommunityId = '{id}'; ";
+                         $"where CommunityId = @Id; ";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Id", id);
 
             cmd.ExecuteNonQuery();
 
@@ -86,9 +88,11 @@ namespace SocialMedia.DataAccess
             {
                 sql = $"select Members " +
                       $"from CommunityMembers " +
-                      $"where CommunityId = '{community.CommunityId}'";
+                      $"where CommunityId = @CommunityIdM";
 
                 cmd.CommandText = sql;
+
+                cmd.Parameters.AddWithValue("@CommunityIdM", community.CommunityId);
 
                 dr = cmd.ExecuteReader();
 
@@ -113,9 +117,11 @@ namespace SocialMedia.DataAccess
             {
                 sql = $"select Rules " +
                       $"from CommunityRules " +
-                      $"where CommunityId = '{community.CommunityId}';";
+                      $"where CommunityId = @CommunityIdR;";
 
                 cmd.CommandText = sql;
+
+                cmd.Parameters.AddWithValue("@CommunityIdR", community.CommunityId);
 
                 dr = cmd.ExecuteReader();
 
@@ -218,7 +224,7 @@ namespace SocialMedia.DataAccess
 
             string sql =  $"update Communities " +
                           $"set DateCreated = @Updatedate, CommunityName = @UpdateName, Description = @UpdateDescription, Creator = @UpdateCreator " +
-                          $"where CommunityId = '{community.CommunityId}'";
+                          $"where CommunityId = @UpdateCommunityId";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
@@ -226,21 +232,25 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.Add("@UpdateName", SqlDbType.VarChar);
             cmd.Parameters.Add("@UpdateDescription", SqlDbType.NVarChar);
             cmd.Parameters.Add("@UpdateCreator", SqlDbType.VarChar);
+            cmd.Parameters.Add("@UpdateCommunityId", SqlDbType.UniqueIdentifier);
 
 
             cmd.Parameters["@Updatedate"].Value = community.DateCreated;
             cmd.Parameters["@UpdateName"].Value = community.Name;
             cmd.Parameters["@UpdateDescription"].Value = community.Description;
             cmd.Parameters["@UpdateCreator"].Value = community.Creator;
+            cmd.Parameters["@UpdateCommunityId"].Value = community.CommunityId;
 
-            
+
             cmd.ExecuteNonQuery();
 
             // deleting members
             sql = $"delete from CommunityMembers " +
-                  $"where CommunityId = '{community.CommunityId}' ";
+                  $"where CommunityId = @CommunityIdDM ";
 
             cmd.CommandText= sql;
+
+            cmd.Parameters.AddWithValue("@CommunityIdDM", community.CommunityId);
 
             cmd.ExecuteNonQuery ();
 
@@ -267,9 +277,11 @@ namespace SocialMedia.DataAccess
 
             // deleting rules
             sql = $"delete from CommunityRules " +
-                  $"where CommunityId = '{community.CommunityId}' ";
+                  $"where CommunityId = @CommunityIdDR ";
 
             cmd.CommandText = sql;
+
+            cmd.Parameters.AddWithValue("@CommunityIdDR", community.CommunityId);
 
             cmd.ExecuteNonQuery();
 

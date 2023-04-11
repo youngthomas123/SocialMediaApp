@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,9 @@ namespace ConsoleApp1
 
             var loadedComments = commentContainer.GetComments();
 
-            
+
+
+
         }
 
     }

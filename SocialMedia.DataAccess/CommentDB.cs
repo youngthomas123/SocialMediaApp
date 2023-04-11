@@ -25,9 +25,11 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from Comments " +
-                         $"where CommentId = '{id}'; ";
+                         $"where CommentId = @Id; ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Id", id);
 
             cmd.ExecuteNonQuery();
 
@@ -86,7 +88,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = "insert into Comments ([DateCreated], [CommentId], [Creator], [Body], [Upvotes], [Downvotes], [PostId]) " +
-                "Values (@date, @Id, @creator, @body, @upvotes, @downvotes, @postid)";
+                "Values (@date, @Id, @creator, @body, @upvotes, @downvotes, @postid) ";
 
 
 
@@ -115,12 +117,20 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql =  $"update Comments " +
-                          $"set DateCreated = @UpdateCommentDate, Creator = '{comment.Creator}', Body = '{comment.Body}', Upvotes = '{comment.Upvotes}', Downvotes = '{comment.Downvotes}', PostId = '{comment.PostId}' " +
-                          $" where CommentId = '{comment.CommentId}'";
+                          $"set DateCreated = @UpdateCommentDate, Creator = @UpdateCreator, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, PostId = @UpdatePostID " +
+                          $" where CommentId = @CommentID ";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@UpdateCreator", comment.Creator);
+            cmd.Parameters.AddWithValue("@UpdateBody", comment.Body);
+            cmd.Parameters.AddWithValue("@UpdateUpvotes", comment.Upvotes);
+            cmd.Parameters.AddWithValue("@UpdateDownvotes", comment.Downvotes);
+            cmd.Parameters.AddWithValue("@UpdatePostID", comment.PostId);
+            cmd.Parameters.AddWithValue("@CommentID", comment.CommentId);
+           
 
             cmd.Parameters.Add("@UpdateCommentDate", SqlDbType.DateTime);
 

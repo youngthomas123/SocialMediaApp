@@ -22,9 +22,11 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from Posts " +
-                         $"where PostId = '{id}'; ";
+                         $"where PostId = @Id; ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Id", id);
 
             cmd.ExecuteNonQuery();
 
@@ -122,12 +124,21 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Posts " +
-                          $"set DateCreated = @UpdatePostDate, Creator = '{post.Creator}', Title = '{post.Title}', Body = '{post.Body}', Upvotes = '{post.Upvotes}', Downvotes = '{post.Downvotes}', CommunityId = '{post.CommunityId}' " +
-                          $" where PostId = '{post.PostId}'";
+                          $"set DateCreated = @UpdatePostDate, Creator = @UpdateCreator, Title = @UpdateTitle, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, CommunityId = @UpdateCommunityId " +
+                          $" where PostId = @UpdatePostId";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+
+            cmd.Parameters.AddWithValue("@UpdateCreator",post.Creator);
+            cmd.Parameters.AddWithValue("@UpdateTitle",post.Title);
+            cmd.Parameters.AddWithValue("@UpdateBody",post.Body);
+            cmd.Parameters.AddWithValue("@UpdateUpvotes",post.Upvotes);
+            cmd.Parameters.AddWithValue("@UpdateDownvotes",post.Downvotes);
+            cmd.Parameters.AddWithValue("@UpdateCommunityId", post.CommunityId);
+            cmd.Parameters.AddWithValue("@UpdatePostId", post.PostId);
 
             cmd.Parameters.Add("@UpdatePostDate", SqlDbType.DateTime);
 

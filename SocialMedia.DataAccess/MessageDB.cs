@@ -22,9 +22,11 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from Messages " +
-                         $"where MessageId = '{id}'; ";
+                         $"where MessageId = @Id; ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Id", id);
 
             cmd.ExecuteNonQuery();
 
@@ -116,12 +118,18 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Messages " +
-                          $"set DateCreated = @UpdateMessageDate, Subject = '{message.Subject}', Body = '{message.Body}', SenderName = '{message.SenderName}', RecipientName = '{message.RecipientName}', Status = @updateStatus " +
-                          $" where MessageId = '{message.MessageId}'";
+                          $"set DateCreated = @UpdateMessageDate, Subject = @UpdateSubject, Body = @UpdateBody, SenderName = @UpdateSenderName, RecipientName = @UpdateRecipientName, Status = @updateStatus " +
+                          $" where MessageId = @UpdateMessageId ";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@UpdateSubject",message.Subject);
+            cmd.Parameters.AddWithValue("@UpdateBody",message.Body);
+            cmd.Parameters.AddWithValue("@UpdateSenderName",message.SenderName);
+            cmd.Parameters.AddWithValue("@UpdateRecipientName",message.RecipientName);
+            cmd.Parameters.AddWithValue("@UpdateMessageId",message.MessageId);
 
             cmd.Parameters.Add("@UpdateMessageDate", SqlDbType.DateTime);
             cmd.Parameters.Add("@updateStatus", SqlDbType.VarChar);

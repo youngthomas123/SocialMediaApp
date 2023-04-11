@@ -20,7 +20,8 @@ var serviceProvider = services.BuildServiceProvider();
 
 
 
-
+CommentDB commentDB = new CommentDB();
+commentDB.DeleteComment(new Guid("702E71EB-E8A7-47F6-B7ED-B6FB9E29D4DE"));
 
 
 

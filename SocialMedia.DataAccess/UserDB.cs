@@ -22,9 +22,11 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from Users " +
-                         $"where UserName = '{username}'; ";
+                         $"where UserName = @Username; ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Username", username);
 
             cmd.ExecuteNonQuery();
 
@@ -108,12 +110,17 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Users " +
-                          $"set Password = '{user.Password}', Email = '{user.Email}', DateCreated = @UpdateDateCreated " +
-                          $" where UserName = '{user.UserName}'";
+                          $"set Password = @UpdatePassword, Email = @UpdateEmail, DateCreated = @UpdateDateCreated " +
+                          $" where UserName = @UpdateUserName ";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@UpdatePassword", user.Password);
+            cmd.Parameters.AddWithValue("@UpdateEmail",user.Email);
+            cmd.Parameters.AddWithValue("@UpdateUserName",user.UserName);
+
 
             cmd.Parameters.Add("@UpdateDateCreated", SqlDbType.DateTime);
 
