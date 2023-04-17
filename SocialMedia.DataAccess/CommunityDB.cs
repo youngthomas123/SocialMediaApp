@@ -71,28 +71,32 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                Community community = new Community();
-                community.DateCreated = (DateTime)dr[DateCreatedIndex];
-                community.Name = (string)dr[CommunityNameIndex];
-                community.Description = (string)dr[DescriptionIndex];
-                community.CommunityId = (Guid)dr[CommunityIdIndex];
-                community.Creator= (string)dr[CreatorIndex];
-
+                
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var Name = (string)dr[CommunityNameIndex];
+                var Description = (string)dr[DescriptionIndex];
+                var CommunityId = (Guid)dr[CommunityIdIndex];
+                var Creator= (string)dr[CreatorIndex];
+                Community community = new Community(DateCreated, Name, Description, CommunityId, Creator);
                 communities.Add(community);
             }
 
             dr.Close();
 
 
-            foreach ( Community community in communities )
+            foreach (Community community in communities )
             {
                 sql = $"select Members " +
                       $"from CommunityMembers " +
-                      $"where CommunityId = @CommunityIdM";
+                      $"where CommunityId = @CommunityIdMLoad;";
+
+                cmd.Parameters.AddWithValue("@CommunityIdMLoad", community.CommunityId);
+                //cmd.Parameters["@CommunityIdMLoad"].Value = community.CommunityId;
 
                 cmd.CommandText = sql;
 
-                cmd.Parameters.AddWithValue("@CommunityIdM", community.CommunityId);
+                
+                
 
                 dr = cmd.ExecuteReader();
 
@@ -107,6 +111,7 @@ namespace SocialMedia.DataAccess
                     members.Add((string)dr[MembersIndex]);
                 }
                 community.Members = members;
+                cmd.Parameters.Clear();
                 dr.Close();
 
             }
@@ -117,7 +122,7 @@ namespace SocialMedia.DataAccess
             {
                 sql = $"select Rules " +
                       $"from CommunityRules " +
-                      $"where CommunityId = @CommunityIdR;";
+                      $"where CommunityId = @CommunityIdR ;";
 
                 cmd.CommandText = sql;
 
@@ -133,6 +138,7 @@ namespace SocialMedia.DataAccess
                     rules.Add((string)dr[RulesIndex]);
                 }
                 community.Rules = rules;
+                cmd.Parameters.Clear();
                 dr.Close();
             }
             

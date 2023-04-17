@@ -63,18 +63,18 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                Post post = new Post();
+                
 
-                post.DateCreated = (DateTime)dr[DateCreatedIndex];
-                post.PostId = (Guid)dr[PostIdIndex];
-                post.Creator = (string)dr[CreatorIndex];
-                post.Title = (string)dr[TitleIndex];
-                post.Body = (string)dr[BodyIndex];
-                post.Upvotes = (int)dr[UpvotesIndex];
-                post.Downvotes = (int)dr[DownvotesIndex];
-                post.CommunityId = (Guid)dr[CommunityIdIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var PostId = (Guid)dr[PostIdIndex];
+                var Creator = (string)dr[CreatorIndex];
+                var Title = (string)dr[TitleIndex];
+                var Body = (string)dr[BodyIndex];
+                var Upvotes = (int)dr[UpvotesIndex];
+                var Downvotes = (int)dr[DownvotesIndex];
+                var CommunityId = (Guid)dr[CommunityIdIndex];
 
-
+                Post post = new Post(DateCreated, PostId, Creator, Title, Body, Upvotes, Downvotes, CommunityId);
                 posts.Add(post);
             }
 

@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
-    public class CommunityContainer
+    public class CommunityContainer : ICommunityContainer
     {
 
-        private readonly ICommunityDataAcess communityDataAcess;
+        private readonly ICommunityDataAcess _communityDataAcess;
 
-        public CommunityContainer(ICommunityDataAcess dataAcess)
+        public CommunityContainer(ICommunityDataAcess communityDataAcess)
         {
-            communityDataAcess = dataAcess;
+            _communityDataAcess = communityDataAcess;
         }
 
-
-
-
-
+        public List<Community> LoadCommunity()
+        {
+             return _communityDataAcess.LoadCommunity();
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace SocialMedia.BusinessLogic
 	public class Post
 	{
 
-		public Post() { }
+		
 		public Post(string creator, string title, string body, Guid communityid)
 		{
 			Guid guid = Guid.NewGuid();
@@ -23,32 +23,99 @@ namespace SocialMedia.BusinessLogic
 			Upvotes = 0;
 			Downvotes = 0;
 			CommunityId = communityid;	
+			_score = 0;
 		}
 
-		public DateTime DateCreated { get; set; }
+		public Post (DateTime dateCreated, Guid postId, string creator, string title, string body, int upvotes, int downvotes, Guid communityid)
+		{
+            DateCreated = dateCreated;
+			PostId = postId;
+			Creator = creator;
+			Title = title;
+			Body = body;
+			Upvotes = upvotes;
+			Downvotes = downvotes;
+			CommunityId = communityid;
+			
+        }
 
-		public Guid PostId { get; set; }
+		public DateTime DateCreated { get; private set; }
 
-		public string Creator { get; set; }
+		public Guid PostId { get; private set; }
 
-		public string Title { get; set; }
+		public string Creator { get; private set; }
+		private string _title;
+		public string Title
+		{
+			get
+			{
+				return _title;
+			}
+			 private  set
+			 {
+                if (value.Length <= 250)
+                {
+                    _title = value;
+                }
+                else
+                {
+                    throw new Exception("The post title is too big");
+                }
+             }
+		}
+		private string _body;
+		public string Body
+		{
+			get
+			{
+				return _body;
+			}
+			  private set
+			  {
+                if (value.Length <= 750)
+                {
+                    _body = value;
+                }
+                else
+                {
+                    throw new Exception("The post body is too big");
+                }
 
-		public string Body { get; set; }
+              }
+        }
 
-		public int Upvotes { get;  set; }
+		public int Upvotes { get; private set; }
 
-		public int Downvotes { get;  set; }
+		public int Downvotes { get; private set; }
 
-		public Guid CommunityId { get;  set; }
+		public Guid CommunityId { get; private set; }
+		private int _score;
+		public int Score
+		{
+			get
+			{
+                CalculateScore();
+                return _score;
+			}
+			
 
-		public int Score { get;set; }
+		}
 
-
-        public int CalculateAndReturnScore()
+        public void upvote()
         {
-            Score = Upvotes - Downvotes;
-			return Score;
+            Upvotes = Upvotes + 1;
+			CalculateScore();
+        }
+        public void downvote()
+        {
+            Downvotes = Downvotes + 1;
+            CalculateScore();
+        }
 
+        public void CalculateScore()
+        {
+            _score = Upvotes - Downvotes;
+			
         }
     }
 	

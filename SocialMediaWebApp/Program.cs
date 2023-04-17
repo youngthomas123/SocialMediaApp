@@ -10,7 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IPostContainer,PostContainer>();
+builder.Services.AddTransient<ICommunityContainer, CommunityContainer>();
+builder.Services.AddTransient<ICommunityDataAcess, CommunityDB>();
 builder.Services.AddTransient<IPostDataAcess, PostDB>();
+
+
 
 
 

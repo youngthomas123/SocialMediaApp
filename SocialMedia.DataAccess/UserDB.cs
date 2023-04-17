@@ -61,14 +61,14 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                User user = new User();
+               
 
-                user.UserName = (string)dr[UserNameIndex];
-                user.Password = (string)dr[PasswordIndex];
-                user.Email = (string)dr[EmailIndex];
-                user.DateCreated = (DateTime)dr[DateCreatedIndex];
-                
+                var UserName = (string)dr[UserNameIndex];
+                var Password = (string)dr[PasswordIndex];
+                var Email = (string)dr[EmailIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
 
+                User user = new User(UserName, Password, Email, DateCreated);
 
                 users.Add(user);
             }

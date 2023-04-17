@@ -9,7 +9,7 @@ namespace SocialMedia.BusinessLogic
 	public class Message
 	{
 
-		public Message() { }
+	
 		public Message( string subject, string body, string senderName, string recipientName)
 		{
 			Guid guid = Guid.NewGuid();
@@ -23,18 +23,31 @@ namespace SocialMedia.BusinessLogic
 			Status = MessageStatus.None;
 		}
 
-		public DateTime DateCreated { get; set; }
+		public Message(DateTime dateCreated, Guid messageId, string subject, string body, string senderName, string recipientName, MessageStatus status)
+		{
+            DateCreated = dateCreated;
+			MessageId = messageId;
+			Subject = subject;
+			Body = body;
+			SenderName = senderName;
+			RecipientName = recipientName;
+			Status = status;
 
-		public Guid MessageId { get; set; }
+        }
 
-		public string Subject { get; set; }
 
-		public string Body { get; set; }
+		public DateTime DateCreated { get; private set; }
 
-		public string SenderName { get; set; }
+		public Guid MessageId { get; private set; }
 
-		public string RecipientName { get; set;}
+		public string Subject { get; private set; }
 
-		public MessageStatus Status { get; set; }	
+		public string Body { get; private set; }
+
+		public string SenderName { get; private set; }
+
+		public string RecipientName { get; private set;}
+
+		public MessageStatus Status { get; private set; }	
 	}
 }

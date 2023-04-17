@@ -10,7 +10,6 @@ namespace SocialMedia.BusinessLogic
 	public class Comment
 	{
 
-		public Comment() { }
 		public Comment(string creator, string body, Guid postId)
 		{
             Guid guid = Guid.NewGuid();
@@ -21,22 +20,85 @@ namespace SocialMedia.BusinessLogic
 			Body = body;
 			Upvotes = 0;
 			Downvotes = 0;
+			_score = 0;
 			PostId = postId;
 		}
 
-		public DateTime DateCreated { get; set; }
+		public Comment(DateTime dateTime, Guid commentID, string creator, string body, Guid postId, int upvotes, int downvotes)
+		{
+            DateCreated = dateTime;
+			CommentId = commentID;
+			Creator = creator;
+			Body = body;
+            PostId = postId;
+            Upvotes = upvotes;
+			Downvotes = downvotes;
 
-		public Guid CommentId { get; set; }
 
-		public string Creator { get; set; }
+        }
 
-		public string Body { get; set; }
+		public DateTime DateCreated { get; private set; }
 
-		public int Upvotes { get;  set; }
+		public Guid CommentId { get; private set; }
 
-		public int Downvotes { get;  set; } 
+		public string Creator { get; private set; }
 
-		public Guid PostId { get; set; }	
+		private string _body;
+		public string Body
+		{
+			get
+			{
+				return _body;
+			}
+			 set
+			 {
+                if (value.Length <= 350)
+                {
+					_body = value;
+                }
+                else
+                {
+                    throw new Exception("The comment body is too big");
+                }
+
+             }
+        }
+
+		public int Upvotes { get; private set; }
+
+		public int Downvotes { get; private set; } 
+
+		public Guid PostId { get; private set; }
+
+        private int _score;
+        public int Score
+        {
+            get
+            {
+                CalculateScore();
+                return _score;
+            }
+           
+        }
+
+       
+		public void upvote()
+		{
+			Upvotes = Upvotes + 1;
+			CalculateScore();
+
+        }
+		public void downvote()
+		{
+			Downvotes = Downvotes + 1;
+			CalculateScore();
+		}
+
+
+		public void CalculateScore()
+		{
+			_score = Upvotes - Downvotes;
+		}
 
 	}
 }

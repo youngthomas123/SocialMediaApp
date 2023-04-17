@@ -9,5 +9,9 @@ namespace SocialMedia.BusinessLogic.Interfaces
     public interface IPostContainer
     {
         List<Post> LoadAllPosts();
+        Post LoadPostById(Guid postId);
+        void SavePost(Post post);
+       
+        void UpdatePost(Post post);
     }
 }

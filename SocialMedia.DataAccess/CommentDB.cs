@@ -40,7 +40,7 @@ namespace SocialMedia.DataAccess
 
         public List<Comment> LoadComment()
         {
-            List<Comment> list = new List<Comment>();
+            List<Comment> comments = new List<Comment>();
 
 
             SqlConnection conn = new SqlConnection(connection);
@@ -65,21 +65,23 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                Comment comment = new Comment();
-                comment.DateCreated = (DateTime)dr[DateCreatedIndex];
-                comment.CommentId = (Guid)dr[CommentIdIndex];
-                comment.Creator = (string)dr[CreatorIndex];
-                comment.Body = (string)dr[BodyIndex];
-                comment.Upvotes = (int)dr[UpvotesIndex];
-                comment.Downvotes = (int)dr[DownvotesIndex];
-                comment.PostId = (Guid)dr[PostIdIndex];
-                list.Add(comment);
+                var Creator = (string)dr[CreatorIndex];
+                var PostId = (Guid)dr[PostIdIndex];
+                var Body = (string)dr[BodyIndex];
+                
+                var CommentId = (Guid)dr[CommentIdIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var Upvotes = (int)dr[UpvotesIndex];
+                var Downvotes = (int)dr[DownvotesIndex];
+                Comment comment = new Comment(DateCreated, CommentId, Creator, Body, PostId, Upvotes, Downvotes);
+
+                comments.Add(comment);
             }
 
 
             dr.Close();
 
-            return list;
+            return comments;
         }
 
         public void SaveComment(Comment comment)

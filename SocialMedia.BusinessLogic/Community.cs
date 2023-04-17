@@ -9,7 +9,7 @@ namespace SocialMedia.BusinessLogic
 	public class Community
 	{
 
-		public Community() { }	
+		
 		public Community(string creator, string name, string description, List<string> rules)
 		{
 			Guid guid = Guid.NewGuid();
@@ -23,21 +23,30 @@ namespace SocialMedia.BusinessLogic
 			Members = null;
 			Posts = null;
 		}
+		public Community(DateTime dateCreated, string name, string description, Guid communityId, string creator )
+		{
+            DateCreated = dateCreated;
+			Name = name;
+			Description = description;
+			CommunityId = communityId;
+			Creator = creator;
 
-		public DateTime DateCreated { get; set; }
+        }
 
-		public Guid CommunityId { get; set; }	
+		public DateTime DateCreated { get; private set; }
 
-		public string Creator { get; set; }
+		public Guid CommunityId { get; private set; }	
 
-		public string Name { get; set; }	
+		public string Creator { get; private set; }
 
-		public string Description { get; set; }
+		public string Name { get; private set; }	
 
-		public List<string> Rules { get; set; }	
+		public string Description { get; private set; }
 
-		public List<string>? Members { get; set; } // usernames
+		public List<string>? Rules { get;  set; }	// a list of rules
 
-		public List <string>? Posts { get; set; } // post Ids
+		public List<string>? Members { get;  set; } // usernames
+
+		public List <string>? Posts { get;  set; } // post Ids
 	} 
 }

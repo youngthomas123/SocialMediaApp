@@ -30,5 +30,29 @@ namespace SocialMediaWebApp.Pages
 
 
         }
+
+        public IActionResult OnPostUpvote(Guid postId)
+        {
+            var post = _postContainer.LoadPostById(postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            post.upvote();
+            _postContainer.UpdatePost(post);
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDownvote(Guid postId)
+        {
+            var post = _postContainer.LoadPostById(postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            post.downvote();
+            _postContainer.UpdatePost(post);
+            return RedirectToPage();
+        }
     }
 }

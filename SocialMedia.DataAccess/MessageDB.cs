@@ -59,14 +59,15 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                Message message = new Message();
-                message.DateCreated = (DateTime)dr[DateCreatedIndex];
-                message.MessageId = (Guid)dr[MessageIdIndex];
-                message.Subject = (string)dr[SubjectIndex];
-                message.Body = (string)dr[BodyIndex];
-                message.SenderName = (string)dr[SenderNameIndex];
-                message.RecipientName = (string)dr[RecipientNameIndex];
-                message.Status  = Enum.Parse<MessageStatus>((string)dr[StatusIndex]);
+                
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var MessageId = (Guid)dr[MessageIdIndex];
+                var Subject = (string)dr[SubjectIndex];
+                var Body = (string)dr[BodyIndex];
+                var SenderName = (string)dr[SenderNameIndex];
+                var RecipientName = (string)dr[RecipientNameIndex];
+                var Status  = Enum.Parse<MessageStatus>((string)dr[StatusIndex]);
+                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderName, RecipientName, Status);
 
 
                 messages.Add(message);
