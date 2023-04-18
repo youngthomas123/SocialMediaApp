@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.BusinessLogic.Interfaces
+namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
-    public interface IPostDataAcess
+    public interface IPostDataAccess
     {
         void SavePost(Post post);
 
@@ -15,7 +15,6 @@ namespace SocialMedia.BusinessLogic.Interfaces
         List<Post> LoadPost();
 
         void DeletePost(Guid id);
-
-
+        List<string> GetPostIds(Guid communityId);
     }
 }

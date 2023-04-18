@@ -1,4 +1,4 @@
-﻿using SocialMedia.BusinessLogic.Interfaces;
+﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ namespace SocialMedia.BusinessLogic.Containers
     public class MessageContainer
     {
 
-        private readonly IMessageDataAcess messageDataAcess;
+        private readonly IMessageDataAccess messageDataAcess;
 
-        public MessageContainer (IMessageDataAcess dataAcess)
+        public MessageContainer (IMessageDataAccess dataAcess)
         {
             messageDataAcess = dataAcess;
         }

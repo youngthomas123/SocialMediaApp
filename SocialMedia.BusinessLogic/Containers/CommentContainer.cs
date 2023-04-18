@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
     public class CommentContainer
     {
-        private readonly ICommentDataAcess commentDataAcess;
+        private readonly ICommentDataAccess commentDataAcess;
 
-        public CommentContainer(ICommentDataAcess dataAcess)
+        public CommentContainer(ICommentDataAccess dataAcess)
         {
             commentDataAcess = dataAcess;
         }

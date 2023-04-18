@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.BusinessLogic.Interfaces
+namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 {
-    public interface ICommunityContainer
+    public interface IUserContainer
     {
-        List<Community> LoadCommunity();
+        void SaveUser(User user);
     }
 }

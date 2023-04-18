@@ -1,5 +1,5 @@
 ﻿using SocialMedia.BusinessLogic;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.DataAccess
 {
-    public class CommentDB : ICommentDataAcess
+    public class CommentDB : ICommentDataAccess
     {
 
        private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
@@ -80,6 +80,8 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+
+            conn.Close();
 
             return comments;
         }

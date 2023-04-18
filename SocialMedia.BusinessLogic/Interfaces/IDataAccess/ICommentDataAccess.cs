@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.BusinessLogic.Interfaces
+namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
-    public interface ICommentDataAcess
+    public interface ICommentDataAccess
     {
         void SaveComment(Comment comment);
 

@@ -82,13 +82,13 @@ namespace SocialMedia.BusinessLogic
         }
 
        
-		public void upvote()
+		public void Upvote()
 		{
 			Upvotes = Upvotes + 1;
 			CalculateScore();
 
         }
-		public void downvote()
+		public void Downvote()
 		{
 			Downvotes = Downvotes + 1;
 			CalculateScore();

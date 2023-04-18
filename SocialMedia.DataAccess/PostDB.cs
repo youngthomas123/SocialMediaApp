@@ -1,5 +1,5 @@
 ﻿using SocialMedia.BusinessLogic;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace SocialMedia.DataAccess
 {
-    public class PostDB : IPostDataAcess
+    public class PostDB : IPostDataAccess
     {
         private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
 
@@ -148,6 +148,38 @@ namespace SocialMedia.DataAccess
             cmd.ExecuteNonQuery();
 
             conn.Close();
+        }
+
+        public List<string> GetPostIds(Guid communityId) 
+        {
+            List <string> postIds = new List<string>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select PostId " +
+                         $"from Posts " +
+                         $"where CommunityId = @CommunityId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@CommunityId", communityId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int PostIdIndex = dr.GetOrdinal("PostId");
+            while (dr.Read())
+            {
+                var PostId = (Guid)dr[PostIdIndex];
+                
+                postIds.Add(PostId.ToString());
+            }
+
+            dr.Close();
+            conn.Close();
+            return postIds;
         }
     }
 }

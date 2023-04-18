@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
 using SocialMedia.BusinessLogic;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using SocialMediaWebApp.ViewModels;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -17,15 +17,15 @@ namespace SocialMediaWebApp.Pages
         public int SelectedValue { get; set; }
         public List<SelectListItem> Values { get; set; }
 
-        private ICommunityDataAcess _communityDataAcess;
-        public PostModel(ICommunityDataAcess communityDataAcess)
+        private ICommunityDataAccess _communityDataAcess;
+        public PostModel(ICommunityDataAccess communityDataAcess)
         {
             _communityDataAcess = communityDataAcess;
         }
 
         public void OnGet()
         {
-            var communities = _communityDataAcess.LoadCommunity();
+            var communities = _communityDataAcess.LoadCommunitys();
             Values = new();
             foreach (var item in communities)
             {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IContainer;
 
 namespace SocialMediaWebApp.Pages
 {

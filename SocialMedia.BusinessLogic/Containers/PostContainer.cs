@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces;
+﻿using SocialMedia.BusinessLogic.Interfaces.IContainer;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace SocialMedia.BusinessLogic.Containers
     public class PostContainer : IPostContainer
     {
 
-        private readonly IPostDataAcess _postDataAcess;
+        private readonly IPostDataAccess _postDataAcess;
         
-        public PostContainer(IPostDataAcess postDataAcess)
+        public PostContainer(IPostDataAccess postDataAcess)
         {
             _postDataAcess = postDataAcess;
         }

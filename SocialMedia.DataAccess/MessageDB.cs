@@ -1,5 +1,5 @@
 ﻿using SocialMedia.BusinessLogic;
-using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace SocialMedia.DataAccess
 {
-    public class MessageDB : IMessageDataAcess
+    public class MessageDB : IMessageDataAccess
     {
         private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
 

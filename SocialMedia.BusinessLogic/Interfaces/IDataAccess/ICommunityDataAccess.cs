@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.BusinessLogic.Interfaces
+namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
-    public interface ICommunityDataAcess
+    public interface ICommunityDataAccess
     {
         void SaveCommunity(Community community);
 
         void UpdateCommunity(Community community);
 
-        List<Community> LoadCommunity();
+        List<Community> LoadCommunitys();
 
         void DeleteCommunity(Guid id);
 
