@@ -11,24 +11,24 @@ namespace SocialMedia.BusinessLogic.Containers
     public class PostContainer : IPostContainer
     {
 
-        private readonly IPostDataAccess _postDataAcess;
+        private readonly IPostDataAccess _postDataAccess;
         
         public PostContainer(IPostDataAccess postDataAcess)
         {
-            _postDataAcess = postDataAcess;
+            _postDataAccess = postDataAcess;
         }
 
         public List<Post> LoadAllPosts()
         {
             List<Post>posts = new List<Post>();
-            posts = _postDataAcess.LoadPost();
+            posts = _postDataAccess.LoadPost();
             return posts;
         }
 
         public Post? LoadPostById(Guid postId)
         {
             Post ThePost = null;
-            foreach (Post post in _postDataAcess.LoadPost())
+            foreach (Post post in _postDataAccess.LoadPost())
             {
                 if(post.PostId == postId)
                 {
@@ -42,12 +42,12 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public void SavePost(Post post)
         {
-            _postDataAcess.SavePost(post);
+            _postDataAccess.SavePost(post);
         }
 
         public void UpdatePost(Post post)
         {
-            _postDataAcess.UpdatePost(post);
+            _postDataAccess.UpdatePost(post);
         }
 
        

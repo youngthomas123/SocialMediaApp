@@ -10,13 +10,13 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
     {
         void SaveUser(User user);
 
-        void UpdateUser(User user);
+        void UpdateUserById(User user);
 
         List<User> LoadUser();
 
-        void DeleteUser(string username);
+        void DeleteUserByUserName(string username);
 
-
+        void DeleteUserById(Guid UserId);
 
     }
 }

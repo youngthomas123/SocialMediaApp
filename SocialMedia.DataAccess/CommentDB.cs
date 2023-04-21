@@ -56,7 +56,7 @@ namespace SocialMedia.DataAccess
 
             int DateCreatedIndex = dr.GetOrdinal("DateCreated");
             int CommentIdIndex = dr.GetOrdinal("CommentId");
-            int CreatorIndex = dr.GetOrdinal("Creator");          
+            int UserIdIndex = dr.GetOrdinal("UserId");          
             int BodyIndex = dr.GetOrdinal("Body");
             int UpvotesIndex = dr.GetOrdinal("Upvotes");
             int DownvotesIndex = dr.GetOrdinal("Downvotes");
@@ -65,7 +65,7 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-                var Creator = (string)dr[CreatorIndex];
+                var UserId = (Guid)dr[UserIdIndex];
                 var PostId = (Guid)dr[PostIdIndex];
                 var Body = (string)dr[BodyIndex];
                 
@@ -73,7 +73,7 @@ namespace SocialMedia.DataAccess
                 var DateCreated = (DateTime)dr[DateCreatedIndex];
                 var Upvotes = (int)dr[UpvotesIndex];
                 var Downvotes = (int)dr[DownvotesIndex];
-                Comment comment = new Comment(DateCreated, CommentId, Creator, Body, PostId, Upvotes, Downvotes);
+                Comment comment = new Comment(DateCreated, CommentId, UserId, Body, PostId, Upvotes, Downvotes);
 
                 comments.Add(comment);
             }
@@ -91,8 +91,8 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Comments ([DateCreated], [CommentId], [Creator], [Body], [Upvotes], [Downvotes], [PostId]) " +
-                "Values (@date, @Id, @creator, @body, @upvotes, @downvotes, @postid) ";
+            string sql = "insert into Comments ([DateCreated], [CommentId], [UserId], [Body], [Upvotes], [Downvotes], [PostId]) " +
+                "Values (@date, @Id, @userId, @body, @upvotes, @downvotes, @postid) ";
 
 
 
@@ -100,7 +100,7 @@ namespace SocialMedia.DataAccess
 
             cmd.Parameters.AddWithValue("@date", comment.DateCreated);
             cmd.Parameters.AddWithValue("@Id", comment.CommentId);
-            cmd.Parameters.AddWithValue("@creator", comment.Creator);
+            cmd.Parameters.AddWithValue("@userId", comment.UserId);
             cmd.Parameters.AddWithValue("@body", comment.Body);
             cmd.Parameters.AddWithValue("@upvotes", comment.Upvotes);
             cmd.Parameters.AddWithValue("@downvotes", comment.Downvotes);
@@ -121,14 +121,14 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql =  $"update Comments " +
-                          $"set DateCreated = @UpdateCommentDate, Creator = @UpdateCreator, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, PostId = @UpdatePostID " +
+                          $"set DateCreated = @UpdateCommentDate, Creator = @UpdateUserId, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, PostId = @UpdatePostID " +
                           $" where CommentId = @CommentID ";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@UpdateCreator", comment.Creator);
+            cmd.Parameters.AddWithValue("@UpdateUserId", comment.UserId);
             cmd.Parameters.AddWithValue("@UpdateBody", comment.Body);
             cmd.Parameters.AddWithValue("@UpdateUpvotes", comment.Upvotes);
             cmd.Parameters.AddWithValue("@UpdateDownvotes", comment.Downvotes);

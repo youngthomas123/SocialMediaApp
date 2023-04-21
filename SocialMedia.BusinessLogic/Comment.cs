@@ -10,13 +10,13 @@ namespace SocialMedia.BusinessLogic
 	public class Comment
 	{
 
-		public Comment(string creator, string body, Guid postId)
+		public Comment(Guid userId, string body, Guid postId)
 		{
             Guid guid = Guid.NewGuid();
 
             DateCreated = DateTime.Now;
 			CommentId = guid;
-            Creator = creator;
+            UserId = userId;
 			Body = body;
 			Upvotes = 0;
 			Downvotes = 0;
@@ -24,11 +24,11 @@ namespace SocialMedia.BusinessLogic
 			PostId = postId;
 		}
 
-		public Comment(DateTime dateTime, Guid commentID, string creator, string body, Guid postId, int upvotes, int downvotes)
+		public Comment(DateTime dateTime, Guid commentID, Guid userId, string body, Guid postId, int upvotes, int downvotes)
 		{
             DateCreated = dateTime;
 			CommentId = commentID;
-			Creator = creator;
+			UserId = userId;
 			Body = body;
             PostId = postId;
             Upvotes = upvotes;
@@ -41,7 +41,7 @@ namespace SocialMedia.BusinessLogic
 
 		public Guid CommentId { get; private set; }
 
-		public string Creator { get; private set; }
+		public Guid UserId { get; private set; }
 
 		private string _body;
 		public string Body

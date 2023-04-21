@@ -1,8 +1,10 @@
 ﻿
+using BCrypt.Net;
 using ConsoleApp1;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using SocialMedia.DataAccess;
@@ -18,33 +20,26 @@ var services = new ServiceCollection();
 services.AddTransient<ICommunityDataAccess, CommunityDB>();
 services.AddTransient<ICommunityMembersDataAccess, CommunityMembersDB>();
 services.AddTransient<ICommunityRulesDataAccess, CommunityRulesDB>();
+services.AddTransient<IUserDataAccess, UserDB>();
+services.AddTransient<IPasswordHelper, PasswordHelper>();
 services.AddTransient<IPostDataAccess, PostDB>();
+
+services.AddTransient<IUserContainer, UserContainer>();
 services.AddTransient<ICommunityContainer, CommunityContainer>();
 services.AddTransient<CommunityContainer>();
-
+services.AddTransient<UserContainer>();
+services.AddTransient<PasswordHelper>();
 
 
 var serviceProvider = services.BuildServiceProvider();
 // End DI Container
 
 
-CommunityContainer communityContainer = serviceProvider.GetService<CommunityContainer>();
+UserContainer userContainer = serviceProvider.GetService<UserContainer>();
 
-var communities =  communityContainer.LoadCompleteCommunityDtos();
-
-int x = 0;
+User user = new User("Thomas", "Password", "Thomas@gmail.com");
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+userContainer.SaveUser(user);

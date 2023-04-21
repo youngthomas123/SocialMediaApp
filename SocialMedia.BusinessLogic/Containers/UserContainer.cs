@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IContainer;
+﻿using SocialMedia.BusinessLogic.Interfaces;
+using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,22 @@ namespace SocialMedia.BusinessLogic.Containers
 {
     public class UserContainer : IUserContainer
     {
-        private readonly IUserDataAccess _userDataAcess;
+        private readonly IUserDataAccess _userDataAccess;
+        private readonly IPasswordHelper _passwordHelper;
 
-        public UserContainer(IUserDataAccess userDataAcess)
+        public UserContainer(IUserDataAccess userDataAcess, IPasswordHelper passwordHelper)
         {
-            _userDataAcess = userDataAcess;
+            _userDataAccess = userDataAcess;
+            _passwordHelper = passwordHelper;
         }
 
         public void SaveUser(User user)
         {
-            _userDataAcess.SaveUser(user);
+            var salt = _passwordHelper.GetSalt();
+            user.SetSalt(salt);
+            var hashedPassword = _passwordHelper.GetHashedPassword(user.Password, salt);
+            user.SetHashedPassword(hashedPassword);
+            _userDataAccess.SaveUser(user);
         }
     }
 }

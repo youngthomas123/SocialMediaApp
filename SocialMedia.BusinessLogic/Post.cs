@@ -11,13 +11,13 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		
-		public Post(string creator, string title, string body, Guid communityid)
+		public Post(Guid userId, string title, string body, Guid communityid)
 		{
 			Guid guid = Guid.NewGuid();
 
 			DateCreated = DateTime.Now;
 			PostId = guid;
-			Creator = creator;
+			UserId = userId;
 			Title = title;
 			Body = body;
 			Upvotes = 0;
@@ -26,11 +26,11 @@ namespace SocialMedia.BusinessLogic
 			_score = 0;
 		}
 
-		public Post (DateTime dateCreated, Guid postId, string creator, string title, string body, int upvotes, int downvotes, Guid communityid)
+		public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid)
 		{
             DateCreated = dateCreated;
 			PostId = postId;
-			Creator = creator;
+			UserId = userId;
 			Title = title;
 			Body = body;
 			Upvotes = upvotes;
@@ -43,7 +43,7 @@ namespace SocialMedia.BusinessLogic
 
 		public Guid PostId { get; private set; }
 
-		public string Creator { get; private set; }
+		public Guid UserId { get; private set; }
 		private string _title;
 		public string Title
 		{

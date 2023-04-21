@@ -53,9 +53,10 @@ namespace SocialMedia.DataAccess
             int MessageIdIndex = dr.GetOrdinal("MessageId");
             int SubjectIndex = dr.GetOrdinal("Subject");
             int BodyIndex = dr.GetOrdinal("Body");
-            int SenderNameIndex = dr.GetOrdinal("SenderName");
-            int RecipientNameIndex = dr.GetOrdinal("RecipientName");
+            int SenderIdIndex = dr.GetOrdinal("SenderId");
+            int RecipientIdIndex = dr.GetOrdinal("RecipientId");
             int StatusIndex = dr.GetOrdinal("Status");
+
 
             while (dr.Read())
             {
@@ -64,10 +65,10 @@ namespace SocialMedia.DataAccess
                 var MessageId = (Guid)dr[MessageIdIndex];
                 var Subject = (string)dr[SubjectIndex];
                 var Body = (string)dr[BodyIndex];
-                var SenderName = (string)dr[SenderNameIndex];
-                var RecipientName = (string)dr[RecipientNameIndex];
+                var SenderId = (Guid)dr[SenderIdIndex];
+                var RecipientId = (Guid)dr[RecipientIdIndex];
                 var Status  = Enum.Parse<MessageStatus>((string)dr[StatusIndex]);
-                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderName, RecipientName, Status);
+                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderId, RecipientId, Status);
 
 
                 messages.Add(message);
@@ -85,8 +86,8 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderName], [RecipientName], [Status]) " +
-                "Values (@date, @Id, @subject, @body, @senderName, @RecipientName, @status)";
+            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderId], [RecipientId], [Status]) " +
+                "Values (@date, @messageId, @subject, @body, @senderId, @RecipientId, @status)";
 
             
 
@@ -95,11 +96,11 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.Add("@status", SqlDbType.VarChar);
 
             cmd.Parameters.AddWithValue("@date", message.DateCreated);
-            cmd.Parameters.AddWithValue("@Id", message.MessageId);
+            cmd.Parameters.AddWithValue("@messageId", message.MessageId);
             cmd.Parameters.AddWithValue("@subject", message.Subject);
             cmd.Parameters.AddWithValue("@body", message.Body);
-            cmd.Parameters.AddWithValue("@senderName", message.SenderName);
-            cmd.Parameters.AddWithValue("@RecipientName", message.RecipientName);
+            cmd.Parameters.AddWithValue("@senderId", message.SenderId);
+            cmd.Parameters.AddWithValue("@RecipientId", message.RecipientId);
             cmd.Parameters["@status"].Value = message.Status.ToString();
 
 
@@ -119,7 +120,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Messages " +
-                          $"set DateCreated = @UpdateMessageDate, Subject = @UpdateSubject, Body = @UpdateBody, SenderName = @UpdateSenderName, RecipientName = @UpdateRecipientName, Status = @updateStatus " +
+                          $"set DateCreated = @UpdateMessageDate, Subject = @UpdateSubject, Body = @UpdateBody, SenderId = @UpdateSenderId, RecipientId = @UpdateRecipientId, Status = @updateStatus " +
                           $" where MessageId = @UpdateMessageId ";
 
 
@@ -128,8 +129,8 @@ namespace SocialMedia.DataAccess
 
             cmd.Parameters.AddWithValue("@UpdateSubject",message.Subject);
             cmd.Parameters.AddWithValue("@UpdateBody",message.Body);
-            cmd.Parameters.AddWithValue("@UpdateSenderName",message.SenderName);
-            cmd.Parameters.AddWithValue("@UpdateRecipientName",message.RecipientName);
+            cmd.Parameters.AddWithValue("@UpdateSenderId",message.SenderId);
+            cmd.Parameters.AddWithValue("@UpdateRecipientId",message.RecipientId);
             cmd.Parameters.AddWithValue("@UpdateMessageId",message.MessageId);
 
             cmd.Parameters.Add("@UpdateMessageDate", SqlDbType.DateTime);

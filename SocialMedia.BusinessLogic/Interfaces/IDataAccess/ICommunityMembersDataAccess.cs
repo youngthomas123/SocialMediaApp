@@ -8,10 +8,17 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
     public interface ICommunityMembersDataAccess
     {
-        void CreateMember(Guid communityId, string member);
-        void DeleteMember(Guid communityId, string member);
-        List<string> LoadMembers(Guid CommunityId);
-        void UpdateMember(Guid communityId, string member);
+     
+        
+        void CreateMember(Guid communityId, Guid UserId);
+
+        void DeleteMember(Guid communityId, Guid UserId);
+
+        List<Guid> LoadUserIds(Guid CommunityId);
+
+        void UpdateUserId(Guid communityId, Guid UserId);
+
+
 
 
     }

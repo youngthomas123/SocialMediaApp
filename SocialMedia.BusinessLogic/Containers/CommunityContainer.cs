@@ -12,18 +12,18 @@ namespace SocialMedia.BusinessLogic.Containers
     public class CommunityContainer : ICommunityContainer
     {
 
-        private readonly ICommunityDataAccess _communityDataAcess;
-        private readonly ICommunityMembersDataAccess _communityMembersAcess;
-        private readonly ICommunityRulesDataAccess _communityRulesAcess;
+        private readonly ICommunityDataAccess _communityDataAccess;
+        private readonly ICommunityMembersDataAccess _communityMembersAccess;
+        private readonly ICommunityRulesDataAccess _communityRulesAccess;
         private readonly IPostDataAccess _postDataAccess;
 
 
 
         public CommunityContainer(ICommunityDataAccess communityDataAcess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityRulesDataAccess communityRulesDataAccess, IPostDataAccess postDataAccess)
         {
-            _communityDataAcess = communityDataAcess;
-            _communityMembersAcess = communityMembersDataAccess;
-            _communityRulesAcess = communityRulesDataAccess;
+            _communityDataAccess = communityDataAcess;
+            _communityMembersAccess = communityMembersDataAccess;
+            _communityRulesAccess = communityRulesDataAccess;
             _postDataAccess = postDataAccess;
 
 
@@ -31,27 +31,28 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public List<CommunityDto> LoadCompleteCommunityDtos()
         {
-            var communities = _communityDataAcess.LoadCommunitys();
+            var communities = _communityDataAccess.LoadCommunitys();
 
            
             List<CommunityDto> communityDtos = new List<CommunityDto>();
 
             foreach (var community in communities)
             {
-                var rules = _communityRulesAcess.LoadRules(community.CommunityId);
-                var memberUsernames = _communityMembersAcess.LoadMembers(community.CommunityId);
+                var rules = _communityRulesAccess.LoadRules(community.CommunityId);
+                var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
                 var postids = _postDataAccess.GetPostIds(community.CommunityId); 
 
                 CommunityDto communityDto = new CommunityDto();
 
-                communityDto.Creator = community.Creator;
-                communityDto.MemberUsernames = memberUsernames;
+                
+                communityDto.UserId = community.UserId;
                 communityDto.Rules = rules;
                 communityDto.DateCreated = community.DateCreated;
                 communityDto.CommunityId = community.CommunityId;
-                communityDto.CommunityName = community.Name;
+                communityDto.CommunityName = community.CommunityName;
                 communityDto.Description = community.Description;
-                communityDto.PostId = postids;
+                communityDto.PostIds = postids;
+                communityDto.FollowingUserIds = UserIds;
 
                 communityDtos.Add(communityDto);
             }

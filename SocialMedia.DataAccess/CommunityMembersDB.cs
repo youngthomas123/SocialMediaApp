@@ -12,49 +12,49 @@ namespace SocialMedia.DataAccess
     {
         private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
 
-        public void CreateMember(Guid communityId, string member)
+        public void CreateMember(Guid communityId, Guid UserId)
         {
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
             string sql = $"insert into CommunityMembers " +
-                          $"Values (@Id, @Member)";
+                          $"Values (@Id, @UserId)";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@Id", communityId);
-            cmd.Parameters.AddWithValue("@Member", member);
+            cmd.Parameters.AddWithValue("@UserId", UserId);
 
             cmd.ExecuteNonQuery();
             conn.Close();
 
         }
-        public void DeleteMember(Guid communityId, string member)
+        public void DeleteMember(Guid communityId, Guid UserId)
         {
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
             string sql = $"delete from CommunityMembers " +
-                         $"where CommunityId = '@Id' and Members = '@Member' ";
+                         $"where CommunityId = '@Id' and Members = '@UserId' ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@Id", communityId);
-            cmd.Parameters.AddWithValue("@Members", member);
+            cmd.Parameters.AddWithValue("@UserId", UserId);
 
             cmd.ExecuteNonQuery();
 
             conn.Close();
 
         }
-        public List<string> LoadMembers(Guid CommunityId)
+        public List<Guid> LoadUserIds(Guid CommunityId)
         {
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            List<string> members = new List<string>();
+            List<Guid> UserIds = new List<Guid>();
 
-            string sql = $"Select Members " +
+            string sql = $"Select UserId " +
                          $"from CommunityMembers " +
                          $"where CommunityId = @CommunityId ";
 
@@ -66,33 +66,33 @@ namespace SocialMedia.DataAccess
             SqlDataReader dr = cmd.ExecuteReader();
 
 
-            int MemberIndex = dr.GetOrdinal("Members");
+            int UserIdIndex = dr.GetOrdinal("UserId");
 
             while (dr.Read())
             {
 
-                var member = (string)dr[MemberIndex];
+                var userId = (Guid)dr[UserIdIndex];
 
-                members.Add(member);
+                UserIds.Add(userId);
             }
             dr.Close();
             conn.Close();
-            return members;
+            return UserIds;
 
         }
 
-        public void UpdateMember(Guid communityId, string member)
+        public void UpdateUserId(Guid communityId, Guid UserId)
         {
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
             string sql = $"Update CommunityMembers " +
-                          $"set Members = '@member' " +
+                          $"set Members = @userId " +
                           $"where CommunityId = '@Id' ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@member", member);
+            cmd.Parameters.AddWithValue("@userId", UserId);
             cmd.Parameters.AddWithValue("@Id", communityId);
 
             cmd.ExecuteNonQuery();

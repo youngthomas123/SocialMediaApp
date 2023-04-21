@@ -59,7 +59,7 @@ namespace SocialMedia.DataAccess
             int CommunityNameIndex = dr.GetOrdinal("CommunityName");
             int DescriptionIndex = dr.GetOrdinal("Description");
             int CommunityIdIndex = dr.GetOrdinal("CommunityId");
-            int CreatorIndex = dr.GetOrdinal("Creator");
+            int UserIdIndex = dr.GetOrdinal("UserId");
 
 
             while (dr.Read())
@@ -69,8 +69,8 @@ namespace SocialMedia.DataAccess
                 var Name = (string)dr[CommunityNameIndex];
                 var Description = (string)dr[DescriptionIndex];
                 var CommunityId = (Guid)dr[CommunityIdIndex];
-                var Creator= (string)dr[CreatorIndex];
-                Community community = new Community(DateCreated, Name, Description, CommunityId, Creator);
+                var UserId= (Guid)dr[UserIdIndex];
+                Community community = new Community(DateCreated, Name, Description, CommunityId, UserId);
                 communities.Add(community);
             }
 
@@ -90,18 +90,18 @@ namespace SocialMedia.DataAccess
 
             
 
-            string sql = "insert into Communities ([DateCreated], [CommunityName], [Description], [CommunityId], [Creator]) " +
-               "Values (@date, @name, @description, @Id, @creator)";
+            string sql = "insert into Communities ([DateCreated], [CommunityName], [Description], [CommunityId], [UserId]) " +
+               "Values (@date, @name, @description, @Id, @userId)";
 
 
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@date", community.DateCreated);
-            cmd.Parameters.AddWithValue("@name", community.Name);
+            cmd.Parameters.AddWithValue("@name", community.CommunityName);
             cmd.Parameters.AddWithValue("@description", community.Description);
             cmd.Parameters.AddWithValue("@Id", community.CommunityId);
-            cmd.Parameters.AddWithValue("@creator", community.Creator);
+            cmd.Parameters.AddWithValue("@userId", community.UserId);
             
 
             cmd.ExecuteNonQuery();
@@ -118,7 +118,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql =  $"update Communities " +
-                          $"set DateCreated = @Updatedate, CommunityName = @UpdateName, Description = @UpdateDescription, Creator = @UpdateCreator " +
+                          $"set DateCreated = @Updatedate, CommunityName = @UpdateName, Description = @UpdateDescription, Creator = @UpdateUserId " +
                           $"where CommunityId = @UpdateCommunityId";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
@@ -126,14 +126,14 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.Add("@Updatedate", SqlDbType.DateTime);
             cmd.Parameters.Add("@UpdateName", SqlDbType.VarChar);
             cmd.Parameters.Add("@UpdateDescription", SqlDbType.NVarChar);
-            cmd.Parameters.Add("@UpdateCreator", SqlDbType.VarChar);
+            cmd.Parameters.Add("@UpdateUserId", SqlDbType.UniqueIdentifier);
             cmd.Parameters.Add("@UpdateCommunityId", SqlDbType.UniqueIdentifier);
 
 
             cmd.Parameters["@Updatedate"].Value = community.DateCreated;
-            cmd.Parameters["@UpdateName"].Value = community.Name;
+            cmd.Parameters["@UpdateName"].Value = community.CommunityName;
             cmd.Parameters["@UpdateDescription"].Value = community.Description;
-            cmd.Parameters["@UpdateCreator"].Value = community.Creator;
+            cmd.Parameters["@UpdateUserId"].Value = community.UserId;
             cmd.Parameters["@UpdateCommunityId"].Value = community.CommunityId;
 
 

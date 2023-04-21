@@ -14,19 +14,19 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public Guid CommunityId { get;  set; }
 
-        public string Creator { get;  set; }
+        public Guid UserId { get;  set; }
 
         public string CommunityName { get;  set; }
 
         public string Description { get;  set; }
 
-        public List<string> Rules { get; set; }
+        public List<string>? Rules { get; set; }    // a list of rules
 
-        public List <string>MemberUsernames { get; set; }
+        public List<Guid>? FollowingUserIds { get; set; } // usernames
 
-        public List<string>PostId { get; set; }
+        public List<string>? PostIds { get; set; } // post Ids
 
 
-        
+
     }
 }

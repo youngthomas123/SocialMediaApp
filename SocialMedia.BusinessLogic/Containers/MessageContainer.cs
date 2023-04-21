@@ -10,11 +10,11 @@ namespace SocialMedia.BusinessLogic.Containers
     public class MessageContainer
     {
 
-        private readonly IMessageDataAccess messageDataAcess;
+        private readonly IMessageDataAccess messageDataAccess;
 
         public MessageContainer (IMessageDataAccess dataAcess)
         {
-            messageDataAcess = dataAcess;
+            messageDataAccess = dataAcess;
         }
     }
 }

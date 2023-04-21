@@ -11,29 +11,29 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		
-		public Community(string creator, string name, string description, List<string> rules)
+		public Community(Guid userId, string communityName, string description, List<string> rules)
 		{
 			Guid guid = Guid.NewGuid();
 
 			DateCreated = DateTime.Now;
 			CommunityId = guid;
-			Creator = creator;
-			Name = name;
+			UserId = userId;
+			CommunityName = communityName;
 			Description = description;
-			Rules = rules;
-			Members = null;
-			Posts = null;
+			Rules = rules;	
+			FollowingUserIds = null;
+			PostIds = null;
 		}
-		public Community(DateTime dateCreated, string name, string description, Guid communityId, string creator )
+		public Community(DateTime dateCreated, string communityName, string description, Guid communityId, Guid userId )
 		{
             DateCreated = dateCreated;
-			Name = name;
+			CommunityName = communityName;
 			Description = description;
 			CommunityId = communityId;
-			Creator = creator;
+			UserId = userId;
             Rules = new List<string>();
-            Members = new List<string>();
-            Posts = new List<string>();
+            FollowingUserIds = new List<Guid>();
+            PostIds = new List<Guid>();
 
         }
 
@@ -41,16 +41,16 @@ namespace SocialMedia.BusinessLogic
 
 		public Guid CommunityId { get; private set; }	
 
-		public string Creator { get; private set; }
+		public Guid  UserId { get; private set; }
 
-		public string Name { get; private set; }	
+		public string CommunityName { get; private set; }	
 
 		public string Description { get; private set; }
 
 		public List<string>? Rules { get;  set; }	// a list of rules
 
-		public List<string>? Members { get;  set; } // usernames
+		public List<Guid>? FollowingUserIds { get;  set; } // usernames
 
-		public List <string>? Posts { get;  set; } // post Ids
+		public List <Guid>? PostIds { get;  set; } // post Ids
 	} 
 }

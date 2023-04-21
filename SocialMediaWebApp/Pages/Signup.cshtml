@@ -6,7 +6,7 @@
 
 
 
-
+@*
 @if (Model.SuccessfulSignup.HasValue)
 {
     @if (Model.SuccessfulSignup.Value)
@@ -34,3 +34,45 @@
     </div>
     <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
+
+
+*@
+
+
+<form method="post">
+
+    <div class="mb-3">
+        <label asp-for="SignUpData.UserName"></label>
+        <input asp-for="SignUpData.UserName" />
+        <span asp-validation-for="SignUpData.UserName"></span>
+
+    </div>
+
+    <div class= "mb-3">
+        <label asp-for="SignUpData.Password"></label>
+        <input asp-for="SignUpData.Password" />
+        <span asp-validation-for="SignUpData.Password"></span>
+
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="SignUpData.RepeatPassword"></label>
+        <input asp-for="SignUpData.RepeatPassword" />
+        <span asp-validation-for="SignUpData.RepeatPassword"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SignUpData.Email"></label>
+        <input asp-for="SignUpData.Email" />
+        <span asp-validation-for="SignUpData.Email"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

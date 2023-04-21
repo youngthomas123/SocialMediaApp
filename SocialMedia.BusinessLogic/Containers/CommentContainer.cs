@@ -9,18 +9,18 @@ namespace SocialMedia.BusinessLogic.Containers
 {
     public class CommentContainer
     {
-        private readonly ICommentDataAccess commentDataAcess;
+        private readonly ICommentDataAccess commentDataAccess;
 
         public CommentContainer(ICommentDataAccess dataAcess)
         {
-            commentDataAcess = dataAcess;
+            commentDataAccess = dataAcess;
         }
 
         public List<Comment>GetComments() 
         {
             List <Comment>comments = new List<Comment>();   
 
-              foreach(Comment comment in commentDataAcess.LoadComment())
+              foreach(Comment comment in commentDataAccess.LoadComment())
               {
                 comments.Add(comment);
               }

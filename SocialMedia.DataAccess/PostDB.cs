@@ -52,7 +52,7 @@ namespace SocialMedia.DataAccess
 
             int DateCreatedIndex = dr.GetOrdinal("DateCreated");
             int PostIdIndex = dr.GetOrdinal("PostId");
-            int CreatorIndex = dr.GetOrdinal("Creator");
+            int UserIdIndex = dr.GetOrdinal("UserId");
             int TitleIndex = dr.GetOrdinal("Title");
             int BodyIndex = dr.GetOrdinal("Body");
             int UpvotesIndex = dr.GetOrdinal("Upvotes");
@@ -67,14 +67,14 @@ namespace SocialMedia.DataAccess
 
                 var DateCreated = (DateTime)dr[DateCreatedIndex];
                 var PostId = (Guid)dr[PostIdIndex];
-                var Creator = (string)dr[CreatorIndex];
+                var UserId = (Guid)dr[UserIdIndex];
                 var Title = (string)dr[TitleIndex];
                 var Body = (string)dr[BodyIndex];
                 var Upvotes = (int)dr[UpvotesIndex];
                 var Downvotes = (int)dr[DownvotesIndex];
                 var CommunityId = (Guid)dr[CommunityIdIndex];
 
-                Post post = new Post(DateCreated, PostId, Creator, Title, Body, Upvotes, Downvotes, CommunityId);
+                Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId);
                 posts.Add(post);
             }
 
@@ -91,8 +91,8 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Posts ([DateCreated], [PostId], [Creator], [Title], [Body], [Upvotes], [Downvotes], [CommunityId]) " +
-                "Values (@date, @postId, @creator, @title, @body, @upvotes, @downvotes, @communityId)";
+            string sql = "insert into Posts ([DateCreated], [PostId], [UserId], [Title], [Body], [Upvotes], [Downvotes], [CommunityId]) " +
+                "Values (@date, @postId, @userId, @title, @body, @upvotes, @downvotes, @communityId)";
 
 
 
@@ -100,7 +100,7 @@ namespace SocialMedia.DataAccess
 
             cmd.Parameters.AddWithValue("@date", post.DateCreated);
             cmd.Parameters.AddWithValue("@postId", post.PostId);
-            cmd.Parameters.AddWithValue("@creator", post.Creator);
+            cmd.Parameters.AddWithValue("@userId", post.UserId);
             cmd.Parameters.AddWithValue("@title", post.Title);
             cmd.Parameters.AddWithValue("@body", post.Body);
             cmd.Parameters.AddWithValue("@upvotes", post.Upvotes);
@@ -124,7 +124,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Posts " +
-                          $"set DateCreated = @UpdatePostDate, Creator = @UpdateCreator, Title = @UpdateTitle, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, CommunityId = @UpdateCommunityId " +
+                          $"set DateCreated = @UpdatePostDate, UserId = @UpdateUserId, Title = @UpdateTitle, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, CommunityId = @UpdateCommunityId " +
                           $" where PostId = @UpdatePostId";
 
 
@@ -132,7 +132,7 @@ namespace SocialMedia.DataAccess
             SqlCommand cmd = new SqlCommand(sql, conn);
 
 
-            cmd.Parameters.AddWithValue("@UpdateCreator",post.Creator);
+            cmd.Parameters.AddWithValue("@UpdateUserId", post.UserId);
             cmd.Parameters.AddWithValue("@UpdateTitle",post.Title);
             cmd.Parameters.AddWithValue("@UpdateBody",post.Body);
             cmd.Parameters.AddWithValue("@UpdateUpvotes",post.Upvotes);
