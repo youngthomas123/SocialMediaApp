@@ -4,7 +4,30 @@
     <h1>@ViewData["Title"]</h1>
 }
 
+@if (TempData["InvalidLogin"] != null)
+{
+    <p> @TempData["InvalidLogin"] </p>
+}
+<form method="post">
 
+    <div class="mb-3">
+        <label asp-for="LoginData.UserName"></label>
+        <input asp-for="LoginData.UserName" />
+        <span asp-validation-for="LoginData.UserName"></span>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LoginData.Password"></label>
+        <input asp-for="LoginData.Password" />
+        <span asp-validation-for="LoginData.Password"></span>
+
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
 
 
 

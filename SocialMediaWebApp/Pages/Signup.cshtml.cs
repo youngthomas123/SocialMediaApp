@@ -11,28 +11,18 @@ namespace SocialMediaWebApp.Pages
     {
         private readonly IUserContainer _userContainer;
 
-        //passwordHelper
-        PasswordHelper passwordHelper = new PasswordHelper();
-
-
+        
         [BindProperty]
         public SignUpVM SignUpData { get; set; }
+
+     
 
         public SignupModel(IUserContainer userContainer)
         {
             _userContainer = userContainer;
         }
 
-        //[BindProperty]
-        //public string Username { get; set; }
-
-        //[BindProperty]
-        //public string Password { get; set; }
-
-        //[BindProperty]
-        //public string Email { get; set; }
-
-        //public bool? SuccessfulSignup { get; set; }
+        
 
         public void OnGet()
         {
@@ -42,18 +32,21 @@ namespace SocialMediaWebApp.Pages
         {
             if (ModelState.IsValid)
             {
-                var salt=  passwordHelper.GetSalt();
-                SignUpData.Password = passwordHelper.GetHashedPassword(SignUpData.Password, salt);
+                bool isUserNameUnique = _userContainer.CheckUserName(SignUpData.UserName);
 
-                var user = new User(SignUpData.UserName, SignUpData.Password, SignUpData.Email);
-                _userContainer.SaveUser(user);
+                if(isUserNameUnique ==true)
+                {
+                    TempData["SignInMessage"] = "Successfully account created.";
+                    var user = new User(SignUpData.UserName, SignUpData.Password, SignUpData.Email);
+                    _userContainer.SaveUser(user);
+                }
+                else
+                {
+                    TempData["SignInMessage"] = "Username is not available.";
+                }
+               
             }
            
-            //var user = new User(Username, Password, Email);
-            //_userContainer.SaveUser(user);
-
-            //SuccessfulSignup = true;
-
             return Page();
         }
     }

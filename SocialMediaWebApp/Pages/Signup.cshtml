@@ -38,7 +38,10 @@
 
 *@
 
-
+@if (TempData["SignInMessage"] != null)
+{
+    <p> @TempData["SignInMessage"] </p>
+}
 <form method="post">
 
     <div class="mb-3">

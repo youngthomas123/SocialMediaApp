@@ -35,11 +35,3 @@ var serviceProvider = services.BuildServiceProvider();
 // End DI Container
 
 
-UserContainer userContainer = serviceProvider.GetService<UserContainer>();
-
-User user = new User("Thomas", "Password", "Thomas@gmail.com");
-
-
-
-
-userContainer.SaveUser(user);

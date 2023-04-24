@@ -29,7 +29,7 @@ namespace SocialMediaWebApp.Pages
             Values = new();
             foreach (var item in communities)
             {
-                Values.Add(new(item.Name, item.CommunityId.ToString()));
+                Values.Add(new(item.CommunityName, item.CommunityId.ToString()));
             }
         }
 

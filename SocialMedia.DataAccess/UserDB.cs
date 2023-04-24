@@ -157,5 +157,139 @@ namespace SocialMedia.DataAccess
 
 
         }
+        public List<string> GetUserNames()
+        {
+            List<string> userNames = new List<string>();
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Select UserName " +
+                         $"from Users ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int UserNameIndex = dr.GetOrdinal("UserName");
+
+
+            while (dr.Read())
+            {
+
+
+                var UserName = (string)dr[UserNameIndex];
+               
+
+               
+                userNames.Add(UserName);
+            }
+
+
+            dr.Close();
+
+            return userNames;
+
+
+        }
+        public string? GetSalt(string username)
+        {
+            string salt = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Select Salt " +
+                         $"from Users " +
+                         $"where UserName = @username ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@username", username);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int SaltIndex = dr.GetOrdinal("Salt");
+
+            while (dr.Read())
+            {
+                var Salt = (string)dr[SaltIndex];
+                salt = Salt;
+            }
+            
+
+            dr.Close();
+
+            return salt;
+
+        }
+        public string? GetPassword(string username)
+        {
+            string password = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Select Password " +
+                         $"from Users " +
+                         $"where UserName = @username ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@username", username);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int PasswordIndex = dr.GetOrdinal("Password");
+
+            while (dr.Read())
+            {
+                var Password = (string)dr[PasswordIndex];
+                password = Password;
+            }
+
+
+            dr.Close();
+
+            return password;
+        }
+        public string? GetUserId(string username)
+        {
+            string userId = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Select UserId " +
+                         $"from Users " +
+                         $"where UserName = @username ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@username", username);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int UserIdIndex = dr.GetOrdinal("UserId");
+
+            while (dr.Read())
+            {
+                var UserId = (Guid)dr[UserIdIndex];
+                userId = UserId.ToString();
+            }
+
+
+            dr.Close();
+
+            return userId;
+        }
+
+
     }
 }

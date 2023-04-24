@@ -18,5 +18,13 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeleteUserById(Guid UserId);
 
+        List<string> GetUserNames();
+
+        string? GetSalt(string username);
+
+        string? GetPassword(string username);
+
+        string? GetUserId(string username);
+
     }
 }

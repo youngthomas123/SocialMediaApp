@@ -9,5 +9,11 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
     public interface IUserContainer
     {
         void SaveUser(User user);
+
+        bool CheckUserName(string username);
+
+        bool ValidateCredentials(string username, string password);
+
+        string GetUserId(string username);
     }
 }
