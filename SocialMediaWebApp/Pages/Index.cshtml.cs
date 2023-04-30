@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
@@ -19,7 +20,7 @@ namespace SocialMediaWebApp.Pages
             _postContainer = postContainer;
 
         }
-
+       
         public void OnGet()
         {
             posts = _postContainer.LoadAllPosts();
@@ -30,7 +31,7 @@ namespace SocialMediaWebApp.Pages
 
 
         }
-
+        
         public IActionResult OnPostUpvote(Guid postId)
         {
             var post = _postContainer.LoadPostById(postId);

@@ -1,0 +1,9 @@
+﻿@page
+@model SocialMediaWebApp.Pages.ProfileModel
+@{
+}
+
+<form method="post" asp-page-handler="LogOut">
+    @Html.AntiForgeryToken()
+    <button type="submit">Log out</button>
+</form>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SocialMedia.BusinessLogic.Dto;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialMediaWebApp.ViewModels
 {
@@ -15,10 +16,10 @@ namespace SocialMediaWebApp.ViewModels
 		public string Body { get; set; }
 
 
-		public Guid Community { get; set; }
 
 
-
+        [Required]
+        public string CommunityId { get; set; }	
 
 	}
 }

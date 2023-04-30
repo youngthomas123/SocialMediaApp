@@ -29,12 +29,12 @@ namespace SocialMedia.BusinessLogic.Containers
 
         }
 
-        public List<CommunityDto> LoadCompleteCommunityDtos()
+        public List<CommunityFullDto> LoadCompleteCommunityDtos()
         {
             var communities = _communityDataAccess.LoadCommunitys();
 
            
-            List<CommunityDto> communityDtos = new List<CommunityDto>();
+            List<CommunityFullDto> communityFullDtos = new List<CommunityFullDto>();
 
             foreach (var community in communities)
             {
@@ -42,22 +42,51 @@ namespace SocialMedia.BusinessLogic.Containers
                 var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
                 var postids = _postDataAccess.GetPostIds(community.CommunityId); 
 
-                CommunityDto communityDto = new CommunityDto();
+                CommunityFullDto communityFullDto = new CommunityFullDto();
 
-                
-                communityDto.UserId = community.UserId;
-                communityDto.Rules = rules;
-                communityDto.DateCreated = community.DateCreated;
-                communityDto.CommunityId = community.CommunityId;
-                communityDto.CommunityName = community.CommunityName;
-                communityDto.Description = community.Description;
-                communityDto.PostIds = postids;
-                communityDto.FollowingUserIds = UserIds;
 
-                communityDtos.Add(communityDto);
+                communityFullDto.UserId = community.UserId;
+                communityFullDto.Rules = rules;
+                communityFullDto.DateCreated = community.DateCreated;
+                communityFullDto.CommunityId = community.CommunityId;
+                communityFullDto.CommunityName = community.CommunityName;
+                communityFullDto.Description = community.Description;
+                communityFullDto.PostIds = postids;
+                communityFullDto.FollowingUserIds = UserIds;
+
+                communityFullDtos.Add(communityFullDto);
             }
 
-            return communityDtos;
+            return communityFullDtos;
         }
+        public List<string> LoadCommunityNames()
+        {
+            var communityNames = _communityDataAccess.GetCommunityNames();
+
+            return communityNames;
+        }
+        public List<CommunityIdentityDto> LoadCommunityIdentityDtos()
+        {
+            var NameAndIdArrayList = _communityDataAccess.GetCommunityNameAndId();
+
+            List <CommunityIdentityDto> communityIdentityDtos = new List<CommunityIdentityDto>();   
+
+            foreach (string[] arr in NameAndIdArrayList)
+            {
+                CommunityIdentityDto communityIdentityDto = new CommunityIdentityDto();
+
+                communityIdentityDto.CommunityName = arr[0];
+                communityIdentityDto.CommunityId = arr[1];
+
+                communityIdentityDtos.Add (communityIdentityDto);
+            }
+
+            return communityIdentityDtos;
+        }
+        public void SaveRawCommunity(Community community)
+        {
+            _communityDataAccess.SaveCommunity(community);
+        }
+
     }
 }

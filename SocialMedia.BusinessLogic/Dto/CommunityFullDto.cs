@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Dto
 {
-    public class CommunityDto
+    public class CommunityFullDto
     {
-        public CommunityDto() { }
+        public CommunityFullDto() { }
 
         public DateTime DateCreated { get;  set; }
 

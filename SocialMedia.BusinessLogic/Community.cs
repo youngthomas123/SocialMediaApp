@@ -11,7 +11,7 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		
-		public Community(Guid userId, string communityName, string description, List<string> rules)
+		public Community(Guid userId, string communityName, string description)
 		{
 			Guid guid = Guid.NewGuid();
 
@@ -20,7 +20,7 @@ namespace SocialMedia.BusinessLogic
 			UserId = userId;
 			CommunityName = communityName;
 			Description = description;
-			Rules = rules;	
+			Rules = null;	
 			FollowingUserIds = null;
 			PostIds = null;
 		}

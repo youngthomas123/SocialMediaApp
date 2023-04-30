@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Razor.Language;
+using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Newtonsoft.Json.Linq;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.BusinessLogic.Dto;
+using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using SocialMediaWebApp.ViewModels;
 using static System.Net.Mime.MediaTypeNames;
@@ -11,34 +16,57 @@ namespace SocialMediaWebApp.Pages
 {
     public class PostModel : PageModel
     {
-		[BindProperty]
-		public PostVM PostData { get; set; }
-        [BindProperty]
-        public int SelectedValue { get; set; }
-        public List<SelectListItem> Values { get; set; }
 
-        private ICommunityDataAccess _communityDataAcess;
-        public PostModel(ICommunityDataAccess communityDataAcess)
+        
+        [BindProperty]
+		public PostVM PostData { get; set; }
+
+        public List<SelectListItem> CommunityIdentities { get; set; }
+
+        private ICommunityContainer _communityContainer { get; set; }
+
+        private IPostContainer _postContainer { get; set; }
+        public PostModel(ICommunityContainer communityContainer, IPostContainer postContainer)
         {
-            _communityDataAcess = communityDataAcess;
+            _communityContainer = communityContainer;
+
+            _postContainer = postContainer;
+
+            CommunityIdentities = new List<SelectListItem>();
+
+            var CommmunityIdentityDtos = _communityContainer.LoadCommunityIdentityDtos();
+
+            foreach (var Community in CommmunityIdentityDtos)
+            {
+                CommunityIdentities.Add(new(Community.CommunityName, Community.CommunityId.ToString()));
+            }
+
+
         }
 
         public void OnGet()
         {
-            var communities = _communityDataAcess.LoadCommunitys();
-            Values = new();
-            foreach (var item in communities)
-            {
-                Values.Add(new(item.CommunityName, item.CommunityId.ToString()));
-            }
+          
+            
         }
 
-        public void OnPost ()
+        public IActionResult OnPost ()
         {
             if (ModelState.IsValid)
             {
-                
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+                Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
+
+                _postContainer.SavePost(post);
             }
+                
+           
+
+            return Page();
+
         }
+
+        
     }
 }

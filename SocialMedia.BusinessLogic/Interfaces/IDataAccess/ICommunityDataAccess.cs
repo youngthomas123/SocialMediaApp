@@ -16,5 +16,11 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeleteCommunity(Guid id);
 
+        List<string> GetCommunityNames();
+
+        string GetCommunityId(string communityname);
+
+        List<Array> GetCommunityNameAndId();
+
     }
 }

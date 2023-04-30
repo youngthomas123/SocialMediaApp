@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -141,5 +142,122 @@ namespace SocialMedia.DataAccess
             conn.Close ();  
 
         }
+        public List<string> GetCommunityNames()
+        {
+            List<string> Communitynames = new List<string>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommunityName " +
+                         $"from Communities";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            
+
+            
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+
+            while (dr.Read())
+            {
+
+               
+                var CommunityName = (string)dr[CommunityNameIndex];
+
+                Communitynames.Add(CommunityName);
+            }
+
+            dr.Close();
+
+            conn.Close();
+            return Communitynames;
+
+
+        }
+        public string GetCommunityId(string communityname)
+        {
+
+            string communityId = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommunityId " +
+                         $"from Communities " +
+                         $"where CommunityName = @communityName ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityName", communityname);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+
+            while (dr.Read())
+            {
+
+                var CommunityId = (Guid)dr[CommunityIdIndex];
+                communityId = CommunityId.ToString();
+            }
+
+            dr.Close();
+
+            return communityId;
+        }
+        public List<Array> GetCommunityNameAndId()
+        {
+            List <Array> arrays = new List<Array>();
+
+            
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommunityName, CommunityId " +
+                         $"from Communities ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+            int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+
+            string communityId;
+            while (dr.Read())
+            {
+                var CommunityName = (string)dr[CommunityNameIndex];
+                var CommunityId = (Guid)dr[CommunityIdIndex];
+
+                communityId = CommunityId.ToString();   
+
+                string[] arr = new string[] { CommunityName, communityId };
+
+                arrays.Add(arr);    
+            }
+
+            dr.Close();
+
+            conn.Close();
+
+            return arrays;
+        }
+        
+
     }
+
+    
 }

@@ -79,3 +79,11 @@ body {
     text-shadow : inherit;
     text-emphasis-position : left;
 }
+
+
+.scrollable-menu {
+    height: auto;
+    max-height: 100px;
+    overflow-x: hidden;
+    overflow-y : auto;
+}

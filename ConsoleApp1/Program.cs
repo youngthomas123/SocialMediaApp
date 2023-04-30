@@ -31,7 +31,10 @@ services.AddTransient<UserContainer>();
 services.AddTransient<PasswordHelper>();
 
 
+
 var serviceProvider = services.BuildServiceProvider();
 // End DI Container
 
+
+CommunityContainer communityContainer= serviceProvider.GetService<CommunityContainer>();
 
