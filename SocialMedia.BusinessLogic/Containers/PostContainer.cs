@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IContainer;
+﻿using SocialMedia.BusinessLogic.Dto;
+using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,16 @@ namespace SocialMedia.BusinessLogic.Containers
     {
 
         private readonly IPostDataAccess _postDataAccess;
+
+        private readonly IUserDataAccess _userDataAccess;
+
+        private readonly ICommunityDataAccess _communityDataAccess;
         
-        public PostContainer(IPostDataAccess postDataAcess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess)
         {
             _postDataAccess = postDataAcess;
+            _userDataAccess = userDataAccess;
+            _communityDataAccess = communityDataAccess;
         }
 
         public List<Post> LoadAllPosts()
@@ -27,17 +34,9 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public Post? LoadPostById(Guid postId)
         {
-            Post ThePost = null;
-            foreach (Post post in _postDataAccess.LoadPost())
-            {
-                if(post.PostId == postId)
-                {
-                    ThePost = post;
-                    break;
-                    
-                }
-            }
-            return ThePost;
+      
+            var post = _postDataAccess.LoadPostById(postId);    
+            return post;
         }
 
         public void SavePost(Post post)
@@ -49,7 +48,42 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             _postDataAccess.UpdatePost(post);
         }
+        public List<PostPageDto>GetPostPageDtos()
+        {
+            List<PostPageDto>postPageDtos = new List<PostPageDto>();    
 
+            foreach (Post post in _postDataAccess.LoadPost())
+            {
+                PostPageDto postPageDto = new PostPageDto();
+
+                postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
+                postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
+                postPageDto.DateCreated = post.DateCreated;
+                postPageDto.Title = post.Title;
+                postPageDto.Body = post.Body;
+                postPageDto.Score = post.Score;
+                postPageDto.PostId = post.PostId;
+
+                postPageDtos.Add(postPageDto);  
+            }
+            return postPageDtos;
+        }
+        public PostPageDto GetPostPageDtoById(Guid id)
+        {
+            PostPageDto postPageDto = new PostPageDto();    
+
+            var post = _postDataAccess.LoadPostById(id);
+
+            postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
+            postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
+            postPageDto.DateCreated = post.DateCreated;
+            postPageDto.Title = post.Title;
+            postPageDto.Body = post.Body;
+            postPageDto.Score = post.Score;
+            postPageDto.PostId = post.PostId;
+
+            return postPageDto; 
+        }
        
     }
 }

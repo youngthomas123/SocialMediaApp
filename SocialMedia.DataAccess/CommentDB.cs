@@ -38,7 +38,7 @@ namespace SocialMedia.DataAccess
 
 
 
-        public List<Comment> LoadComment()
+        public List<Comment> LoadComments()
         {
             List<Comment> comments = new List<Comment>();
 

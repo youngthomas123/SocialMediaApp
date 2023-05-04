@@ -59,9 +59,14 @@ namespace SocialMediaWebApp.Pages
                 Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
 
                 _postContainer.SavePost(post);
+
+
+                TempData["PostStatus"] = "Post created successfully";
             }
-                
-           
+            else
+            {
+                TempData["PostStatus"] = "Failed to create post";
+            }
 
             return Page();
 

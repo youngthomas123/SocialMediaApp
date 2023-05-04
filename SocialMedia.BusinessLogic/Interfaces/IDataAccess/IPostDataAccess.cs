@@ -16,5 +16,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeletePost(Guid id);
         List<string> GetPostIds(Guid communityId);
+
+        Post LoadPostById(Guid postId);
     }
 }

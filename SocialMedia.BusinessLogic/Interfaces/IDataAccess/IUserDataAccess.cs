@@ -26,5 +26,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         string? GetUserId(string username);
 
+        string GetUserName(Guid UserId);
+
     }
 }

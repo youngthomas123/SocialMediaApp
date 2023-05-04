@@ -3,7 +3,10 @@
 @{
 }
 
-
+@if (TempData["PostStatus"] != null)
+{
+    <p> @TempData["PostStatus"] </p>
+}
       
 
 

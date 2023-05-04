@@ -17,12 +17,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddTransient<IPostContainer,PostContainer>();
 builder.Services.AddTransient<IUserContainer, UserContainer>();
 builder.Services.AddTransient<ICommunityContainer, CommunityContainer>();
+builder.Services.AddTransient<ICommentContainer, CommentContainer>();
 //DataAccess
 builder.Services.AddTransient<ICommunityDataAccess, CommunityDB>();
 builder.Services.AddTransient<IPostDataAccess, PostDB>();
 builder.Services.AddTransient<IUserDataAccess, UserDB>();
 builder.Services.AddTransient<ICommunityMembersDataAccess, CommunityMembersDB>();
 builder.Services.AddTransient<ICommunityRulesDataAccess, CommunityRulesDB>();
+builder.Services.AddTransient<ICommentDataAccess, CommentDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();

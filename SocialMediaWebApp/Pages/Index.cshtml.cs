@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 
 namespace SocialMediaWebApp.Pages
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
         private IPostContainer _postContainer;
-        public List<Post> posts; 
+        public List<PostPageDto> postDtos; 
 
 
 
@@ -18,12 +20,12 @@ namespace SocialMediaWebApp.Pages
         {
             _logger = logger;
             _postContainer = postContainer;
-
+           
         }
-       
+        
         public void OnGet()
         {
-            posts = _postContainer.LoadAllPosts();
+            postDtos = _postContainer.GetPostPageDtos();
         }
 
         public void OnPost()
@@ -39,11 +41,15 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-            post.upvote();
-            _postContainer.UpdatePost(post);
-            return RedirectToPage();
+            else
+            {
+                post.upvote();
+                _postContainer.UpdatePost(post);
+                return RedirectToPage();
+            }
+            
         }
-
+        
         public IActionResult OnPostDownvote(Guid postId)
         {
             var post = _postContainer.LoadPostById(postId);
@@ -54,6 +60,15 @@ namespace SocialMediaWebApp.Pages
             post.downvote();
             _postContainer.UpdatePost(post);
             return RedirectToPage();
+        }
+        public IActionResult OnPostViewComments(Guid postId)
+        {
+            Response.Cookies.Append("PostId", postId.ToString());
+
+            return RedirectToPage("/Comments");
+
+
+
         }
     }
 }

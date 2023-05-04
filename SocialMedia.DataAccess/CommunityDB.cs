@@ -211,6 +211,8 @@ namespace SocialMedia.DataAccess
 
             dr.Close();
 
+            conn.Close();   
+
             return communityId;
         }
         public List<Array> GetCommunityNameAndId()
@@ -255,7 +257,46 @@ namespace SocialMedia.DataAccess
 
             return arrays;
         }
-        
+        public string GetCommunityName(Guid CommunityId)
+        {
+            string communityName = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommunityName " +
+                         $"from Communities " +
+                         $"where CommunityId = @communityId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityId", CommunityId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+
+            while (dr.Read())
+            {
+
+                var CommunityName = (string)dr[CommunityNameIndex];
+                communityName = CommunityName;
+            }
+
+            dr.Close();
+
+            conn.Close();
+
+            return communityName;
+        }
+
+
+
+
+
 
     }
 

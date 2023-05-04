@@ -12,7 +12,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void UpdateComment(Comment comment);
 
-        List<Comment> LoadComment();
+        List<Comment> LoadComments();
 
         void DeleteComment(Guid id);
 

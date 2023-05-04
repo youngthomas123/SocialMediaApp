@@ -80,7 +80,7 @@ namespace SocialMedia.DataAccess
 
             while (dr.Read())
             {
-               
+
 
                 var UserName = (string)dr[UserNameIndex];
                 var Password = (string)dr[PasswordIndex];
@@ -141,8 +141,8 @@ namespace SocialMedia.DataAccess
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@UpdatePassword", user.Password);
-            cmd.Parameters.AddWithValue("@UpdateEmail",user.Email);
-            cmd.Parameters.AddWithValue("@UpdateUserName",user.UserName);
+            cmd.Parameters.AddWithValue("@UpdateEmail", user.Email);
+            cmd.Parameters.AddWithValue("@UpdateUserName", user.UserName);
             cmd.Parameters.AddWithValue("@UserId", user.UserId);
             cmd.Parameters.AddWithValue("@UpdateSalt", user.Salt);
 
@@ -179,9 +179,9 @@ namespace SocialMedia.DataAccess
 
 
                 var UserName = (string)dr[UserNameIndex];
-               
 
-               
+
+
                 userNames.Add(UserName);
             }
 
@@ -218,7 +218,7 @@ namespace SocialMedia.DataAccess
                 var Salt = (string)dr[SaltIndex];
                 salt = Salt;
             }
-            
+
 
             dr.Close();
 
@@ -287,7 +287,42 @@ namespace SocialMedia.DataAccess
 
             dr.Close();
 
+            conn.Close();
+
             return userId;
+        }
+        public string GetUserName(Guid UserId)
+        {
+            string userName = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Select UserName " +
+                         $"from Users " +
+                         $"where UserId = @userId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", UserId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int UserNameIndex = dr.GetOrdinal("UserName");
+
+            while (dr.Read())
+            {
+                var UserName = (string)dr[UserNameIndex];
+                userName = UserName;
+            }
+
+
+            dr.Close();
+
+            conn.Close();
+            return userName;
         }
 
 
