@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SocialMedia.DataAccess
 {
@@ -121,7 +122,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql =  $"update Comments " +
-                          $"set DateCreated = @UpdateCommentDate, Creator = @UpdateUserId, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, PostId = @UpdatePostID " +
+                          $"set DateCreated = @UpdateCommentDate, UserId = @UpdateUserId, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, PostId = @UpdatePostID " +
                           $" where CommentId = @CommentID ";
 
 
@@ -145,6 +146,106 @@ namespace SocialMedia.DataAccess
 
             conn.Close();
 
+        }
+        public List<Comment>LoadCommentsInPost(Guid postId)
+        {
+            List<Comment> comments = new List<Comment>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select * " +
+                         $"from Comments " +
+                         $"where PostId = @PostId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@PostId", postId);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+            int CommentIdIndex = dr.GetOrdinal("CommentId");
+            int UserIdIndex = dr.GetOrdinal("UserId");
+            int BodyIndex = dr.GetOrdinal("Body");
+            int UpvotesIndex = dr.GetOrdinal("Upvotes");
+            int DownvotesIndex = dr.GetOrdinal("Downvotes");
+            int PostIdIndex = dr.GetOrdinal("PostId");
+
+
+            while (dr.Read())
+            {
+                var UserId = (Guid)dr[UserIdIndex];
+                var PostId = (Guid)dr[PostIdIndex];
+                var Body = (string)dr[BodyIndex];
+
+                var CommentId = (Guid)dr[CommentIdIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var Upvotes = (int)dr[UpvotesIndex];
+                var Downvotes = (int)dr[DownvotesIndex];
+                Comment comment = new Comment(DateCreated, CommentId, UserId, Body, PostId, Upvotes, Downvotes);
+
+                comments.Add(comment);
+            }
+
+
+            dr.Close();
+
+            conn.Close();
+
+            return comments;
+        }
+        public Comment LoadCommentById(Guid commentId)
+        {
+            Comment Comment = null;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select * " +
+                        $"from Comments " +
+                        $"where CommentId = @commentId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@commentId", commentId);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+            int CommentIdIndex = dr.GetOrdinal("CommentId");
+            int UserIdIndex = dr.GetOrdinal("UserId");
+            int BodyIndex = dr.GetOrdinal("Body");
+            int UpvotesIndex = dr.GetOrdinal("Upvotes");
+            int DownvotesIndex = dr.GetOrdinal("Downvotes");
+            int PostIdIndex = dr.GetOrdinal("PostId");
+
+
+
+
+            while (dr.Read())
+            {
+
+                var UserId = (Guid)dr[UserIdIndex];
+                var PostId = (Guid)dr[PostIdIndex];
+                var Body = (string)dr[BodyIndex];
+
+                var CommentId = (Guid)dr[CommentIdIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var Upvotes = (int)dr[UpvotesIndex];
+                var Downvotes = (int)dr[DownvotesIndex];
+                Comment comment = new Comment(DateCreated, CommentId, UserId, Body, PostId, Upvotes, Downvotes);
+
+
+
+                Comment = comment;
+            }
+
+
+            dr.Close();
+
+            conn.Close();
+            return Comment;
         }
     }
 }

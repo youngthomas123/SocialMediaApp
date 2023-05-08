@@ -16,6 +16,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeleteComment(Guid id);
 
+        List<Comment> LoadCommentsInPost(Guid postId);
+
+        Comment LoadCommentById(Guid commentId);
+
 
     }
 }

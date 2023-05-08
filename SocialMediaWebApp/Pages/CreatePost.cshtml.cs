@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SocialMediaWebApp.Pages
 {
+    [Authorize]
     public class PostModel : PageModel
     {
 

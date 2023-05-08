@@ -8,53 +8,38 @@
     <p> @TempData["PostStatus"] </p>
 }
       
+<form method="post">
+
+
+
+    <select asp-for="PostData.CommunityId" asp-items="Model.CommunityIdentities" class="form-control scrollable-menu " data-live-search="true">
+
+        <option value="">-- Select an item --</option>
+
+
+
+    </select>
 
 
 
 
-@if(User.Identity.IsAuthenticated)
-{
-    <form method="post">
+    <div class="mb-3">
+        <label asp-for="PostData.Title" class="form-label"></label>
+        <input asp-for="PostData.Title" class="form-control">
+        <span asp-validation-for="PostData.Title"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PostData.Body" class="form-label"></label>
+        <textarea asp-for="PostData.Body" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="PostData.Body"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
 
 
-        <select asp-for="PostData.CommunityId" asp-items="Model.CommunityIdentities" class="form-control scrollable-menu " data-live-search="true">
-                
-                <option value="">-- Select an item --</option>
-               
-                
 
-        </select>
-        
-        
-      
-       
-        <div class="mb-3">
-            <label asp-for="PostData.Title" class="form-label"></label>
-            <input asp-for="PostData.Title" class="form-control">
-            <span asp-validation-for="PostData.Title"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="PostData.Body" class="form-label"></label>
-            <textarea asp-for="PostData.Body" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="PostData.Body"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-
-    
-
-  
-
-
-
-}
-else
-{
-    <p> Login in first</p>
-}
 
 @section Scripts
 {

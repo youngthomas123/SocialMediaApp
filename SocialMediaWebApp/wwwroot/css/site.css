@@ -87,3 +87,16 @@ body {
     overflow-x: hidden;
     overflow-y : auto;
 }
+
+.CommentSection {
+    background-color: lightgrey;
+    border-color: black;
+    margin-left: 4px;
+    margin-top: 4px;
+    height: contain;
+    width: contain;
+}
+
+.CommentCard{
+    background-color:darkgray;
+}

@@ -4,7 +4,18 @@
     ViewData["Title"] = "Home page";
 }
 
+<script>
+    function createBrowseUserCookie(author) 
+    {
+        document.cookie = "BrowseUser=" + author + "; path=/";
 
+    }
+    function createBrowseCommunityCookie(community) {
+        document.cookie = "BrowseCommunity=" + community + "; path=/";
+
+    }
+
+</script>
 
 
 @foreach (var post in Model.postDtos)
@@ -26,8 +37,8 @@
             <input type="hidden" name="postId" value="@post.PostId" />
         </form>
         <p class="PostCardScore">Score : @post.Score</p>
-        <p>Community - <a href="#"> @post.CommunityName</a></p>
-        <p>Author - <a href="#">@post.Author</a></p>
+        <p>Community - <a href="/BrowseCommunity" onclick="createBrowseCommunityCookie('@post.CommunityName')"> @post.CommunityName</a></p>
+        <p>Author - <a href="/BrowseUser" onclick="createBrowseUserCookie('@post.Author')"> @post.Author</a></p>
         <p class="PostDate"> Date - @post.DateCreated</p>
         <div class="PostCardTitle">
             <h3> @post.Title</h3>

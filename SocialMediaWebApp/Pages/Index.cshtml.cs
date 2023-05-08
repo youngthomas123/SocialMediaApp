@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
+using System.Net;
 
 namespace SocialMediaWebApp.Pages
 {
@@ -26,6 +27,11 @@ namespace SocialMediaWebApp.Pages
         public void OnGet()
         {
             postDtos = _postContainer.GetPostPageDtos();
+
+            Response.Cookies.Delete("PostId");
+            Response.Cookies.Delete("BrowseUser");
+            Response.Cookies.Delete("BrowseCommunity");
+
         }
 
         public void OnPost()

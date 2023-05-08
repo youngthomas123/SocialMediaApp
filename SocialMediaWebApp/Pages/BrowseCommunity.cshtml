@@ -1,0 +1,11 @@
+﻿@page
+@model SocialMediaWebApp.Pages.BrowseCommunityModel
+@{
+}
+
+@if (Request.Cookies.ContainsKey("BrowseCommunity"))
+{
+	<p>@Request.Cookies["BrowseCommunity"] </p>
+	
+
+}
