@@ -17,5 +17,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         List<CommunityIdentityDto> LoadCommunityIdentityDtos();
 
         void SaveRawCommunity(Community community);
-    }
+
+        string GetCommunityId(string communityName);
+
+        List<string> GetCommunityRules(Guid communityId);
+
+	}
 }

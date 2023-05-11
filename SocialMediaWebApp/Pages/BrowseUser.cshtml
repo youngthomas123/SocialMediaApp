@@ -2,9 +2,6 @@
 @model SocialMediaWebApp.Pages.BrowseUserModel
 @{
 }
-@if (Request.Cookies.ContainsKey("BrowseUser"))
-{
-	<p>@Request.Cookies["BrowseUser"] </p>
-	<p>hello </p>
 
-}
+
+<p>@Model.Username</p>

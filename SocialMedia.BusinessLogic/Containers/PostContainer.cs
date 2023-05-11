@@ -44,7 +44,7 @@ namespace SocialMedia.BusinessLogic.Containers
             _postDataAccess.SavePost(post);
         }
 
-        public void UpdatePost(Post post)
+        public void UpdatePost(Post post, Guid userId)
         {
             _postDataAccess.UpdatePost(post);
         }
@@ -83,6 +83,26 @@ namespace SocialMedia.BusinessLogic.Containers
             postPageDto.PostId = post.PostId;
 
             return postPageDto; 
+        }
+        public List<PostPageDto> GetPostPageDtosByCommunity(Guid communityId)
+        {
+            List<PostPageDto> postPageDtos = new List<PostPageDto>();
+
+            foreach (Post post in _postDataAccess.LoadPostsByCommunity(communityId))
+            {
+                PostPageDto postPageDto = new PostPageDto();
+
+                postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
+                postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
+                postPageDto.DateCreated = post.DateCreated;
+                postPageDto.Title = post.Title;
+                postPageDto.Body = post.Body;
+                postPageDto.Score = post.Score;
+                postPageDto.PostId = post.PostId;
+
+                postPageDtos.Add(postPageDto);
+            }
+            return postPageDtos;
         }
        
     }

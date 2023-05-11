@@ -88,5 +88,17 @@ namespace SocialMedia.BusinessLogic.Containers
             _communityDataAccess.SaveCommunity(community);
         }
 
+        public string GetCommunityId(string communityName)
+        {
+            var id = _communityDataAccess.GetCommunityId(communityName);
+            return id;
+        }
+        public List<string>GetCommunityRules(Guid communityId)
+        {
+            var rules = _communityRulesAccess.LoadRules(communityId);
+            return rules;
+        }
+
+
     }
 }

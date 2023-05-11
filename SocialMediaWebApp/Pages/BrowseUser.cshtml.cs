@@ -9,9 +9,11 @@ namespace SocialMediaWebApp.Pages
     public class BrowseUserModel : PageModel
     {
        
-        public void OnGet()
+        public string Username { get; set; }
+
+        public void OnGet(string UserName)
         {
-           
+            Username = UserName;
         }
     }
 }

@@ -3,34 +3,26 @@
 @{
 }
 
-<script>
-    function createBrowseUserCookie(author) 
-    {
-        document.cookie = "BrowseUser=" + author + "; path=/";
-    }
 
-    function createBrowseCommunityCookie(community) {
-        document.cookie = "BrowseCommunity=" + community + "; path=/";
-
-    }
-</script>
 
 <div class="PostCard">
     <form method="post" asp-page-handler="Upvote">
         <button type="submit" class="Postbutton">
             Upvote
         </button>
-        <input type="hidden" name="postId" value="@Model.PostId" />
+        <input type="hidden" name="PostId" value="@Model.Postid" />
     </form>
     <form method="post" asp-page-handler="Downvote">
         <button type="submit" class="Postbutton">
             Downvote
         </button>
-        <input type="hidden" name="postId" value="@Model.PostId" />
+        <input type="hidden" name="PostId" value="@Model.Postid" />
     </form>
     <p class="PostCardScore">Score : @Model.PostDtos.Score</p>
-    <p>Community - <a href="/BrowseCommunity" onclick="createBrowseCommunityCookie('@Model.PostDtos.CommunityName')"> @Model.PostDtos.CommunityName</a></p>
-    <p>Author - <a href="/BrowseUser" onclick="createBrowseUserCookie('@Model.PostDtos.Author')"> @Model.PostDtos.Author</a></p>
+   
+    <p>Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@Model.PostDtos.CommunityName">@Model.PostDtos.CommunityName</a> </p>
+    <p>Author - <a asp-page="/BrowseUser" asp-route-UserName="@Model.PostDtos.Author">@Model.PostDtos.Author</a> </p>
+
     <p class="PostDate"> Date - @Model.PostDtos.DateCreated</p>
     <div class="PostCardTitle">
         <h2> @Model.PostDtos.Title</h2>
@@ -49,6 +41,8 @@
             <textarea asp-for="CommentData.Body" class="form-control" rows="3"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Add Comment</button>
+        <input type="hidden" name="PostId" value="@Model.Postid" />
+
     </form>
     <br />
     @foreach (var comment in Model.CommentDtos)
@@ -60,15 +54,17 @@
                 Upvote
             </button>
             <input type="hidden" name="commentId" value="@comment.CommentId" />
+            <input type="hidden" name="PostId" value="@Model.Postid" />
         </form>
         <form method="post" asp-page-handler="DownvoteComment">
             <button type="submit" class="Postbutton">
                 Downvote
             </button>
             <input type="hidden" name="commentId" value="@comment.CommentId" />
+            <input type="hidden" name="PostId" value="@Model.Postid" />
         </form>
         <p class="PostCardScore">Score : @comment.Score</p>
-        <p>Author - <a href="/BrowseUser" onclick="createBrowseUserCookie('@comment.Author')"> @comment.Author</a></p>
+        <p>Author - <a asp-page="/BrowseUser" asp-route-UserName="@Model.PostDtos.Author">@Model.PostDtos.Author</a> </p>
         <p class="PostDate"> Date - @comment.DateCreated</p>
         <div class="PostCardBody">
             <p> @comment.Body</p>

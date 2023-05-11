@@ -13,10 +13,12 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         Post LoadPostById(Guid postId);
         void SavePost(Post post);
 
-        void UpdatePost(Post post);
+        void UpdatePost(Post post, Guid userId);
 
         List<PostPageDto> GetPostPageDtos();
 
         PostPageDto GetPostPageDtoById(Guid id);
+
+        List<PostPageDto> GetPostPageDtosByCommunity(Guid communityId);
     }
 }

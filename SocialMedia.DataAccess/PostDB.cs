@@ -236,5 +236,52 @@ namespace SocialMedia.DataAccess
 
 
         }
+
+        public List<Post>LoadPostsByCommunity(Guid communityId)
+        {
+            List<Post> posts = new List<Post>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select * " +
+                         $"from Posts " +
+                         $"where CommunityId = @CommunityId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@CommunityId", communityId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+            int PostIdIndex = dr.GetOrdinal("PostId");
+            int UserIdIndex = dr.GetOrdinal("UserId");
+            int TitleIndex = dr.GetOrdinal("Title");
+            int BodyIndex = dr.GetOrdinal("Body");
+            int UpvotesIndex = dr.GetOrdinal("Upvotes");
+            int DownvotesIndex = dr.GetOrdinal("Downvotes");
+            int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+            while (dr.Read())
+            {
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var PostId = (Guid)dr[PostIdIndex];
+                var UserId = (Guid)dr[UserIdIndex];
+                var Title = (string)dr[TitleIndex];
+                var Body = (string)dr[BodyIndex];
+                var Upvotes = (int)dr[UpvotesIndex];
+                var Downvotes = (int)dr[DownvotesIndex];
+                var CommunityId = (Guid)dr[CommunityIdIndex];
+
+                Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId);
+                posts.Add(post);
+            }
+
+            dr.Close();
+            conn.Close();
+            return posts;
+        }
     }
 }

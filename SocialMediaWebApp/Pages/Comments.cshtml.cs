@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
+using SocialMedia.DataAccess;
 using SocialMediaWebApp.ViewModels;
 using System.Runtime.InteropServices;
 
@@ -13,8 +14,10 @@ namespace SocialMediaWebApp.Pages
     [Authorize]
     public class CommentsModel : PageModel
     {
-       
-        public string PostId { get; set; }
+
+        
+		
+        public Guid Postid { get; set; }
 
         public PostPageDto PostDtos { get; set; }
 
@@ -32,38 +35,51 @@ namespace SocialMediaWebApp.Pages
             _commentContainer = commentContainer;
 
             PostDtos = new PostPageDto();
-            PostId = "00000000-0000-0000-0000-000000000000";
+            Postid = new Guid( "00000000-0000-0000-0000-000000000000");
             
         }
 
 
         
-        public void OnGet()
+        public void OnGet(Guid PostId)
+        {
+			 Postid = PostId;
+
+
+            PostDtos = _postContainer.GetPostPageDtoById(Postid);
+            CommentDtos = _commentContainer.GetCommentPageDtosInPost(Postid);
+
+			
+		}
+        public IActionResult OnPostAddComment(Guid PostId)
         {
 
-            
-            PostId = Request.Cookies["PostId"];
+            Postid = PostId;
 
-            PostDtos = _postContainer.GetPostPageDtoById(new Guid(PostId));
-            CommentDtos = _commentContainer.GetCommentPageDtosInPost(new Guid(PostId));
-
-        }
-        public IActionResult OnPostAddComment()
-        {
             
+
+            
+
             if (ModelState.IsValid)
             {
-                PostId = Request.Cookies["PostId"];
-                var userId = Guid.Parse(User.FindFirst("UserId").Value);
-                Comment comment = new Comment(userId, CommentData.Body, Guid.Parse(PostId));
-                _commentContainer.AddComment(comment);
                 
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+                
+                Comment comment = new Comment(userId, CommentData.Body, Postid);
+                _commentContainer.AddComment(comment);
+
+
             }
-            return RedirectToPage();
+            return RedirectToPage("/Comments", new { PostId });
         }
-        public IActionResult OnPostUpvote(Guid postId)
+        public IActionResult OnPostUpvote(Guid PostId)
         {
-            var post = _postContainer.LoadPostById(postId);
+
+            Postid = PostId;
+
+            
+            var post = _postContainer.LoadPostById(Postid);
             if (post == null)
             {
                 return NotFound();
@@ -71,25 +87,34 @@ namespace SocialMediaWebApp.Pages
             else
             {
                 post.upvote();
-                _postContainer.UpdatePost(post);
-                return RedirectToPage();
+				var userId = Guid.Parse(User.FindFirst("UserId").Value);
+				_postContainer.UpdatePost(post, userId);
+                return RedirectToPage("/Comments", new { PostId });
             }
 
         }
 
-        public IActionResult OnPostDownvote(Guid postId)
+        public IActionResult OnPostDownvote(Guid PostId)
         {
-            var post = _postContainer.LoadPostById(postId);
+            Postid= PostId;
+
+            var post = _postContainer.LoadPostById(Postid);
             if (post == null)
             {
                 return NotFound();
             }
             post.downvote();
-            _postContainer.UpdatePost(post);
-            return RedirectToPage();
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+			_postContainer.UpdatePost(post, userId);
+            return RedirectToPage("/Comments", new { PostId });
         }
-        public IActionResult OnPostUpvoteComment(Guid commentId)
+        public IActionResult OnPostUpvoteComment(Guid commentId, Guid PostId)
         {
+
+
+            Postid= PostId;
+
+
             var comment = _commentContainer.LoadCommentById(commentId);
             if (comment == null)
             {
@@ -97,10 +122,10 @@ namespace SocialMediaWebApp.Pages
             }
             comment.Upvote();
             _commentContainer.UpDateComment(comment);
-            return RedirectToPage();
+            return RedirectToPage("/Comments", new { PostId });
         }
 
-        public IActionResult OnPostDownvoteComment(Guid commentId)
+        public IActionResult OnPostDownvoteComment(Guid commentId, Guid PostId)
         {
             var comment = _commentContainer.LoadCommentById(commentId);
             if (comment == null)
@@ -109,7 +134,7 @@ namespace SocialMediaWebApp.Pages
             }
             comment.Downvote();
             _commentContainer.UpDateComment(comment);
-            return RedirectToPage();
+            return RedirectToPage("/Comments", new { PostId });
         }
 
     }

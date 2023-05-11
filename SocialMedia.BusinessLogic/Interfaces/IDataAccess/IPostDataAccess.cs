@@ -18,5 +18,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         List<string> GetPostIds(Guid communityId);
 
         Post LoadPostById(Guid postId);
+
+        List<Post> LoadPostsByCommunity(Guid communityId);
     }
 }
