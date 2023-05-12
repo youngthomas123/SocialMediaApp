@@ -3,6 +3,9 @@
 @{
 }
 
+<p>Your UserName : @Model.UserName</p>
+
+
 <form method="post" asp-page-handler="Logout">
     @Html.AntiForgeryToken()
     <button type="submit">Log out</button>

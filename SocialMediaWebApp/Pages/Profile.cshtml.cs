@@ -11,8 +11,12 @@ namespace SocialMediaWebApp.Pages
     [Authorize]
     public class ProfileModel : PageModel
     {
+        public string UserName { get; set; }
+
         public void OnGet()
         {
+            UserName = User.FindFirst("UserName").Value;
+            
         }
         public IActionResult OnPostLogout()
         {

@@ -11,7 +11,7 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		
-		public Post(Guid userId, string title, string body, Guid communityid)
+		public Post(Guid userId, string title, string body, Guid communityid)     // create post with text 
 		{
 			Guid guid = Guid.NewGuid();
 
@@ -26,7 +26,22 @@ namespace SocialMedia.BusinessLogic
 			_score = 0;
 		}
 
-		public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid)
+        public Post(Guid userId, string title, Guid communityid, string URL)     // create post with image
+        {
+            Guid guid = Guid.NewGuid();
+
+            DateCreated = DateTime.Now;
+            PostId = guid;
+            UserId = userId;
+            Title = title;
+            ImageURL = URL;
+            Upvotes = 0;
+            Downvotes = 0;
+            CommunityId = communityid;
+            _score = 0;
+        }
+
+        public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid, string Url)
 		{
             DateCreated = dateCreated;
 			PostId = postId;
@@ -36,6 +51,7 @@ namespace SocialMedia.BusinessLogic
 			Upvotes = upvotes;
 			Downvotes = downvotes;
 			CommunityId = communityid;
+			ImageURL= Url;
 			
         }
 
@@ -64,7 +80,7 @@ namespace SocialMedia.BusinessLogic
              }
 		}
 		private string _body;
-		public string Body
+		public string? Body
 		{
 			get
 			{
@@ -100,6 +116,10 @@ namespace SocialMedia.BusinessLogic
 			
 
 		}
+
+
+
+		public string? ImageURL { get; private set; }
 
         public void upvote()
         {

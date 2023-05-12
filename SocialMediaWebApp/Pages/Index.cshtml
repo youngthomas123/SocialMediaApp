@@ -36,9 +36,19 @@
 		<div class="PostCardTitle">
 			<h3> @post.Title</h3>
 		</div>
-		<div class="PostCardBody">
-			<p> @post.Body</p>
-		</div>
+		@if(post.Body !="null" && post.ImageUrl == "null")
+		{
+			<div class="PostCardBody">
+				<p> @post.Body</p>
+			</div>
+		}
+		@if(post.Body == "null" && post.ImageUrl !="null")
+		{
+			<img src="@post.ImageUrl" alt="Image">
+			
+
+		}
+
 		<div class="PostCardFooter">
 			<form method="post" asp-page-handler="ViewComments">
 				<button type="submit" class="CommentBoxButton">

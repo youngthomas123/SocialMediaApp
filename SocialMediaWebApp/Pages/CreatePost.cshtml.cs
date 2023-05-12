@@ -58,13 +58,23 @@ namespace SocialMediaWebApp.Pages
             {
                 var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-                Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
+                if(PostData.Body == null && PostData.ImageURl != null)
+                {
+                    Post post = new Post(userId, PostData.Title, new Guid(PostData.CommunityId), PostData.ImageURl);
+                    _postContainer.SavePost(post);
+					TempData["PostStatus"] = "Post created successfully";
+				}
+                else if (PostData.Body !=null && PostData.ImageURl == null)
+                {
+                    Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
+                    _postContainer.SavePost(post);
+					TempData["PostStatus"] = "Post created successfully";
+				}
 
-                _postContainer.SavePost(post);
 
+				
 
-                TempData["PostStatus"] = "Post created successfully";
-            }
+			}
             else
             {
                 TempData["PostStatus"] = "Failed to create post";

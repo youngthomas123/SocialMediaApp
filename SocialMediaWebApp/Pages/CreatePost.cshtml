@@ -31,8 +31,14 @@
     <div class="mb-3">
         <label asp-for="PostData.Body" class="form-label"></label>
         <textarea asp-for="PostData.Body" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="PostData.Body"></span>
+        
     </div>
+    <div class="mb-3">
+        <label asp-for="PostData.ImageURl" class="form-label"></label>
+        <textarea asp-for="PostData.ImageURl" class="form-control" rows="3"></textarea>
+        
+    </div>
+
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -41,10 +47,10 @@
 
 
 
-@section Scripts
+@*@section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
 }
  
-@Html.Raw(ViewData["Scripts"])
+@Html.Raw(ViewData["Scripts"])*@
 

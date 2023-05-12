@@ -58,14 +58,16 @@ namespace SocialMedia.DataAccess
             int UpvotesIndex = dr.GetOrdinal("Upvotes");
             int DownvotesIndex = dr.GetOrdinal("Downvotes");
             int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+			int ImageUrlIndex = dr.GetOrdinal("ImageUrl");
 
 
 
-            while (dr.Read())
+			while (dr.Read())
             {
                 
 
-                var DateCreated = (DateTime)dr[DateCreatedIndex];
+
+				var DateCreated = (DateTime)dr[DateCreatedIndex];
                 var PostId = (Guid)dr[PostIdIndex];
                 var UserId = (Guid)dr[UserIdIndex];
                 var Title = (string)dr[TitleIndex];
@@ -73,9 +75,23 @@ namespace SocialMedia.DataAccess
                 var Upvotes = (int)dr[UpvotesIndex];
                 var Downvotes = (int)dr[DownvotesIndex];
                 var CommunityId = (Guid)dr[CommunityIdIndex];
+                
 
-                Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId);
-                posts.Add(post);
+
+				if (dr[ImageUrlIndex] == DBNull.Value)
+                {
+                    var ImageUrl = "null";
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					posts.Add(post);
+				}
+                else
+                {
+                     var ImageUrl = (string)dr[ImageUrlIndex];
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					posts.Add(post);
+				}
+                 
+                
             }
 
 
@@ -93,8 +109,8 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Posts ([DateCreated], [PostId], [UserId], [Title], [Body], [Upvotes], [Downvotes], [CommunityId]) " +
-                "Values (@date, @postId, @userId, @title, @body, @upvotes, @downvotes, @communityId)";
+            string sql = "insert into Posts ([DateCreated], [PostId], [UserId], [Title], [Body], [Upvotes], [Downvotes], [CommunityId], [ImageUrl]) " +
+                "Values (@date, @postId, @userId, @title, @body, @upvotes, @downvotes, @communityId, @imageUrl)";
 
 
 
@@ -104,10 +120,11 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.AddWithValue("@postId", post.PostId);
             cmd.Parameters.AddWithValue("@userId", post.UserId);
             cmd.Parameters.AddWithValue("@title", post.Title);
-            cmd.Parameters.AddWithValue("@body", post.Body);
+            cmd.Parameters.AddWithValue("@body", post.Body ??"null");
             cmd.Parameters.AddWithValue("@upvotes", post.Upvotes);
             cmd.Parameters.AddWithValue("@downvotes", post.Downvotes);
             cmd.Parameters.AddWithValue("@communityId", post.CommunityId);
+            cmd.Parameters.AddWithValue("@imageUrl", post.ImageURL ??"null");
 
 
             cmd.ExecuteNonQuery();
@@ -126,7 +143,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Posts " +
-                          $"set DateCreated = @UpdatePostDate, UserId = @UpdateUserId, Title = @UpdateTitle, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, CommunityId = @UpdateCommunityId " +
+                          $"set DateCreated = @UpdatePostDate, UserId = @UpdateUserId, Title = @UpdateTitle, Body = @UpdateBody, Upvotes = @UpdateUpvotes, Downvotes = @UpdateDownvotes, CommunityId = @UpdateCommunityId, ImageUrl = @UpdateimageUrl " +
                           $" where PostId = @UpdatePostId";
 
 
@@ -141,8 +158,9 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.AddWithValue("@UpdateDownvotes",post.Downvotes);
             cmd.Parameters.AddWithValue("@UpdateCommunityId", post.CommunityId);
             cmd.Parameters.AddWithValue("@UpdatePostId", post.PostId);
+			cmd.Parameters.AddWithValue("@UpdateimageUrl", post.ImageURL);
 
-            cmd.Parameters.Add("@UpdatePostDate", SqlDbType.DateTime);
+			cmd.Parameters.Add("@UpdatePostDate", SqlDbType.DateTime);
 
             cmd.Parameters["@UpdatePostDate"].Value = post.DateCreated;
 
@@ -207,11 +225,11 @@ namespace SocialMedia.DataAccess
             int UpvotesIndex = dr.GetOrdinal("Upvotes");
             int DownvotesIndex = dr.GetOrdinal("Downvotes");
             int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+			int ImageUrlIndex = dr.GetOrdinal("ImageUrl");
 
 
 
-
-            while (dr.Read())
+			while (dr.Read())
             {
 
 
@@ -223,9 +241,24 @@ namespace SocialMedia.DataAccess
                 var Upvotes = (int)dr[UpvotesIndex];
                 var Downvotes = (int)dr[DownvotesIndex];
                 var CommunityId = (Guid)dr[CommunityIdIndex];
+                
 
-                Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId);
-                Post = post;
+
+				if (dr[ImageUrlIndex] == DBNull.Value)
+				{
+					var ImageUrl = "null";
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					Post = post;
+				}
+				else
+				{
+					var ImageUrl = (string)dr[ImageUrlIndex];
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					Post = post;
+				}
+
+				
+                
             }
 
 
@@ -264,7 +297,8 @@ namespace SocialMedia.DataAccess
             int UpvotesIndex = dr.GetOrdinal("Upvotes");
             int DownvotesIndex = dr.GetOrdinal("Downvotes");
             int CommunityIdIndex = dr.GetOrdinal("CommunityId");
-            while (dr.Read())
+			int ImageUrlIndex = dr.GetOrdinal("ImageUrl");
+			while (dr.Read())
             {
                 var DateCreated = (DateTime)dr[DateCreatedIndex];
                 var PostId = (Guid)dr[PostIdIndex];
@@ -274,9 +308,22 @@ namespace SocialMedia.DataAccess
                 var Upvotes = (int)dr[UpvotesIndex];
                 var Downvotes = (int)dr[DownvotesIndex];
                 var CommunityId = (Guid)dr[CommunityIdIndex];
+                
 
-                Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId);
-                posts.Add(post);
+				if (dr[ImageUrlIndex] == DBNull.Value)
+				{
+					var ImageUrl = "null";
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					posts.Add(post);
+				}
+				else
+				{
+					var ImageUrl = (string)dr[ImageUrlIndex];
+					Post post = new Post(DateCreated, PostId, UserId, Title, Body, Upvotes, Downvotes, CommunityId, ImageUrl);
+					posts.Add(post);
+				}
+
+
             }
 
             dr.Close();

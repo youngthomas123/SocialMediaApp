@@ -27,9 +27,19 @@
     <div class="PostCardTitle">
         <h2> @Model.PostDto.Title</h2>
     </div>
-    <div class="PostCardBody">
-        <p> @Model.PostDto.Body</p>
-    </div>
+    @if (Model.PostDto.Body != "null" && Model.PostDto.ImageUrl == "null")
+    {
+        <div class="PostCardBody">
+            <p> @Model.PostDto.Body</p>
+        </div>
+    }
+    @if (Model.PostDto.Body == "null" && Model.PostDto.ImageUrl != "null")
+    {
+        <img src="@Model.PostDto.ImageUrl" alt="Image">
+
+
+    }
+   
     
 </div>
 <div class="CommentSection">

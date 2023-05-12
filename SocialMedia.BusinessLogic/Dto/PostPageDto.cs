@@ -23,6 +23,8 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public string Body { get; set; }    
 
+        public string ImageUrl { get; set; }
+
         public int Score { get; set; }  
 
         public Guid PostId { get; set; }

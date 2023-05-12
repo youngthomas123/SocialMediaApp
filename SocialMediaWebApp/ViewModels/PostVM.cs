@@ -1,5 +1,6 @@
 ﻿using SocialMedia.BusinessLogic.Dto;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace SocialMediaWebApp.ViewModels
 {
@@ -12,14 +13,17 @@ namespace SocialMediaWebApp.ViewModels
 		[Required]
 		public string Title { get; set; }
 
-		[Required]
-		public string Body { get; set; }
-
-
+	
+		public string? Body { get; set; }
 
 
         [Required]
-        public string CommunityId { get; set; }	
+        public string CommunityId { get; set; }
+
+		
+		public string? ImageURl { get; set; }
+
+
 
 	}
 }

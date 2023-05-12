@@ -71,6 +71,9 @@ namespace SocialMedia.BusinessLogic.Containers
                 postPageDto.Body = post.Body;
                 postPageDto.Score = post.Score;
                 postPageDto.PostId = post.PostId;
+                postPageDto.ImageUrl = post.ImageURL;
+
+
 
 				if (IsPostUpvoted(userId, post.PostId))
 				{
@@ -108,6 +111,7 @@ namespace SocialMedia.BusinessLogic.Containers
             postPageDto.Body = post.Body;
             postPageDto.Score = post.Score;
             postPageDto.PostId = post.PostId;
+			postPageDto.ImageUrl = post.ImageURL;
 
 			if (IsPostUpvoted(userId, post.PostId))
 			{
@@ -145,8 +149,9 @@ namespace SocialMedia.BusinessLogic.Containers
                 postPageDto.Body = post.Body;
                 postPageDto.Score = post.Score;
                 postPageDto.PostId = post.PostId;
+				postPageDto.ImageUrl = post.ImageURL;
 
-                if (IsPostUpvoted(userId, post.PostId))
+				if (IsPostUpvoted(userId, post.PostId))
                 {
                     postPageDto.IsUpvoted = true;
                 }
