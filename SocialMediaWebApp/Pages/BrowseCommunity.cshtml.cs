@@ -32,8 +32,11 @@ namespace SocialMediaWebApp.Pages
 
 			Communityname = CommunityName;
 
+			
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
             var communityId = _communityContainer.GetCommunityId(Communityname);
-            PostDtos = _postContainer.GetPostPageDtosByCommunity(new Guid(communityId));
+            PostDtos = _postContainer.GetPostPageDtosByCommunity(new Guid(communityId), userId);
 			Rules = _communityContainer.GetCommunityRules(new Guid(communityId));
 
         }
@@ -49,7 +52,7 @@ namespace SocialMediaWebApp.Pages
 			{
 				post.upvote();
 				var userId = Guid.Parse(User.FindFirst("UserId").Value);
-				_postContainer.UpdatePost(post, userId);
+				_postContainer.UpdatePostScore(post, userId, "up");
 
 				return RedirectToPage("/BrowseCommunity",  new { CommunityName = CommunityName });
 			}
@@ -65,7 +68,7 @@ namespace SocialMediaWebApp.Pages
 			}
 			post.downvote();
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			_postContainer.UpdatePost(post, userId);
+			_postContainer.UpdatePostScore(post, userId, "down");
 			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
 		public IActionResult OnPostViewComments(Guid postId)

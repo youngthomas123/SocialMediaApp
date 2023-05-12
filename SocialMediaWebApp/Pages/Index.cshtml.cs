@@ -27,7 +27,7 @@ namespace SocialMediaWebApp.Pages
 
 		public void OnGet()
 		{
-			postDtos = _postContainer.GetPostPageDtos();
+			postDtos = _postContainer.GetPostPageDtos(Guid.Parse(User.FindFirst("UserId").Value));
 
 			
 
@@ -50,7 +50,7 @@ namespace SocialMediaWebApp.Pages
 			{
 				post.upvote();
 				var userId = Guid.Parse(User.FindFirst("UserId").Value);
-				_postContainer.UpdatePost(post, userId);
+				_postContainer.UpdatePostScore(post, userId, "up");
 
 				return RedirectToPage();
 			}
@@ -66,7 +66,7 @@ namespace SocialMediaWebApp.Pages
 			}
 			post.downvote();
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			_postContainer.UpdatePost(post, userId);
+			_postContainer.UpdatePostScore(post, userId, "down");
 			return RedirectToPage();
 		}
 		public IActionResult OnPostViewComments(Guid postId)

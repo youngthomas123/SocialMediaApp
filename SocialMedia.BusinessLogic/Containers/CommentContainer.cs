@@ -13,12 +13,17 @@ namespace SocialMedia.BusinessLogic.Containers
     {
         private readonly ICommentDataAccess _commentDataAccess;
         private readonly IUserDataAccess _userDataAccess;
+        private readonly IUpvotedCommentsDataAccess _upvotedCommentsDataAccess;
+        private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess)
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
-        }
+			_upvotedCommentsDataAccess = upvotedCommentsDataAccess;
+            _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
+
+		}
 
         public List<Comment>GetComments() 
         {
@@ -37,7 +42,7 @@ namespace SocialMedia.BusinessLogic.Containers
             var comments = _commentDataAccess.LoadCommentsInPost(PostId);
             return comments;
         }
-        public List<CommentPageDto> GetCommentPageDtosInPost(Guid postId)
+        public List<CommentPageDto> GetCommentPageDtosInPost(Guid postId, Guid userId)
         {
             List<CommentPageDto> commentPageDtos = new List<CommentPageDto>();
 
@@ -54,7 +59,26 @@ namespace SocialMedia.BusinessLogic.Containers
                 commentPageDto.PostId = comment.PostId;
                 commentPageDto.CommentId = comment.CommentId;
 
-                commentPageDtos.Add(commentPageDto);
+				if (IsCommentUpvoted(userId, comment.CommentId))
+				{
+					commentPageDto.IsUpvoted = true;
+				}
+				else
+				{
+					commentPageDto.IsUpvoted = false;
+				}
+
+				if (IsCommentDownvoted(userId, comment.CommentId))
+				{
+					commentPageDto.IsDownvoted = true;
+				}
+				else
+				{
+					commentPageDto.IsDownvoted = false;
+				}
+
+
+				commentPageDtos.Add(commentPageDto);
             }
             return commentPageDtos;
         }
@@ -68,5 +92,34 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             _commentDataAccess.UpdateComment(comment);
         }
-    }
+
+
+		public void UpdateCommentScore(Comment comment, Guid userId, string UpOrDown)
+		{
+			if (UpOrDown == "up")
+			{
+				_upvotedCommentsDataAccess.CreateRecord(userId, comment.CommentId);
+				UpDateComment(comment);
+			}
+			else if (UpOrDown == "down")
+			{
+				_downvotedCommentsDataAccess.CreateRecord(userId, comment.CommentId);
+				 UpDateComment(comment);
+			}
+		}
+		public bool IsCommentUpvoted(Guid userId, Guid commentId)
+		{
+			var IsCommentUpvoted = _upvotedCommentsDataAccess.HasUserUpvoted(userId, commentId);
+
+			return IsCommentUpvoted;
+		}
+
+		public bool IsCommentDownvoted(Guid userId, Guid commentId)
+		{
+			var isCommentDownvoted = _downvotedCommentsDataAccess.HasUserDownvoted(userId, commentId);
+
+			return isCommentDownvoted;
+		}
+
+	}
 }

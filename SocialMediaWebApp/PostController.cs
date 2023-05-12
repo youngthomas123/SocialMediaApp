@@ -28,7 +28,7 @@ namespace SocialMediaWebApp
             {
                 post.upvote();
 				var userId = Guid.Parse(User.FindFirst("UserId").Value);
-				_postContainer.UpdatePost(post, userId);
+				_postContainer.UpdatePost(post);
                 return RedirectToPage("/Index");
             }
 
@@ -43,7 +43,7 @@ namespace SocialMediaWebApp
             }
             post.downvote();
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			_postContainer.UpdatePost(post, userId);
+			_postContainer.UpdatePost(post);
             return RedirectToPage("/Index");
         }
 

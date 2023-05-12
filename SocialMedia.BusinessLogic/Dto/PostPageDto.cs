@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -25,5 +26,9 @@ namespace SocialMedia.BusinessLogic.Dto
         public int Score { get; set; }  
 
         public Guid PostId { get; set; }
+
+        public bool IsUpvoted { get; set; }
+
+        public bool IsDownvoted { get; set; }
     }
 }

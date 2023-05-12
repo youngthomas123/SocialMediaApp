@@ -13,12 +13,19 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         Post LoadPostById(Guid postId);
         void SavePost(Post post);
 
-        void UpdatePost(Post post, Guid userId);
+        void UpdatePost(Post post);
 
-        List<PostPageDto> GetPostPageDtos();
+        List<PostPageDto> GetPostPageDtos(Guid userId);
 
-        PostPageDto GetPostPageDtoById(Guid id);
+        PostPageDto GetPostPageDtoById(Guid postid, Guid userId);
 
-        List<PostPageDto> GetPostPageDtosByCommunity(Guid communityId);
-    }
+        List<PostPageDto> GetPostPageDtosByCommunity(Guid communityId, Guid userId);
+
+        bool IsPostUpvoted(Guid userId, Guid postId);
+
+        bool IsPostDownvoted(Guid userId, Guid postId);
+
+        void UpdatePostScore(Post post, Guid userId, string UpOrDown);
+
+	}
 }

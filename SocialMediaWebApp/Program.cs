@@ -25,6 +25,10 @@ builder.Services.AddTransient<IUserDataAccess, UserDB>();
 builder.Services.AddTransient<ICommunityMembersDataAccess, CommunityMembersDB>();
 builder.Services.AddTransient<ICommunityRulesDataAccess, CommunityRulesDB>();
 builder.Services.AddTransient<ICommentDataAccess, CommentDB>();
+builder.Services.AddTransient<IUpvotedPostsDataAccess, UpvotedPostsDB>();
+builder.Services.AddTransient<IDownvotedPostsDataAccess, DownvotedPostsDB>();
+builder.Services.AddTransient<IUpvotedCommentsDataAccess, UpvotedCommentsDB>();
+builder.Services.AddTransient<IDownvotedCommentsDataAccess, DownvotedCommentsDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();

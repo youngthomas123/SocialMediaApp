@@ -4,36 +4,31 @@
 	ViewData["Title"] = "Home page";
 }
 
-
 @foreach (var post in Model.postDtos)
 {
 	<br />
 
 
 	<div class="PostCard">
-		@if (Model.AlreadyUpvoted)
-		{
-			// show nothing
-		}
-		else
-		{
 
-			<form method="post" asp-page-handler="Upvote">
-				<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
-					Upvote
-				</button>
-				<input type="hidden" name="postId" value="@post.PostId" />
-			</form>
-		}
+
+
+		<form method="post" asp-page-handler="Upvote">
+			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
+				Upvote
+			</button>
+			<input type="hidden" name="postId" value="@post.PostId" />
+		</form>
+
 		<form method="post" asp-page-handler="Downvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
+			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
 				Downvote
 			</button>
 			<input type="hidden" name="postId" value="@post.PostId" />
 		</form>
 		<p class="PostCardScore">Score : @post.Score</p>
 
-		
+
 		<p>Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a> </p>
 		<p>Author - <a asp-page="/BrowseUser" asp-route-UserName="@post.Author">@post.Author</a> </p>
 
@@ -55,6 +50,7 @@
 	</div>
 	<br />
 }
+
 
 
 

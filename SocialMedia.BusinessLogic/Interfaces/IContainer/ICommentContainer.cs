@@ -15,10 +15,17 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<Comment> LoadCommentInPost(Guid PostId);
 
-        List<CommentPageDto> GetCommentPageDtosInPost(Guid postId);
+        List<CommentPageDto> GetCommentPageDtosInPost(Guid postId, Guid userId);
 
         Comment LoadCommentById(Guid commentId);
 
         void UpDateComment(Comment comment);
-    }
+
+        void UpdateCommentScore(Comment comment, Guid userId, string UpOrDown);
+
+        bool IsCommentUpvoted(Guid userId, Guid commentId);
+
+        bool IsCommentDownvoted(Guid userId, Guid commentId);
+
+	}
 }

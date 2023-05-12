@@ -17,55 +17,50 @@
 	}
 
 
-	@foreach (var post in Model.PostDtos)
-	{
-		<br />
+@foreach (var post in Model.PostDtos)
+{
+	<br />
 
 
-		<div class="PostCard">
-			@if (Model.AlreadyUpvoted)
-			{
-				// show nothing
-			}
-			else
-			{
+	<div class="PostCard">
 
-				<form method="post" asp-page-handler="Upvote">
-					<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
-						Upvote
-					</button>
-					<input type="hidden" name="postId" value="@post.PostId" />
-				    <input type="hidden" name="CommunityName" value="@Model.Communityname" />
-				</form>
-			}
-			<form method="post" asp-page-handler="Downvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
-					Downvote
+
+		<form method="post" asp-page-handler="Upvote">
+			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
+				Upvote
+			</button>
+			<input type="hidden" name="postId" value="@post.PostId" />
+			<input type="hidden" name="CommunityName" value="@Model.Communityname" />
+		</form>
+
+		<form method="post" asp-page-handler="Downvote">
+			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
+				Downvote
+			</button>
+			<input type="hidden" name="postId" value="@post.PostId" />
+			<input type="hidden" name="CommunityName" value="@Model.Communityname" />
+		</form>
+		<p class="PostCardScore">Score : @post.Score</p>
+
+		<p>Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a> </p>
+		<p>Author - <a asp-page="/BrowseUser" asp-route-UserName="@post.Author">@post.Author</a> </p>
+
+		<p class="PostDate"> Date - @post.DateCreated</p>
+		<div class="PostCardTitle">
+			<h3> @post.Title</h3>
+		</div>
+		<div class="PostCardBody">
+			<p> @post.Body</p>
+		</div>
+		<div class="PostCardFooter">
+			<form method="post" asp-page-handler="ViewComments">
+				<button type="submit" class="CommentBoxButton">
+					View comments
 				</button>
 				<input type="hidden" name="postId" value="@post.PostId" />
-			<input type="hidden" name="CommunityName" value="@Model.Communityname" />
 			</form>
-			<p class="PostCardScore">Score : @post.Score</p>
-			
-		    <p>Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a> </p>
-		    <p>Author - <a asp-page="/BrowseUser" asp-route-UserName="@post.Author">@post.Author</a> </p>
-
-			<p class="PostDate"> Date - @post.DateCreated</p>
-			<div class="PostCardTitle">
-				<h3> @post.Title</h3>
-			</div>
-			<div class="PostCardBody">
-				<p> @post.Body</p>
-			</div>
-			<div class="PostCardFooter">
-				<form method="post" asp-page-handler="ViewComments">
-					<button type="submit" class="CommentBoxButton">
-						View comments
-					</button>
-					<input type="hidden" name="postId" value="@post.PostId" />
-				</form>
-			</div>
 		</div>
-		<br />
-	}
+	</div>
+	<br />
+}
 

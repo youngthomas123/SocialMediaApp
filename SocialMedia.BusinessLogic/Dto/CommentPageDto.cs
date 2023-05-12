@@ -25,5 +25,9 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public Guid PostId { get;  set; }
 
-    }
+		public bool IsUpvoted { get; set; }
+
+		public bool IsDownvoted { get; set; }
+
+	}
 }
