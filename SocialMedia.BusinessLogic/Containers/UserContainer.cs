@@ -59,5 +59,14 @@ namespace SocialMedia.BusinessLogic.Containers
             return userId;
         }
 
+        public List<string[]>SearchUser(string query)
+        {
+            var namesAndIds = _userDataAccess.SearchUserNameAndId(query);
+
+
+            return namesAndIds;
+
+
+        }
     }
 }

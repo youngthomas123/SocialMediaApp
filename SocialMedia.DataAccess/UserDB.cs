@@ -324,7 +324,53 @@ namespace SocialMedia.DataAccess
             conn.Close();
             return userName;
         }
+        public List <string[]>? SearchUserNameAndId(string searchquery)
+        {
 
+
+            List <string[]> UserNamesAndIds = new List<string[]>();
+            
+
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"Select UserName, UserId " +
+						 $"from Users " +
+						 $"where UserName like @SearchQuery ";
+
+
+			SqlCommand cmd = new SqlCommand(sql, conn);
+
+			cmd.Parameters.AddWithValue("@SearchQuery", "%" + searchquery + "%");
+
+
+			
+
+			SqlDataReader dr = cmd.ExecuteReader();
+
+			int UserNameIndex = dr.GetOrdinal("UserName");
+			int UserIdIndex = dr.GetOrdinal("UserId");
+
+			while (dr.Read())
+			{
+				var UserName = (string)dr[UserNameIndex];
+                var UserId = (Guid)dr[UserIdIndex];
+               
+
+
+				string[] UserNameAndId = { UserName, UserId.ToString() };
+
+				UserNamesAndIds.Add(UserNameAndId);
+			}
+
+
+			dr.Close();
+
+			conn.Close();
+			return UserNamesAndIds;
+
+		}
 
     }
 }

@@ -28,5 +28,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         string GetUserName(Guid UserId);
 
-    }
+        List<string[]>? SearchUserNameAndId(string searchquery);
+
+
+	}
 }

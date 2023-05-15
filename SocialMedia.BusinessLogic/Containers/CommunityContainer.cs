@@ -99,6 +99,13 @@ namespace SocialMedia.BusinessLogic.Containers
             return rules;
         }
 
+        public List<string[]>SearchCommunity(string query)
+        {
+			var namesAndIds = _communityDataAccess.SearchCommunityAndId(query);
+
+
+			return namesAndIds;
+		}
 
     }
 }

@@ -292,13 +292,59 @@ namespace SocialMedia.DataAccess
 
             return communityName;
         }
+		public List<string[]>? SearchCommunityAndId(string searchquery)
+		{
+
+
+			List<string[]> CommunityNamesAndIds = new List<string[]>();
+
+
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"Select CommunityName, CommunityId " +
+						 $"from Communities " +
+						 $"where CommunityName like @SearchQuery ";
+
+
+			SqlCommand cmd = new SqlCommand(sql, conn);
+
+			cmd.Parameters.AddWithValue("@SearchQuery", "%" + searchquery + "%");
+
+
+
+
+			SqlDataReader dr = cmd.ExecuteReader();
+
+			int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+			int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+
+			while (dr.Read())
+			{
+				var CommunityName = (string)dr[CommunityNameIndex];
+				var CommunityId = (Guid)dr[CommunityIdIndex];
+
+
+
+				string[] CommunityNameAndId = { CommunityName, CommunityId.ToString() };
+
+				CommunityNamesAndIds.Add(CommunityNameAndId);
+			}
+
+
+			dr.Close();
+
+			conn.Close();
+			return CommunityNamesAndIds;
+
+		}
 
 
 
 
 
-
-    }
+	}
 
     
 }

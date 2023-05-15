@@ -15,5 +15,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         bool ValidateCredentials(string username, string password);
 
         string GetUserId(string username);
-    }
+
+        List<string[]> SearchUser(string query);
+
+	}
 }

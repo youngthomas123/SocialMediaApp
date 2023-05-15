@@ -22,5 +22,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<string> GetCommunityRules(Guid communityId);
 
+        List<string[]> SearchCommunity(string query);
+
 	}
 }

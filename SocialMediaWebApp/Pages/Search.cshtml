@@ -2,3 +2,53 @@
 @model SocialMediaWebApp.Pages.SearchModel
 @{
 }
+<div>
+	<h3>Search for user</h3>
+	<form method="post" asp-page-handler="SearchUser">
+		<div>
+			<label asp-for="SearchVM.SeachUser" class="form-label"></label>
+			<input asp-for="SearchVM.SeachUser" class=" form-control" />
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+
+	</form>
+
+	@if (Model.SearchedUserResults != null)
+	{
+		<div>
+			@foreach (string[] user in Model.SearchedUserResults)
+			{
+				
+			    <a asp-page="/BrowseUser" asp-route-UserName="@user[0]">@user[0]</a>
+				<br />
+			}
+		</div>
+	}
+
+</div>
+
+<br />
+<br />
+
+<div>
+	<h3>Search for Community</h3>
+	<form method="post" asp-page-handler="SearchCommunity">
+		<div>
+			<label asp-for="SearchVM.SearchCommunity" class="form-label"></label>
+			<input asp-for="SearchVM.SearchCommunity" class=" form-control" />
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+
+	</form>
+	@if (Model.SearchedCommunityResults != null)
+	{
+		<div>
+			@foreach (string[] community in Model.SearchedCommunityResults)
+			{
+
+				<a asp-page="/BrowseCommunity" asp-route-CommunityName="@community[0]">@community[0]</a>
+				<br />
+			}
+		</div>
+	}
+</div>

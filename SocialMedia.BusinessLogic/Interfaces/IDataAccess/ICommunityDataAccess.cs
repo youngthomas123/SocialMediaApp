@@ -23,5 +23,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         List<Array> GetCommunityNameAndId();
 
         string GetCommunityName(Guid CommunityId);
-    }
+
+        List<string[]>? SearchCommunityAndId(string searchquery);
+
+	}
 }
