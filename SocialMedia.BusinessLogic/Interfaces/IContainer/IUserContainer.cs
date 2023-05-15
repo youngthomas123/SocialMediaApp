@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialMedia.BusinessLogic.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,16 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<string[]> SearchUser(string query);
 
-	}
+        void UpdateUserProfileData(Guid userId, string username, string bio, string gender, byte[] picture, string location);
+
+        void UpdateProfilePicture(Guid userId, byte[] picture);
+
+        byte[] GetProfilePicture(Guid userId);
+
+        ProfileDto GetProfileDto(Guid userId);
+
+        void UpdateUserProfileData(Guid userId, string username, string bio, string gender, string location);
+
+
+    }
 }

@@ -18,13 +18,18 @@ namespace SocialMedia.BusinessLogic
 			Password = password;
 			Email = email;
 			DateCreated = DateTime.Now;
+			Bio = null;
+			Gender = null;
+			Location = null;
+			ProfilePicture = null;
+
 		}
 
 		
 
 		
 
-        public User(Guid userId, string userName, string password, string salt, string? email, DateTime dateCreated) // to load from DB
+        public User(Guid userId, string userName, string password, string salt, string? email, DateTime dateCreated) // to load from UserDB
         {
             UserId = userId;
             UserName = userName;
@@ -45,7 +50,15 @@ namespace SocialMedia.BusinessLogic
 
 		public DateTime DateCreated { get; private set; }
 
-		public void SetHashedPassword(string password)
+		public string? Bio { get;private set; }
+
+		public string? Gender { get; private set; }
+
+		public string? Location { get; private set; }
+
+        public byte[]? ProfilePicture { get; private set; }
+
+        public void SetHashedPassword(string password)
 		{
 			Password = password;
 		}
@@ -54,6 +67,19 @@ namespace SocialMedia.BusinessLogic
 			Salt = salt;
 
         }
+
+		public void UpdateProfile(string bio, string gender, string location, byte[] pic)
+		{
+			Bio = bio;
+			Gender = gender;
+			Location = location;
+			ProfilePicture = pic;
+		}
+
+		public void UpdateProfilePic(byte[] pic)
+		{
+			ProfilePicture = pic;
+		}
 		
 	}
 }

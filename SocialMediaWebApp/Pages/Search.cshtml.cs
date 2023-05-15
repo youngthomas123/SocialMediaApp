@@ -74,7 +74,7 @@ namespace SocialMediaWebApp.Pages
 
 
 
-			return RedirectToPage();
+			return RedirectToPage("/Search");
         }
     }
 }

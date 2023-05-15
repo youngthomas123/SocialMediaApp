@@ -100,3 +100,10 @@ body {
 .CommentCard{
     background-color:darkgray;
 }
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}

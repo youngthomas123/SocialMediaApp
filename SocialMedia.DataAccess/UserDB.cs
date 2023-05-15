@@ -132,7 +132,7 @@ namespace SocialMedia.DataAccess
 
             conn.Open();
 
-            string sql = $"update Users " +
+            string sql =  $"update Users " +
                           $"set Password = @UpdatePassword, Email = @UpdateEmail, DateCreated = @UpdateDateCreated, UserName = @UpdateUserName, Salt = @UpdateSalt " +
                           $" where UserId = @UserId ";
 

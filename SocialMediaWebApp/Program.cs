@@ -29,6 +29,7 @@ builder.Services.AddTransient<IUpvotedPostsDataAccess, UpvotedPostsDB>();
 builder.Services.AddTransient<IDownvotedPostsDataAccess, DownvotedPostsDB>();
 builder.Services.AddTransient<IUpvotedCommentsDataAccess, UpvotedCommentsDB>();
 builder.Services.AddTransient<IDownvotedCommentsDataAccess, DownvotedCommentsDB>();
+builder.Services.AddTransient<IProfileDataAccess, ProfileDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();
