@@ -29,6 +29,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void UpdateUserProfileData(Guid userId, string username, string bio, string gender, string location);
 
+        void AddFriend(Guid userId, Guid friendId);
 
-    }
+        void RemoveFriend(Guid userId, Guid friendId);
+
+
+	}
 }

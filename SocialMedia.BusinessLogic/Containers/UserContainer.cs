@@ -17,14 +17,17 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IPasswordHelper _passwordHelper;
         private readonly IAuthenticationSystem _authenticationSystem;
         private readonly IProfileDataAccess _profileDataAccess;
+        private readonly IUserFriendsDataAccess _userFriendsDataAccess;
 
-        public UserContainer(IUserDataAccess userDataAcess, IPasswordHelper passwordHelper, IAuthenticationSystem authenticationSystem, IProfileDataAccess profileDataAccess)
+        public UserContainer(IUserDataAccess userDataAcess, IPasswordHelper passwordHelper, IAuthenticationSystem authenticationSystem, IProfileDataAccess profileDataAccess, IUserFriendsDataAccess userFriendsDataAccess)
         {
             _userDataAccess = userDataAcess;
             _passwordHelper = passwordHelper;
             _authenticationSystem = authenticationSystem;
             _profileDataAccess = profileDataAccess;
-        }
+			_userFriendsDataAccess = userFriendsDataAccess;
+
+		}
 
         public void SaveUser(User user)
         {
@@ -99,7 +102,24 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             var profile = _profileDataAccess.LoadProfileRecord(userId);
 
+            var friends = _userFriendsDataAccess.GetUserFriends(userId);
+
+            foreach (Guid friend in friends )
+            {
+                profile.Friends.Add(friend);
+            }
+
             return profile;
+        }
+
+        public void AddFriend(Guid userId, Guid friendId)
+        {
+            _userFriendsDataAccess.CreateRecord(userId, friendId);
+        }
+
+        public void RemoveFriend(Guid userId, Guid friendId)
+        {
+            _userFriendsDataAccess.DeleteRecord(userId, friendId);  
         }
     }
 }

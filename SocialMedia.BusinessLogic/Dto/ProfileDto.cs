@@ -22,5 +22,7 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public string Location { get; set; }
 
+        public List<Guid>? Friends { get; set; }
+
     }
 }

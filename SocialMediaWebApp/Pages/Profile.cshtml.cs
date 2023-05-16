@@ -53,9 +53,6 @@ namespace SocialMediaWebApp.Pages
             return RedirectToPage("/Login");
         }
 
-        //public IActionResult OnPostEditProfile()
-        //{
-            
-        //}
+        
     }
 }
