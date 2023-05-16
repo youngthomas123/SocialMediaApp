@@ -3,6 +3,7 @@ using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -16,28 +17,32 @@ namespace SocialMedia.DataAccess
         private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
 
 
-        public void CreateRecord(Guid userId, string username, string bio, string gender, byte[] picture, string location)
+        
+        
+       
+
+        public void CreateRecord(Guid userId, string username)
         {
-            SqlConnection conn = new SqlConnection(connection);
-            conn.Open();
+            using (SqlConnection conn = new SqlConnection(connection))
+            {
+                conn.Open();
 
-            string sql = $"insert into Profle ([UserId], [UserName], [Bio], [Gender], [ProfilePic], [Location]) " +
-                         $"Values (@userId, @userName, @bio, @gender, @profilePic, @location) ";
+                string sql = "INSERT INTO Profile ([UserId], [UserName]) " +
+                             "VALUES (@userId, @userName)";
 
-            SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@userId", userId);
-            cmd.Parameters.AddWithValue("@userName", username);
-            cmd.Parameters.AddWithValue("@bio", bio );
-            cmd.Parameters.AddWithValue("@gender", gender);
-            cmd.Parameters.AddWithValue("@profilePic", picture);
-            cmd.Parameters.AddWithValue("@location", location);
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@userName", username);
+              
+                cmd.ExecuteNonQuery();
 
-
-            cmd.ExecuteNonQuery();
-
-            conn.Close();
+                conn.Close();
+            }
         }
+
+
+
 
         public void DeleteRecord(string userId)
         {
@@ -58,7 +63,7 @@ namespace SocialMedia.DataAccess
 
             conn.Close();
         }
-        public void UpdateRecord(Guid userId, string username, string bio, string gender, byte[] picture, string location)
+        public void UpdateRecord(Guid userId, string username, string? bio, string? gender, byte[] picture, string? location)
         {
             SqlConnection conn = new SqlConnection(connection);
 
@@ -71,10 +76,10 @@ namespace SocialMedia.DataAccess
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@UpdateUserName", username);
-            cmd.Parameters.AddWithValue("@UpdateBio", bio);
-            cmd.Parameters.AddWithValue("@UpdateGender", gender);
+            cmd.Parameters.AddWithValue("@UpdateBio", (object)bio ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@UpdateGender", (object)gender ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@UpdateProfilePic", picture);
-            cmd.Parameters.AddWithValue("@UpdateLocation", location);
+            cmd.Parameters.AddWithValue("@UpdateLocation", (object)location ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@userId", userId);
 
             cmd.ExecuteNonQuery();
@@ -83,7 +88,7 @@ namespace SocialMedia.DataAccess
 
         }
 
-        public void UpdateRecord(Guid userId, string username, string bio, string gender, string location)
+        public void UpdateRecord(Guid userId, string username, string? bio, string? gender, string? location)
         {
             SqlConnection conn = new SqlConnection(connection);
 
@@ -96,10 +101,10 @@ namespace SocialMedia.DataAccess
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@UpdateUserName", username);
-            cmd.Parameters.AddWithValue("@UpdateBio", bio);
-            cmd.Parameters.AddWithValue("@UpdateGender", gender);
+            cmd.Parameters.AddWithValue("@UpdateBio", (object)bio ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@UpdateGender", (object)gender ?? DBNull.Value);
             
-            cmd.Parameters.AddWithValue("@UpdateLocation", location);
+            cmd.Parameters.AddWithValue("@UpdateLocation", (object)location ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@userId", userId);
 
             cmd.ExecuteNonQuery();

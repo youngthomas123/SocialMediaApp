@@ -33,6 +33,7 @@ namespace SocialMedia.BusinessLogic.Containers
             var hashedPassword = _passwordHelper.GetHashedPassword(user.Password, salt);
             user.SetHashedPassword(hashedPassword);
             _userDataAccess.SaveUser(user);
+            _profileDataAccess.CreateRecord(user.UserId, user.UserName);
 
         }
         public bool CheckUserName(string username)

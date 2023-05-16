@@ -6,24 +6,24 @@
 
 
 <form method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="EditProfileVM.ProfilePic">Profile Picture</label>
+    <div class="mb-3">
+        <label asp-for="EditProfileVM.ProfilePic" class="form-label"></label>
         <input asp-for="EditProfileVM.ProfilePic" type="file" accept="image/*" />
     </div>
 
-    <div class="form-group">
-        <label asp-for="EditProfileVM.Bio">Bio</label>
+    <div class="mb-3">
+        <label asp-for="EditProfileVM.Bio" class="form-label"></label>
         <input asp-for="EditProfileVM.Bio" />
     </div>
 
 
-    <div class="form-group">
-        <label asp-for="EditProfileVM.Gender">Gender</label>
+    <div class="mb-3">
+        <label asp-for="EditProfileVM.Gender" class="form-label"></label>
         <input asp-for="EditProfileVM.Gender"/>
     </div>
 
-    <div class="form-group">
-        <label asp-for="EditProfileVM.Location">Location</label>
+    <div class="mb-3">
+        <label asp-for="EditProfileVM.Location" class="form-label"></label>
         <input asp-for="EditProfileVM.Location" />
     </div>
 

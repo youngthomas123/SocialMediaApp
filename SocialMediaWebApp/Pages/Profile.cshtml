@@ -3,8 +3,6 @@
 @{
 }
 
-<p>Your UserName : @Model.UserName</p>
-
 
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -12,14 +10,13 @@
             <div class="text-center mb-4">
                 <img src="@Model.ProfilePicture" alt="Profile Picture" class="profile-picture rounded-circle">
             </div>
-            <h1 class="text-center">Your Name</h1>
+            <h1 class="text-center">@Model.Profile.UserName</h1>
             <p class="text-center">Your Bio</p>
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">About Me</h5>
                     <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec mauris ut mi placerat
-                        accumsan. Sed commodo nisi at tellus lacinia consequat.
+                        @Model.Profile.Bio
                     </p>
                 </div>
             </div>
@@ -27,14 +24,14 @@
                 <div class="card-body">
                     <h5 class="card-title">Contact Information</h5>
                     <ul class="list-unstyled">
-                        <li><strong>Email:</strong> your_email@example.com</li>
-                        <li><strong>Phone:</strong> (123) 456-7890</li>
-                        <li><strong>Location:</strong> City, Country</li>
+                        
+                        <li><strong>Gender:</strong> @Model.Profile.Gender</li>
+                        <li><strong>Location:</strong> @Model.Profile.Location</li>
                     </ul>
                 </div>
             </div>
             <div class="text-center">
-                <a href="#" class="btn btn-primary">Edit Profile</a>
+                <a href="/EditProfile" class="btn btn-primary">Edit Profile</a>
             </div>
         </div>
     </div>

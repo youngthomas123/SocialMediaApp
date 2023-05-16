@@ -9,7 +9,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
     public interface IProfileDataAccess
     {
-        void CreateRecord(Guid userId, string username, string bio, string gender, byte[] picture, string location);
+        void CreateRecord(Guid userId, string username);
 
         void DeleteRecord(string userId);
 
