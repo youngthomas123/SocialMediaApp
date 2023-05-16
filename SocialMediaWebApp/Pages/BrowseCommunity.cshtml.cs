@@ -13,12 +13,12 @@ namespace SocialMediaWebApp.Pages
         private readonly IPostContainer _postContainer;
 		private readonly ICommunityContainer _communityContainer;
         
-		public string Communityname { get; set; }
+
+		 public CommunityFullDto Community{ get; set; }
 
         public List<PostPageDto> PostDtos { get; set; }
-		public List<string> Rules { get; set; }
-		public bool AlreadyUpvoted { get; set; }
-
+		
+		
 		public BrowseCommunityModel(IPostContainer postContainer, ICommunityContainer communityContainer)
         {
             _postContainer = postContainer;
@@ -30,14 +30,15 @@ namespace SocialMediaWebApp.Pages
         {
 			
 
-			Communityname = CommunityName;
-
 			
             var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-            var communityId = _communityContainer.GetCommunityId(Communityname);
-            PostDtos = _postContainer.GetPostPageDtosByCommunity(new Guid(communityId), userId);
-			Rules = _communityContainer.GetCommunityRules(new Guid(communityId));
+
+			Community = _communityContainer.LoadCompleteCommunityDto(CommunityName);
+
+			
+            PostDtos = _postContainer.GetPostPageDtosByCommunity(Community.CommunityId, userId);
+			
 
         }
 
@@ -80,5 +81,22 @@ namespace SocialMediaWebApp.Pages
 
 
 		}
+		public IActionResult OnPostFollowCommunity(string CommunityName, Guid communityId)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+			_communityContainer.FollowCommunity(communityId, userId);
+
+			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+		}
+		public IActionResult OnPostUnfollowCommunity(string CommunityName, Guid communityId)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+			_communityContainer.UnfollowCommunity(communityId, userId);
+
+			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+		}
+
 	}
 }

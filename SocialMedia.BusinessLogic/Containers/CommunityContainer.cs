@@ -59,7 +59,34 @@ namespace SocialMedia.BusinessLogic.Containers
 
             return communityFullDtos;
         }
-        public List<string> LoadCommunityNames()
+
+		public CommunityFullDto LoadCompleteCommunityDto(string communityName)
+		{
+			var community = _communityDataAccess.LoadCommunity(communityName);
+
+
+				var rules = _communityRulesAccess.LoadRules(community.CommunityId);
+				var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
+				var postids = _postDataAccess.GetPostIds(community.CommunityId);
+
+				CommunityFullDto communityFullDto = new CommunityFullDto();
+
+
+				communityFullDto.UserId = community.UserId;
+				communityFullDto.Rules = rules;
+				communityFullDto.DateCreated = community.DateCreated;
+				communityFullDto.CommunityId = community.CommunityId;
+				communityFullDto.CommunityName = community.CommunityName;
+				communityFullDto.Description = community.Description;
+				communityFullDto.PostIds = postids;
+				communityFullDto.FollowingUserIds = UserIds;
+
+				
+
+			return communityFullDto;
+		}
+
+		public List<string> LoadCommunityNames()
         {
             var communityNames = _communityDataAccess.GetCommunityNames();
 
@@ -107,5 +134,14 @@ namespace SocialMedia.BusinessLogic.Containers
 			return namesAndIds;
 		}
 
+        public void FollowCommunity(Guid communityId, Guid userId)
+        {
+            _communityMembersAccess.CreateMember(communityId, userId);
+        }
+
+        public void UnfollowCommunity(Guid communityId, Guid userId)
+        {
+            _communityMembersAccess?.DeleteMember(communityId, userId);
+        }
     }
 }

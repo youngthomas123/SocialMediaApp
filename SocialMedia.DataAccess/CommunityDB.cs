@@ -38,9 +38,50 @@ namespace SocialMedia.DataAccess
 
 
         }
+		public Community LoadCommunity(string communityName)
+        {
+            Community Community = null;
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"select * " +
+						 $"from Communities " +
+                         $"where CommunityName = @communityName ";
 
 
-        public List<Community> LoadCommunitys()
+			SqlCommand cmd = new SqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@communityName", communityName);
+			SqlDataReader dr = cmd.ExecuteReader();
+
+			int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+			int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+			int DescriptionIndex = dr.GetOrdinal("Description");
+			int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+			int UserIdIndex = dr.GetOrdinal("UserId");
+
+
+			while (dr.Read())
+			{
+
+				var DateCreated = (DateTime)dr[DateCreatedIndex];
+				var Name = (string)dr[CommunityNameIndex];
+				var Description = (string)dr[DescriptionIndex];
+				var CommunityId = (Guid)dr[CommunityIdIndex];
+				var UserId = (Guid)dr[UserIdIndex];
+				Community community = new Community(DateCreated, Name, Description, CommunityId, UserId);
+				Community = community;
+			}
+
+			dr.Close();
+
+			return Community;
+
+
+		}
+
+
+		public List<Community> LoadCommunitys()
         {
             List<Community> communities = new List<Community>();
 

@@ -5,13 +5,40 @@
 
 
 
-	<h1> @Model.Communityname </h1>
+	<h1> @Model.Community.CommunityName </h1>
 
-	<button class="btn btn-success ">
-		Follow
-	</button>
+	
+@if(! Model.Community.FollowingUserIds.Contains(new Guid(User.FindFirst("UserId").Value)))
+{
+	<form method="post" asp-page-handler="FollowCommunity">
+
+		<button class="btn btn-success ">
+			Follow
+		</button>
+		<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
+		<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+
+	</form>
+}
+else
+{
+	<form method="post" asp-page-handler="UnfollowCommunity">
+
+		<button class="btn btn-success ">
+			Unfollow
+		</button>
+		<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
+		<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+
+	</form>
+}
+
+	
 	<br />
-	@foreach(string rule in Model.Rules)
+
+
+
+	@foreach(string rule in Model.Community.Rules)
 	{
 		<p> @rule</p>
 	}
@@ -30,7 +57,7 @@
 				Upvote
 			</button>
 			<input type="hidden" name="postId" value="@post.PostId" />
-			<input type="hidden" name="CommunityName" value="@Model.Communityname" />
+			<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
 		</form>
 
 		<form method="post" asp-page-handler="Downvote">
@@ -38,7 +65,7 @@
 				Downvote
 			</button>
 			<input type="hidden" name="postId" value="@post.PostId" />
-			<input type="hidden" name="CommunityName" value="@Model.Communityname" />
+			<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
 		</form>
 		<p class="PostCardScore">Score : @post.Score</p>
 

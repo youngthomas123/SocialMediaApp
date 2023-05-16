@@ -35,7 +35,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from CommunityMembers " +
-                         $"where CommunityId = '@Id' and Members = '@UserId' ";
+                         $"where CommunityId = @Id and UserId = @UserId ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 

@@ -14,6 +14,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         List<Community> LoadCommunitys();
 
+       
+
         void DeleteCommunity(Guid id);
 
         List<string> GetCommunityNames();
@@ -25,6 +27,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         string GetCommunityName(Guid CommunityId);
 
         List<string[]>? SearchCommunityAndId(string searchquery);
+
+        Community LoadCommunity(string communityName);
 
 	}
 }

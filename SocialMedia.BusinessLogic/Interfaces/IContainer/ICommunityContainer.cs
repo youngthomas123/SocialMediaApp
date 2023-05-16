@@ -24,5 +24,11 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<string[]> SearchCommunity(string query);
 
+        CommunityFullDto LoadCompleteCommunityDto(string communityName);
+
+        void FollowCommunity(Guid communityId, Guid userId);
+
+        void UnfollowCommunity(Guid communityId, Guid userId);
+
 	}
 }
