@@ -33,6 +33,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void RemoveFriend(Guid userId, Guid friendId);
 
+        bool CheckIfUserIsFriends(Guid userId, Guid friendId);
 
-	}
+
+
+    }
 }

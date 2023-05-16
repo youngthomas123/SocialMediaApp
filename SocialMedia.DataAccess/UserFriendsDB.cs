@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Dto;
+﻿using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
@@ -86,5 +87,51 @@ namespace SocialMedia.DataAccess
             return Friends;
         }
 
-	}
+		public bool CheckRecordExists(Guid userId, Guid friendId)
+		{
+			bool doesRecordExists = false;
+
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"select count(*) as record " +
+				         $"from UserFriends " +
+						 $"where UserId = @userId and FriendId = @friendId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+
+            cmd.Parameters.AddWithValue("@friendId", friendId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if(Record == 0)
+				{
+					doesRecordExists = false;
+				}
+				else if (Record ==1)
+				{
+					doesRecordExists = true;
+				}
+
+            }
+			return doesRecordExists;
+        }
+
+
+    }
 }

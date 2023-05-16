@@ -100,13 +100,14 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public ProfileDto GetProfileDto(Guid userId)
         {
-            var profile = _profileDataAccess.LoadProfileRecord(userId);
+            ProfileDto profile = _profileDataAccess.LoadProfileRecord(userId);
 
             var friends = _userFriendsDataAccess.GetUserFriends(userId);
 
             foreach (Guid friend in friends )
             {
                 profile.Friends.Add(friend);
+
             }
 
             return profile;
@@ -120,6 +121,12 @@ namespace SocialMedia.BusinessLogic.Containers
         public void RemoveFriend(Guid userId, Guid friendId)
         {
             _userFriendsDataAccess.DeleteRecord(userId, friendId);  
+        }
+
+        public bool CheckIfUserIsFriends(Guid userId, Guid friendId)
+        {
+            bool check = _userFriendsDataAccess.CheckRecordExists(userId, friendId);
+            return check;
         }
     }
 }

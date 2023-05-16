@@ -13,5 +13,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 		void DeleteRecord(Guid userId, Guid friendId);
 
         List<Guid> GetUserFriends(Guid userId);
+
+		bool CheckRecordExists(Guid userId, Guid friendId);
     }
 }
