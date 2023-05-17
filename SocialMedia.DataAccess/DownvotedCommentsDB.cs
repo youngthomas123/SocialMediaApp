@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+﻿using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -95,6 +96,47 @@ namespace SocialMedia.DataAccess
 
 
 		}
+
+		public List <Guid>GetDownvotedUserIdsByComment(Guid commentId)
+		{
+            List<Guid> userIds = new List<Guid>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select UserId " +
+                         $"from DownvotedComments " +
+                         $"where CommentId = @commentId";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@commentId", commentId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int UserIdIndex = dr.GetOrdinal("UserId");
+
+
+            while (dr.Read())
+            {
+
+
+                var UserId = (Guid)dr[UserIdIndex];
+
+                userIds.Add(UserId);
+
+
+            }
+
+
+            dr.Close();
+
+            return userIds;
+        }
 
 	}
 }

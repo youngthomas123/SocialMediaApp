@@ -13,5 +13,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         void DeleteRecord(Guid userId, Guid postId);
 
         bool HasUserDownvoted(Guid userId, Guid postId);
+
+        List<Guid> GetDownvotedUserIdsByPost(Guid postId);
     }
 }

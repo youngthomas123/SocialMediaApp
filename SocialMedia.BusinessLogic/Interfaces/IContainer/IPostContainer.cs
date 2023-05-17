@@ -27,5 +27,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void UpdatePostScore(Post post, Guid userId, string UpOrDown);
 
-	}
+        void SetVoteUserIds(Post post);
+
+
+    }
 }

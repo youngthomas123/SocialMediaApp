@@ -12,20 +12,42 @@
 	<div class="PostCard">
 
 
+		@if(post.IsUpvoted == false)
+		{
+			<form method="post" asp-page-handler="Upvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
+					Upvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+			</form>
+		}
+		else
+		{
+			<form>
+				<button>
+					Remove Upvote
+				</button>
+			</form>
+		}
 
-		<form method="post" asp-page-handler="Upvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
-				Upvote
-			</button>
-			<input type="hidden" name="postId" value="@post.PostId" />
-		</form>
+		@if(post.IsDownvoted == false)
+		{
+			<form method="post" asp-page-handler="Downvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
+					Downvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+			</form>
+		}
+		else
+		{
+			<form>
+				<button>
+					Remove Downvote
+				</button>
+			</form>
+		}
 
-		<form method="post" asp-page-handler="Downvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
-				Downvote
-			</button>
-			<input type="hidden" name="postId" value="@post.PostId" />
-		</form>
 		<p class="PostCardScore">Score : @post.Score</p>
 
 

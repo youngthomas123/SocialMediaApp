@@ -22,9 +22,11 @@ namespace SocialMedia.BusinessLogic
 			Downvotes = 0;
 			_score = 0;
 			PostId = postId;
+			UpvotedUserIds = new List<Guid>();
+			DownvotedUserIds = new List<Guid>();
 		}
 
-		public Comment(DateTime dateTime, Guid commentID, Guid userId, string body, Guid postId, int upvotes, int downvotes)
+		public Comment(DateTime dateTime, Guid commentID, Guid userId, string body, Guid postId, int upvotes, int downvotes)  // add upvotedUserids/downvotedUserIds
 		{
             DateCreated = dateTime;
 			CommentId = commentID;
@@ -69,6 +71,31 @@ namespace SocialMedia.BusinessLogic
 		public int Downvotes { get; private set; } 
 
 		public Guid PostId { get; private set; }
+
+		public List <Guid> UpvotedUserIds { get; private set; }
+
+		public List<Guid> DownvotedUserIds { get; private set; }
+
+        public void AddUpvotedUserId(Guid userId)
+        {
+            UpvotedUserIds.Add(userId);
+
+        }
+
+        public void RemoveUpvotedUserId(Guid userId)
+        {
+            UpvotedUserIds.Remove(userId);
+        }
+
+        public void AddDownvotedUserId(Guid userId)
+        {
+            DownvotedUserIds.Add(userId);
+        }
+
+        public void RemoveDownvotedUserId(Guid userId)
+        {
+            DownvotedUserIds.Remove(userId);
+        }
 
         private int _score;
         public int Score

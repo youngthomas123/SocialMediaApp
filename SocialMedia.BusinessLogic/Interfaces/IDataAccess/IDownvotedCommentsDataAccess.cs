@@ -14,8 +14,11 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		bool HasUserDownvoted(Guid userId, Guid commentId);
 
+		List<Guid> GetDownvotedUserIdsByComment(Guid commentId);
 
 
 
-	}
+
+
+    }
 }

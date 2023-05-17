@@ -36,13 +36,21 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             List<Post>posts = new List<Post>();
             posts = _postDataAccess.LoadPost();
+
+
+            foreach (Post post in posts)
+            {
+                SetVoteUserIds(post);
+            }
             return posts;
         }
 
         public Post? LoadPostById(Guid postId)
         {
       
-            var post = _postDataAccess.LoadPostById(postId);    
+            var post = _postDataAccess.LoadPostById(postId);
+
+            SetVoteUserIds(post);
             return post;
         }
 
@@ -72,7 +80,8 @@ namespace SocialMedia.BusinessLogic.Containers
                 postPageDto.Score = post.Score;
                 postPageDto.PostId = post.PostId;
                 postPageDto.ImageUrl = post.ImageURL;
-
+                postPageDto.UpvotedUserIds = post.UpvotedUserIds;
+                postPageDto.DownvotedUserIds= post.DownvotedUserIds;
 
 
 				if (IsPostUpvoted(userId, post.PostId))
@@ -102,7 +111,7 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             PostPageDto postPageDto = new PostPageDto();    
 
-            var post = _postDataAccess.LoadPostById(postid);
+            var post = LoadPostById(postid);
 
             postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
             postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
@@ -200,6 +209,23 @@ namespace SocialMedia.BusinessLogic.Containers
             {
                 _downvotedPostsDataAccess.CreateRecord(userId, post.PostId);
                 UpdatePost(post);
+            }
+        }
+
+        public void SetVoteUserIds(Post post)
+        {
+            var upvotedUserIds = _upvotedPostsDataAccess.GetUpvotedUserIdsByPost(post.PostId);
+
+            foreach (var upvotedUserId in upvotedUserIds)
+            {
+                post.AddUpvotedUserId(upvotedUserId);
+            }
+
+            var downvotedUserIds = _downvotedPostsDataAccess.GetDownvotedUserIdsByPost(post.PostId);
+
+            foreach(var downvotedUserId in downvotedUserIds)
+            {
+                post.AddUpvotedUserId(downvotedUserId);
             }
         }
        

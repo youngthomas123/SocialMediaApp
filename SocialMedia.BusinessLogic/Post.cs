@@ -24,7 +24,10 @@ namespace SocialMedia.BusinessLogic
 			Downvotes = 0;
 			CommunityId = communityid;	
 			_score = 0;
-		}
+			UpvotedUserIds = new List<Guid>();
+            DownvotedUserIds = new List<Guid>();
+
+        }
 
         public Post(Guid userId, string title, Guid communityid, string URL)     // create post with image
         {
@@ -39,9 +42,11 @@ namespace SocialMedia.BusinessLogic
             Downvotes = 0;
             CommunityId = communityid;
             _score = 0;
+            UpvotedUserIds = new List<Guid>();
+            DownvotedUserIds = new List<Guid>();
         }
 
-        public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid, string Url)
+        public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid, string Url)  // need to add Upvoted/Downvoted UserIds
 		{
             DateCreated = dateCreated;
 			PostId = postId;
@@ -120,6 +125,33 @@ namespace SocialMedia.BusinessLogic
 
 
 		public string? ImageURL { get; private set; }
+
+
+		public List <Guid>UpvotedUserIds { get; private set; }
+
+		public List<Guid> DownvotedUserIds { get; private set; }
+
+
+		public void AddUpvotedUserId(Guid userId)
+		{
+			UpvotedUserIds.Add(userId);
+
+        }
+
+		public void RemoveUpvotedUserId(Guid userId)
+		{
+			UpvotedUserIds.Remove(userId);
+		}
+
+		public void AddDownvotedUserId(Guid userId)
+		{
+			DownvotedUserIds.Add(userId);
+		}
+
+		public void RemoveDownvotedUserId(Guid userId)
+		{
+			DownvotedUserIds.Remove(userId);
+		}
 
         public void upvote()
         {

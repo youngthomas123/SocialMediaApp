@@ -95,6 +95,47 @@ namespace SocialMedia.DataAccess
 
 
         }
+        public List <Guid>GetDownvotedUserIdsByPost(Guid postId)
+        {
+            List<Guid> userIds = new List<Guid>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select UserId " +
+                         $"from DownvotedPosts " +
+                         $"where PostId = @postId";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@postId", postId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int UserIdIndex = dr.GetOrdinal("UserId");
+
+
+            while (dr.Read())
+            {
+
+
+                var UserId = (Guid)dr[UserIdIndex];
+
+                userIds.Add(UserId);
+
+
+            }
+
+
+            dr.Close();
+
+            return userIds;
+        }
+
 
 
     }

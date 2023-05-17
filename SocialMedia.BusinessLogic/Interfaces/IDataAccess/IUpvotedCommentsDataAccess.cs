@@ -15,5 +15,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		bool HasUserUpvoted(Guid userId, Guid commentId);
 
-	}
+		List<Guid> GetUpvotedUserIdsByComment(Guid commentId);
+
+
+    }
 }
