@@ -210,6 +210,17 @@ namespace SocialMedia.BusinessLogic.Containers
                 _downvotedPostsDataAccess.CreateRecord(userId, post.PostId);
                 UpdatePost(post);
             }
+            else if (UpOrDown == "removeup")
+            {
+				_upvotedPostsDataAccess.DeleteRecord(userId, post.PostId);
+				UpdatePost(post);
+
+			}
+            else if (UpOrDown == "removedown")
+            {
+                _downvotedPostsDataAccess.DeleteRecord(userId, post.PostId);
+				UpdatePost(post);
+			}
         }
 
         public void SetVoteUserIds(Post post)

@@ -57,8 +57,9 @@ namespace SocialMedia.BusinessLogic
 			Downvotes = downvotes;
 			CommunityId = communityid;
 			ImageURL= Url;
-			
-        }
+			UpvotedUserIds = new List<Guid>();
+			DownvotedUserIds = new List<Guid>();
+		}
 
 		public DateTime DateCreated { get; private set; }
 

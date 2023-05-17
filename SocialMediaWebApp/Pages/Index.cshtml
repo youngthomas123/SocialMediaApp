@@ -23,10 +23,11 @@
 		}
 		else
 		{
-			<form>
-				<button>
+			<form method="post" asp-page-handler="RemoveUpvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
 					Remove Upvote
 				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
 			</form>
 		}
 
@@ -41,10 +42,11 @@
 		}
 		else
 		{
-			<form>
-				<button>
+			<form method ="post" asp-page-handler="RemoveDownvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
 					Remove Downvote
 				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
 			</form>
 		}
 

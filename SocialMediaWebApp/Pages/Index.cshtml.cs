@@ -56,6 +56,26 @@ namespace SocialMediaWebApp.Pages
 			}
 
 		}
+		public IActionResult OnPostRemoveUpvote(Guid postId)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+			var post = _postContainer.LoadPostById(postId);
+			if (post == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				post.downvote();
+				post.RemoveUpvotedUserId(userId);
+				
+				_postContainer.UpdatePostScore(post, userId, "removeup");
+
+				return RedirectToPage();
+			}
+
+		}
+
 
 		public IActionResult OnPostDownvote(Guid postId)
 		{
@@ -69,6 +89,28 @@ namespace SocialMediaWebApp.Pages
 			_postContainer.UpdatePostScore(post, userId, "down");
 			return RedirectToPage();
 		}
+
+		public IActionResult OnPostRemoveDownvote(Guid postId)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+			var post = _postContainer.LoadPostById(postId);
+			if (post == null)
+			{
+				return NotFound();
+			}
+
+			post.upvote();
+			post.RemoveDownvotedUserId(userId);
+			
+			_postContainer.UpdatePostScore(post, userId, "removedown");
+			return RedirectToPage();
+
+		}
+
+
+
+
+
 		public IActionResult OnPostViewComments(Guid postId)
 		{
 			
