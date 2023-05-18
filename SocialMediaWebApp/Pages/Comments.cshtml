@@ -211,9 +211,9 @@
                 <p class="card-text small text-muted mb-0">Score: @Model.PostDto.Score</p>
             </div>
             <div class="d-flex flex-column align-items-end">
-                <p class="card-text small text-muted">Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@Model.PostDto.CommunityName">@Model.PostDto.CommunityName</a></p>
-                <p class="card-text small text-muted">Author - <a asp-page="/BrowseUser" asp-route-UserName="@Model.PostDto.Author">@Model.PostDto.Author</a></p>
-                <p class="card-text small text-muted">Posted on @Model.PostDto.DateCreated</p>
+                <p class="card-text small text-muted mb-1">Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@Model.PostDto.CommunityName">@Model.PostDto.CommunityName</a></p>
+                <p class="card-text small text-muted mb-1">Author - <a asp-page="/BrowseUser" asp-route-UserName="@Model.PostDto.Author">@Model.PostDto.Author</a></p>
+                <p class="card-text small text-muted mb-0">Posted on @Model.PostDto.DateCreated</p>
             </div>
             <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -239,9 +239,7 @@
                 <img src="@Model.PostDto.ImageUrl" alt="Image" class="img-fluid">
             }
         </div>
-        <div class="card-footer">
-           
-        </div>
+       
     </div>
 
     <br />
