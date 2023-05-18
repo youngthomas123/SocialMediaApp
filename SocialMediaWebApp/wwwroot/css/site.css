@@ -101,9 +101,18 @@ body {
     background-color:darkgray;
 }
 
-.profile-picture {
+.profile-picture {        
     width: 150px;
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.comment-username:hover {
+    color: #333333; /* Change the color on hover */
+}
+.comment-username {
+    color: #555555; /* Set a moderately subtle color */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.2s ease-in-out; /* Add a smooth transition effect on color change */
 }

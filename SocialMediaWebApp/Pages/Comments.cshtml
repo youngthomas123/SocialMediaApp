@@ -1,4 +1,4 @@
-﻿@page
+﻿@*@page
 @model SocialMediaWebApp.Pages.CommentsModel
 @{
 }
@@ -151,4 +151,208 @@
         <br />
     }
 
+</div>*@
+
+@page
+@model SocialMediaWebApp.Pages.CommentsModel
+@{
+}
+
+
+<div class="container">
+
+    <!-- The Initial Post -->
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-column">
+                <div class="btn-group">
+                    @if (Model.PostDto.IsUpvoted == false)
+                    {
+                        <form method="post" asp-page-handler="UpvotePost">
+                            <button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()" disabled="@(Model.PostDto.IsDownvoted)">
+                                Upvote
+                            </button>
+                            <input type="hidden" name="postId" value="@Model.PostDto.PostId" />
+                            <input type="hidden" name="direction" value="upvotePost" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="RemoveUpvotePost">
+                            <button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()">
+                                Remove Upvote
+                            </button>
+                            <input type="hidden" name="postId" value="@Model.PostDto.PostId" />
+                            <input type="hidden" name="direction" value="removeUpvotePost" />
+                        </form>
+                    }
+
+                    @if (Model.PostDto.IsDownvoted == false)
+                    {
+                        <form method="post" asp-page-handler="DownvotePost">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()" disabled="@(Model.PostDto.IsUpvoted)">
+                                Downvote
+                            </button>
+                            <input type="hidden" name="postId" value="@Model.PostDto.PostId" />
+                            <input type="hidden" name="direction" value="downvotePost" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="RemoveDownvotePost">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()">
+                                Remove Downvote
+                            </button>
+                            <input type="hidden" name="postId" value="@Model.PostDto.PostId" />
+                            <input type="hidden" name="direction" value="removeDownvotePost" />
+                        </form>
+                    }
+                </div>
+                <p class="card-text small text-muted mb-0">Score: @Model.PostDto.Score</p>
+            </div>
+            <div class="d-flex flex-column align-items-end">
+                <p class="card-text small text-muted">Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@Model.PostDto.CommunityName">@Model.PostDto.CommunityName</a></p>
+                <p class="card-text small text-muted">Author - <a asp-page="/BrowseUser" asp-route-UserName="@Model.PostDto.Author">@Model.PostDto.Author</a></p>
+                <p class="card-text small text-muted">Posted on @Model.PostDto.DateCreated</p>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@Model.PostDto.Title</h5>
+
+            @if (Model.PostDto.Body != "null" && Model.PostDto.ImageUrl == "null")
+            {
+                <div class="card-text">
+                    <p>@Model.PostDto.Body</p>
+                </div>
+            }
+            @if (Model.PostDto.Body == "null" && Model.PostDto.ImageUrl != "null")
+            {
+                <img src="@Model.PostDto.ImageUrl" alt="Image" class="img-fluid">
+            }
+        </div>
+        <div class="card-footer">
+           
+        </div>
+    </div>
+
+    <br />
+    <h3>Comment Section</h3>
+
+    <!-- Add Comment Form -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Add a Comment</h5>
+            <form method="post" asp-page-handler="AddComment">
+                <div class="mb-3">
+                    <textarea asp-for="CommentData.Body" class="form-control" rows="3" placeholder="Your Comment"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <input type="hidden" name="PostId" value="@Model.Postid" />
+            </form>
+        </div>
+    </div>
+    
+    
+
+    <!-- Comments -->
+
+    @foreach (var comment in Model.CommentDtos)
+    {
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">
+                        <a asp-page="/BrowseUser" asp-route-UserName="@comment.Author" class="comment-username">@comment.Author </a>
+                        
+                    </h5>
+                    <!-- 3 dots -->
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="commentDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="commentDropdown1">
+                            <li><a class="dropdown-item" href="#">Report</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="card-text"> @comment.Body</p>
+
+
+                <div class="d-flex align-items-center">
+
+                    @if (comment.IsUpvoted == false)
+                    {
+                        <form method="post" asp-page-handler="UpvoteComment">
+                            <button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()" disabled="@(comment.IsDownvoted)">
+                                Upvote
+                            </button>
+                            <input type="hidden" name="commentId" value="@comment.CommentId" />
+                            <input type="hidden" name="PostId" value="@Model.Postid" />
+                            <input type="hidden" name="direction" value="upvoteComment" />
+
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="RemoveUpvoteComment">
+                            <button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()">
+                                Remove Upvote
+                            </button>
+                            <input type="hidden" name="commentId" value="@comment.CommentId" />
+                            <input type="hidden" name="PostId" value="@Model.Postid" />
+                            <input type="hidden" name="direction" value="removeUpvoteComment" />
+
+                        </form>
+                    }
+
+                    @if (comment.IsDownvoted == false)
+                    {
+                        <form method="post" asp-page-handler="DownvoteComment">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()" disabled="@(comment.IsUpvoted)">
+                                Downvote
+                            </button>
+                            <input type="hidden" name="commentId" value="@comment.CommentId" />
+                            <input type="hidden" name="PostId" value="@Model.Postid" />
+                            <input type="hidden" name="direction" value="downvoteComment" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="RemoveDownvoteComment">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()">
+                                Remove Downvote
+                            </button>
+                            <input type="hidden" name="commentId" value="@comment.CommentId" />
+                            <input type="hidden" name="PostId" value="@Model.Postid" />
+                            <input type="hidden" name="direction" value="removeDownvoteComment" />
+                        </form>
+                    }
+
+
+             
+                    <div class="ms-auto">
+                        Score: <span class="badge bg-secondary">@comment.Score</span>
+                    </div>
+                </div>
+                <small class="text-muted">Posted on @comment.DateCreated</small>
+            </div>
+        </div>
+    }
+ 
+
+  
+
+   
 </div>
+
+
