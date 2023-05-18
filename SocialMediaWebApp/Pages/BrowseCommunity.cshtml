@@ -51,22 +51,52 @@ else
 
 	<div class="PostCard">
 
+		@if(post.IsUpvoted == false)
+		{
+			<form method="post" asp-page-handler="Upvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
+					Upvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+				<input type="hidden" name="direction" value="upvotePost" />
+			</form>
+		}
+		else
+		{
+			<form method="post" asp-page-handler="RemoveUpvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()">
+				   	Remove Upvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+				<input type="hidden" name="direction" value="removeUpvotePost" />
+			</form>
+		}
 
-		<form method="post" asp-page-handler="Upvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
-				Upvote
-			</button>
-			<input type="hidden" name="postId" value="@post.PostId" />
-			<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-		</form>
+		@if(post.IsDownvoted == false)
+		{
+			<form method="post" asp-page-handler="Downvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
+					Downvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+				<input type="hidden" name="direction" value="downvotePost" />
+			</form>
+		}
+		else
+		{
+			<form method="post" asp-page-handler="RemoveDownvote">
+				<button type="submit" class="Postbutton" onclick="maintainscrollposition()" >
+					Remove Downvote
+				</button>
+				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+				<input type="hidden" name="direction" value="removeDownvotePost" />
+			</form>
+		}
 
-		<form method="post" asp-page-handler="Downvote">
-			<button type="submit" class="Postbutton" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
-				Downvote
-			</button>
-			<input type="hidden" name="postId" value="@post.PostId" />
-			<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-		</form>
 		<p class="PostCardScore">Score : @post.Score</p>
 
 		<p>Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a> </p>

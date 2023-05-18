@@ -42,8 +42,10 @@ namespace SocialMediaWebApp.Pages
 
         }
 
-		public IActionResult OnPostUpvote(Guid postId, string CommunityName)
+		public IActionResult OnPostUpvote(Guid postId, string CommunityName, string direction)
 		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
 			var post = _postContainer.LoadPostById(postId);
 			if (post == null)
 			{
@@ -52,26 +54,68 @@ namespace SocialMediaWebApp.Pages
 			else
 			{
 				post.upvote();
-				var userId = Guid.Parse(User.FindFirst("UserId").Value);
-				_postContainer.UpdatePostScore(post, userId, "up");
+				post.AddUpvotedUserId(userId);
+				
+				_postContainer.UpdatePostScore(post, userId, direction);
 
 				return RedirectToPage("/BrowseCommunity",  new { CommunityName = CommunityName });
 			}
 
 		}
 
-		public IActionResult OnPostDownvote(Guid postId, string CommunityName)
+		public IActionResult OnPostRemoveUpvote(Guid postId, string CommunityName, string direction)
 		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+
+			var post = _postContainer.LoadPostById(postId);
+			if (post == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				post.downvote();
+				post.RemoveUpvotedUserId(userId);
+
+				_postContainer.UpdatePostScore(post, userId, direction);
+
+				return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+			}
+		}
+
+		public IActionResult OnPostDownvote(Guid postId, string CommunityName, string direction)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
 			var post = _postContainer.LoadPostById(postId);
 			if (post == null)
 			{
 				return NotFound();
 			}
 			post.downvote();
-			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			_postContainer.UpdatePostScore(post, userId, "down");
+			post.AddDownvotedUserId(userId);
+			
+			_postContainer.UpdatePostScore(post, userId, direction);
 			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
+
+		public IActionResult OnPostRemoveDownvote(Guid postId, string CommunityName, string direction)
+		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+			var post = _postContainer.LoadPostById(postId);
+			if (post == null)
+			{
+				return NotFound();
+			}
+			post.upvote();
+			post.RemoveDownvotedUserId(userId);
+
+			_postContainer.UpdatePostScore(post, userId, direction);
+			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+		}
+
 		public IActionResult OnPostViewComments(Guid postId)
 		{
 			

@@ -198,25 +198,25 @@ namespace SocialMedia.BusinessLogic.Containers
             return isPostDownvoted;
         }
 
-        public void UpdatePostScore(Post post,Guid userId ,string UpOrDown)
+        public void UpdatePostScore(Post post,Guid userId ,string direction)
         {
-            if(UpOrDown == "up")
+            if(direction == "upvotePost")
             {
                 _upvotedPostsDataAccess.CreateRecord(userId, post.PostId);
                 UpdatePost(post);
             }
-            else if (UpOrDown == "down")
+            else if (direction == "downvotePost")
             {
                 _downvotedPostsDataAccess.CreateRecord(userId, post.PostId);
                 UpdatePost(post);
             }
-            else if (UpOrDown == "removeup")
+            else if (direction == "removeUpvotePost")
             {
 				_upvotedPostsDataAccess.DeleteRecord(userId, post.PostId);
 				UpdatePost(post);
 
 			}
-            else if (UpOrDown == "removedown")
+            else if (direction == "removeDownvotePost")
             {
                 _downvotedPostsDataAccess.DeleteRecord(userId, post.PostId);
 				UpdatePost(post);

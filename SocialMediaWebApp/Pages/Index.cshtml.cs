@@ -39,8 +39,10 @@ namespace SocialMediaWebApp.Pages
 
 		}
 
-		public IActionResult OnPostUpvote(Guid postId)
+		public IActionResult OnPostUpvote(Guid postId, string direction)
 		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
 			var post = _postContainer.LoadPostById(postId);
 			if (post == null)
 			{
@@ -49,14 +51,15 @@ namespace SocialMediaWebApp.Pages
 			else
 			{
 				post.upvote();
-				var userId = Guid.Parse(User.FindFirst("UserId").Value);
-				_postContainer.UpdatePostScore(post, userId, "up");
+				post.AddUpvotedUserId(userId);
+			
+				_postContainer.UpdatePostScore(post, userId, direction);
 
 				return RedirectToPage();
 			}
 
 		}
-		public IActionResult OnPostRemoveUpvote(Guid postId)
+		public IActionResult OnPostRemoveUpvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 			var post = _postContainer.LoadPostById(postId);
@@ -69,7 +72,7 @@ namespace SocialMediaWebApp.Pages
 				post.downvote();
 				post.RemoveUpvotedUserId(userId);
 				
-				_postContainer.UpdatePostScore(post, userId, "removeup");
+				_postContainer.UpdatePostScore(post, userId, direction);
 
 				return RedirectToPage();
 			}
@@ -77,20 +80,23 @@ namespace SocialMediaWebApp.Pages
 		}
 
 
-		public IActionResult OnPostDownvote(Guid postId)
+		public IActionResult OnPostDownvote(Guid postId, string direction)
 		{
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
 			var post = _postContainer.LoadPostById(postId);
 			if (post == null)
 			{
 				return NotFound();
 			}
 			post.downvote();
-			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			_postContainer.UpdatePostScore(post, userId, "down");
+			post.AddDownvotedUserId(userId);
+			
+			_postContainer.UpdatePostScore(post, userId, direction);
 			return RedirectToPage();
 		}
 
-		public IActionResult OnPostRemoveDownvote(Guid postId)
+		public IActionResult OnPostRemoveDownvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 			var post = _postContainer.LoadPostById(postId);
@@ -102,7 +108,7 @@ namespace SocialMediaWebApp.Pages
 			post.upvote();
 			post.RemoveDownvotedUserId(userId);
 			
-			_postContainer.UpdatePostScore(post, userId, "removedown");
+			_postContainer.UpdatePostScore(post, userId, direction);
 			return RedirectToPage();
 
 		}

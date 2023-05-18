@@ -35,7 +35,8 @@ namespace SocialMedia.BusinessLogic
             PostId = postId;
             Upvotes = upvotes;
 			Downvotes = downvotes;
-
+            UpvotedUserIds = new List<Guid>();
+            DownvotedUserIds = new List<Guid>();
 
         }
 

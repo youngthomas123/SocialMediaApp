@@ -19,6 +19,7 @@
 					Upvote
 				</button>
 				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="direction" value="upvotePost" />
 			</form>
 		}
 		else
@@ -28,6 +29,7 @@
 					Remove Upvote
 				</button>
 				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="direction" value="removeUpvotePost" />
 			</form>
 		}
 
@@ -38,6 +40,7 @@
 					Downvote
 				</button>
 				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="direction" value="downvotePost" />
 			</form>
 		}
 		else
@@ -47,6 +50,7 @@
 					Remove Downvote
 				</button>
 				<input type="hidden" name="postId" value="@post.PostId" />
+				<input type="hidden" name="direction" value="removeDownvotePost" />
 			</form>
 		}
 

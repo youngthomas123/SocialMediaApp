@@ -94,17 +94,27 @@ namespace SocialMedia.BusinessLogic.Containers
         }
 
 
-		public void UpdateCommentScore(Comment comment, Guid userId, string UpOrDown)
+		public void UpdateCommentScore(Comment comment, Guid userId, string direction)
 		{
-			if (UpOrDown == "up")
+			if (direction == "upvoteComment")
 			{
 				_upvotedCommentsDataAccess.CreateRecord(userId, comment.CommentId);
 				UpDateComment(comment);
 			}
-			else if (UpOrDown == "down")
+            else if(direction == "removeUpvoteComment")
+            {
+                _upvotedCommentsDataAccess.DeleteRecord(userId, comment.CommentId);
+				UpDateComment(comment);
+			}
+			else if (direction == "downvoteComment")
 			{
 				_downvotedCommentsDataAccess.CreateRecord(userId, comment.CommentId);
 				 UpDateComment(comment);
+			}
+            else if(direction == "removeDownvoteComment")
+            {
+                _downvotedCommentsDataAccess.DeleteRecord(userId, comment.CommentId);
+				UpDateComment(comment);
 			}
 		}
 		public bool IsCommentUpvoted(Guid userId, Guid commentId)
