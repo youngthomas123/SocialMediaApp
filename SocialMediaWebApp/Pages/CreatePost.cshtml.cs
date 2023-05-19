@@ -11,6 +11,7 @@ using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using SocialMediaWebApp.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace SocialMediaWebApp.Pages
@@ -36,6 +37,13 @@ namespace SocialMediaWebApp.Pages
 
             CommunityIdentities = new List<SelectListItem>();
 
+            
+
+
+        }
+
+        public void OnGet()
+        {
             var CommmunityIdentityDtos = _communityContainer.LoadCommunityIdentityDtos();
 
             foreach (var Community in CommmunityIdentityDtos)
@@ -43,47 +51,52 @@ namespace SocialMediaWebApp.Pages
                 CommunityIdentities.Add(new(Community.CommunityName, Community.CommunityId.ToString()));
             }
 
-
         }
 
-        public void OnGet()
-        {
-          
-            
-        }
-
-        public IActionResult OnPost ()
+        public IActionResult OnPost()
         {
             if (ModelState.IsValid)
             {
+
+               
                 var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-                if(PostData.Body == null && PostData.ImageURl != null)
-                {
-                    Post post = new Post(userId, PostData.Title, new Guid(PostData.CommunityId), PostData.ImageURl);
-                    _postContainer.SavePost(post);
-					TempData["PostStatus"] = "Post created successfully";
-				}
-                else if (PostData.Body !=null && PostData.ImageURl == null)
+
+
+                if (PostData.Option == "Text" && PostData.Body != null)
                 {
                     Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
                     _postContainer.SavePost(post);
-					TempData["PostStatus"] = "Post created successfully";
-				}
-
-
-				
-
-			}
+                    TempData["PostStatus"] = "Post created successfully";
+                }
+                else if (PostData.Option == "Image" && PostData.ImageURl != null)
+                {
+                    Post post = new Post(userId, PostData.Title, new Guid(PostData.CommunityId), PostData.ImageURl);
+                    _postContainer.SavePost(post);
+                    TempData["PostStatus"] = "Post created successfully";
+                }
+                else
+                {
+                    
+                    TempData["PostStatus"] = "Failed to create post (Text or Image not supplied)";
+                }
+            }
             else
             {
+                
+
                 TempData["PostStatus"] = "Failed to create post";
             }
 
-            return Page();
+            return RedirectToPage();
 
         }
 
-        
+            
+            
     }
+
+       
 }
+
+

@@ -155,3 +155,23 @@ body {
         background-color: #d1d1d1;
 
 }
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+        font-weight: bold;
+}
+.form-group .custom-file-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+}
+#PostData_CommunityId {
+    height: 40px; /* Adjust the height as needed */
+    font-size: 14px; /* Adjust the font size as needed */
+    overflow-y: scroll;
+}
+#PostData_CommunityId {
+    height: 40px; /* Adjust the height as needed */
+}

@@ -1,56 +1,125 @@
-﻿@page
+﻿
+
+@page
 @model SocialMediaWebApp.Pages.PostModel
 @{
 }
 
 @if (TempData["PostStatus"] != null)
 {
-    <p> @TempData["PostStatus"] </p>
+    <div>
+        <p> @TempData["PostStatus"] </p>
+    </div>
+    
 }
-      
-<form method="post">
-
-
-
-    <select asp-for="PostData.CommunityId" asp-items="Model.CommunityIdentities" class="form-control scrollable-menu " data-live-search="true">
-
-        <option value="">-- Select an item --</option>
-
-
-
-    </select>
 
 
 
 
-    <div class="mb-3">
-        <label asp-for="PostData.Title" class="form-label"></label>
-        <input asp-for="PostData.Title" class="form-control">
-        <span asp-validation-for="PostData.Title"></span>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Event handler for radio button change
+        $('input[name="PostData.Option"]').change(function () {
+            var selectedOption = $(this).val();
+
+            if (selectedOption === "Text") {
+                $('#BodyTextContainer').show();
+                $('#BodyImageContainer').hide();
+            } else if (selectedOption === "Image") {
+                $('#BodyTextContainer').hide();
+                $('#BodyImageContainer').show();
+            }
+        });
+
+        $('input[name="PostData.Option"]:checked').trigger('change');
+    });
+</script>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1>Create a Post</h1>
+            <form method="post">
+                <!-- Community Selection -->
+                <div class="form-group">
+                    <label for="community">Select a Community</label>
+
+                    <select asp-for="PostData.CommunityId" asp-items="Model.CommunityIdentities" class="form-control" >
+                        <option value="">-- Select an item --</option>
+                    </select>
+                    <span asp-validation-for="PostData.CommunityId" class="text-danger"></span>
+                    
+                </div>
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <label asp-for="PostData.Title"></label>
+                    <input asp-for="PostData.Title" class="form-control" placeholder="Enter the title of your post">
+                    <span asp-validation-for="PostData.Title" class="text-danger"></span>
+                    
+                </div>
+
+                <!-- Body - Text or Image -->
+                <div class="form-group">
+                    <label>Options</label>
+                    
+
+                    
+                    <div class="form-check">
+                        <label asp-for="PostData.Option" class="form-check-label">
+                            <input asp-for="PostData.Option" value="Text" class="form-check-input" type="radio" checked>
+                            Text
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label asp-for="PostData.Option" class="form-check-label">
+                            <input asp-for="PostData.Option" value="Image" class="form-check-input" type="radio">
+                            Image
+                        </label>
+                    </div>
+
+
+                    <span asp-validation-for="PostData.Option" class="text-danger"></span>
+
+                </div>
+
+                <!-- Body Text -->
+                <div class="form-group" id="BodyTextContainer" style="display:none">
+
+                    <label asp-for="PostData.Body"></label>
+                    <textarea asp-for="PostData.Body" class="form-control" rows="5" placeholder="Enter the text of your post"></textarea>
+                    <span asp-validation-for="PostData.Body" class="text-danger"></span>
+
+                </div>
+
+                <!-- Body Image -->
+                <div class="form-group" id="BodyImageContainer" style="display:none">
+
+                    <label asp-for="PostData.ImageURl"></label>
+                    <input asp-for="PostData.ImageURl" class="form-control" placeholder="Enter the URL of the image">
+                    <span asp-validation-for="PostData.ImageURl" class="text-danger"></span>
+
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Create Post</button>
+            </form>
+        </div>
     </div>
-    <div class="mb-3">
-        <label asp-for="PostData.Body" class="form-label"></label>
-        <textarea asp-for="PostData.Body" class="form-control" rows="3"></textarea>
-        
-    </div>
-    <div class="mb-3">
-        <label asp-for="PostData.ImageURl" class="form-label"></label>
-        <textarea asp-for="PostData.ImageURl" class="form-control" rows="3"></textarea>
-        
-    </div>
+</div>
 
+                
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-
-
-
-
-@*@section Scripts
-{
+@section Scripts
+    {
     <partial name="_ValidationScriptsPartial" />
 }
- 
+@*
 @Html.Raw(ViewData["Scripts"])*@
+
+
 
