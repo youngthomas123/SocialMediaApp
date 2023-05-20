@@ -29,6 +29,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void SetVoteUserIds(Post post);
 
+        void UpdatePost(Guid postId, string title, string? body, string? imageUrl);
+
 
     }
 }

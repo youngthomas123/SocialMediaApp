@@ -239,6 +239,12 @@ namespace SocialMedia.BusinessLogic.Containers
                 post.AddUpvotedUserId(downvotedUserId);
             }
         }
-       
+        public void UpdatePost(Guid postId, string title, string? body, string? imageUrl)
+        {
+            _postDataAccess.UpdatePost(postId, title, body, imageUrl);
+        }
+
+
+
     }
 }

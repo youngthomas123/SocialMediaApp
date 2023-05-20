@@ -1,0 +1,47 @@
+﻿@page
+@model SocialMediaWebApp.Pages.EditPostModel
+@{
+}
+
+<div class="container">
+    <h1>Edit Post</h1>
+    <br />
+    <form method="post" asp-page-handler="EditPost"> 
+        <!-- Title -->
+        <div class="form-group">
+            
+            <label asp-for="EditPostVM.Title"></label>
+            <input asp-for="EditPostVM.Title" class="form-control">
+            <span asp-validation-for="EditPostVM.Title" class="text-danger"></span>
+
+        </div>
+        @if (Model.EditPostVM.Body != null && Model.EditPostVM.ImageUrl == null)
+        {
+            <!-- Body Text -->
+            <div class="form-group">
+
+                <label asp-for="EditPostVM.Body"></label>
+                <textarea asp-for="EditPostVM.Body" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="EditPostVM.Body" class="text-danger"></span>
+
+            </div>
+        }
+        else if (Model.EditPostVM.Body == null && Model.EditPostVM.ImageUrl != null)
+        {
+            <!-- Body Image -->
+            <div class="form-group">
+
+                <label asp-for="EditPostVM.ImageUrl"></label>
+                <input asp-for="EditPostVM.ImageUrl" class="form-control">
+                <span asp-validation-for="EditPostVM.ImageUrl" class="text-danger"></span>
+
+            </div>
+        }
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="hidden" name="PostId" value="@Model.PostDto.PostId" />
+
+    </form>
+   
+
+</div>

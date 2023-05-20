@@ -66,21 +66,27 @@
                     <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                    <li><a class="dropdown-item" href="#">Delete</a></li>
+
+                    @if (Model.PostDto.Author == User.FindFirst("UserName").Value)
+                    {
+                        <li><a class="dropdown-item" asp-page="/EditPost" asp-route-PostId="@Model.PostDto.PostId"> Edit </a></li>
+                        <li><a class="dropdown-item" href="#">Delete</a></li>
+                    }
+                    <li><a class="dropdown-item" href="#">Report</a></li>
+                    
                 </ul>
             </div>
         </div>
         <div class="card-body">
             <h5 class="card-title">@Model.PostDto.Title</h5>
 
-            @if (Model.PostDto.Body != "null" && Model.PostDto.ImageUrl == "null")
+            @if (Model.PostDto.Body != null && Model.PostDto.ImageUrl == null)
             {
                 <div class="card-text">
                     <p>@Model.PostDto.Body</p>
                 </div>
             }
-            @if (Model.PostDto.Body == "null" && Model.PostDto.ImageUrl != "null")
+            @if (Model.PostDto.Body == null && Model.PostDto.ImageUrl != null)
             {
                 <img src="@Model.PostDto.ImageUrl" alt="Image" class="img-fluid">
             }

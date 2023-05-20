@@ -16,7 +16,7 @@ namespace SocialMediaWebApp.Pages
 		private IPostContainer _postContainer;
 		public List<PostPageDto> postDtos;
 
-		public bool AlreadyUpvoted { get; set; }
+		
 
 		public IndexModel(ILogger<IndexModel> logger, IPostContainer postContainer)
 		{

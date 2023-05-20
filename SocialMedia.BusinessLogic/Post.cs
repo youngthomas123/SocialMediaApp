@@ -11,33 +11,51 @@ namespace SocialMedia.BusinessLogic
 	{
 
 		
-		public Post(Guid userId, string title, string body, Guid communityid)     // create post with text 
+		//public Post(Guid userId, string title, string body, Guid communityid)     // create post with text 
+		//{
+		//	Guid guid = Guid.NewGuid();
+
+		//	DateCreated = DateTime.Now;
+		//	PostId = guid;
+		//	UserId = userId;
+		//	Title = title;
+		//	Body = body;
+		//	Upvotes = 0;
+		//	Downvotes = 0;
+		//	CommunityId = communityid;	
+		//	_score = 0;
+		//	UpvotedUserIds = new List<Guid>();
+  //          DownvotedUserIds = new List<Guid>();
+
+  //      }
+
+  //      public Post(Guid userId, string title, Guid communityid, string URL)     // create post with image
+  //      {
+  //          Guid guid = Guid.NewGuid();
+
+  //          DateCreated = DateTime.Now;
+  //          PostId = guid;
+  //          UserId = userId;
+  //          Title = title;
+  //          ImageURL = URL;
+  //          Upvotes = 0;
+  //          Downvotes = 0;
+  //          CommunityId = communityid;
+  //          _score = 0;
+  //          UpvotedUserIds = new List<Guid>();
+  //          DownvotedUserIds = new List<Guid>();
+  //      }
+
+		public Post (Guid userId, string title, string? body, string? imageUrl ,Guid communityid)
 		{
-			Guid guid = Guid.NewGuid();
-
-			DateCreated = DateTime.Now;
-			PostId = guid;
-			UserId = userId;
-			Title = title;
-			Body = body;
-			Upvotes = 0;
-			Downvotes = 0;
-			CommunityId = communityid;	
-			_score = 0;
-			UpvotedUserIds = new List<Guid>();
-            DownvotedUserIds = new List<Guid>();
-
-        }
-
-        public Post(Guid userId, string title, Guid communityid, string URL)     // create post with image
-        {
             Guid guid = Guid.NewGuid();
 
             DateCreated = DateTime.Now;
             PostId = guid;
             UserId = userId;
             Title = title;
-            ImageURL = URL;
+            Body = body;
+			ImageURL= imageUrl;
             Upvotes = 0;
             Downvotes = 0;
             CommunityId = communityid;
@@ -46,7 +64,8 @@ namespace SocialMedia.BusinessLogic
             DownvotedUserIds = new List<Guid>();
         }
 
-        public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string body, int upvotes, int downvotes, Guid communityid, string Url)  // need to add Upvoted/Downvoted UserIds
+
+        public Post (DateTime dateCreated, Guid postId, Guid userId, string title, string? body, int upvotes, int downvotes, Guid communityid, string? Url)  // need to add Upvoted/Downvoted UserIds
 		{
             DateCreated = dateCreated;
 			PostId = postId;
@@ -85,7 +104,7 @@ namespace SocialMedia.BusinessLogic
                 }
              }
 		}
-		private string _body;
+		private string? _body;
 		public string? Body
 		{
 			get
@@ -94,7 +113,7 @@ namespace SocialMedia.BusinessLogic
 			}
 			  private set
 			  {
-                if (value.Length <= 750)
+                if (value == null || value.Length <= 750)
                 {
                     _body = value;
                 }

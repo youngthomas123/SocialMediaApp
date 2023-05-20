@@ -65,13 +65,13 @@ namespace SocialMediaWebApp.Pages
 
                 if (PostData.Option == "Text" && PostData.Body != null)
                 {
-                    Post post = new Post(userId, PostData.Title, PostData.Body, new Guid(PostData.CommunityId));
+                    Post post = new Post(userId, PostData.Title, PostData.Body, null, new Guid(PostData.CommunityId));
                     _postContainer.SavePost(post);
                     TempData["PostStatus"] = "Post created successfully";
                 }
                 else if (PostData.Option == "Image" && PostData.ImageURl != null)
                 {
-                    Post post = new Post(userId, PostData.Title, new Guid(PostData.CommunityId), PostData.ImageURl);
+                    Post post = new Post(userId, PostData.Title, null, PostData.ImageURl, new Guid(PostData.CommunityId));
                     _postContainer.SavePost(post);
                     TempData["PostStatus"] = "Post created successfully";
                 }
