@@ -1,0 +1,25 @@
+﻿@page
+@model SocialMediaWebApp.Pages.EditCommentModel
+@{
+}
+<div class="container">
+    <h1>Edit Comment</h1>
+    <br />
+    <form method="post" asp-page-handler="EditComment">
+        <!-- Comment body -->
+        <div class="form-group">
+
+            <label asp-for="EditCommentVM.Body"></label>
+            <textarea asp-for="EditCommentVM.Body" class="form-control" rows="3"> </textarea>
+            <span asp-validation-for="EditCommentVM.Body" class="text-danger"></span>
+
+        </div>
+      
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="hidden" name="CommentId" value="@Model.Comment.CommentId" />
+
+    </form>
+
+
+</div>

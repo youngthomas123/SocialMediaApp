@@ -27,5 +27,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool IsCommentDownvoted(Guid userId, Guid commentId);
 
-	}
+        void UpdateComment(Guid commentId, string body);
+
+        void DeleteComment(Guid commentId);
+
+
+    }
 }

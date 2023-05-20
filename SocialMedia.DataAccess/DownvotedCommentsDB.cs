@@ -48,7 +48,25 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 		}
 
-		public bool HasUserDownvoted(Guid userId, Guid commentId)
+        public void DeleteRecord(Guid commentId)
+        {
+            SqlConnection conn = new SqlConnection(connection);
+            conn.Open();
+
+            string sql = $"delete from DownvotedComments " +
+                         $"where CommentId = @CommentId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+           
+            cmd.Parameters.AddWithValue("@CommentId", commentId);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        public bool HasUserDownvoted(Guid userId, Guid commentId)
 		{
 			int record = -1;
 

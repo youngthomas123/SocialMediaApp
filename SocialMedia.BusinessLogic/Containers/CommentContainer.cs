@@ -131,5 +131,16 @@ namespace SocialMedia.BusinessLogic.Containers
 			return isCommentDownvoted;
 		}
 
+        public void UpdateComment(Guid commentId, string body)
+        {
+            _commentDataAccess.UpdateComment(commentId, body);
+        }
+
+        public void DeleteComment(Guid commentId)
+        {
+            _upvotedCommentsDataAccess.DeleteRecord(commentId);
+            _downvotedCommentsDataAccess.DeleteRecord(commentId);
+            _commentDataAccess.DeleteComment(commentId);
+        }
 	}
 }

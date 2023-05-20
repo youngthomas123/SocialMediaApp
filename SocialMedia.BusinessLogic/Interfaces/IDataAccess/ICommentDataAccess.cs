@@ -20,6 +20,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         Comment LoadCommentById(Guid commentId);
 
+        void UpdateComment(Guid commentId, string body);
+
 
     }
 }

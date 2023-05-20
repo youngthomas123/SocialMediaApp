@@ -10,41 +10,7 @@ namespace SocialMedia.BusinessLogic
 	public class Post
 	{
 
-		
-		//public Post(Guid userId, string title, string body, Guid communityid)     // create post with text 
-		//{
-		//	Guid guid = Guid.NewGuid();
-
-		//	DateCreated = DateTime.Now;
-		//	PostId = guid;
-		//	UserId = userId;
-		//	Title = title;
-		//	Body = body;
-		//	Upvotes = 0;
-		//	Downvotes = 0;
-		//	CommunityId = communityid;	
-		//	_score = 0;
-		//	UpvotedUserIds = new List<Guid>();
-  //          DownvotedUserIds = new List<Guid>();
-
-  //      }
-
-  //      public Post(Guid userId, string title, Guid communityid, string URL)     // create post with image
-  //      {
-  //          Guid guid = Guid.NewGuid();
-
-  //          DateCreated = DateTime.Now;
-  //          PostId = guid;
-  //          UserId = userId;
-  //          Title = title;
-  //          ImageURL = URL;
-  //          Upvotes = 0;
-  //          Downvotes = 0;
-  //          CommunityId = communityid;
-  //          _score = 0;
-  //          UpvotedUserIds = new List<Guid>();
-  //          DownvotedUserIds = new List<Guid>();
-  //      }
+	
 
 		public Post (Guid userId, string title, string? body, string? imageUrl ,Guid communityid)
 		{
@@ -173,16 +139,28 @@ namespace SocialMedia.BusinessLogic
 			DownvotedUserIds.Remove(userId);
 		}
 
-        public void upvote()
+        public void Upvote()
         {
             Upvotes = Upvotes + 1;
 			CalculateScore();
         }
-        public void downvote()
+
+		public void RemoveUpvote()
+		{
+            Upvotes = Upvotes - 1;
+			CalculateScore();
+        }
+        public void Downvote()
         {
             Downvotes = Downvotes + 1;
             CalculateScore();
         }
+
+		public void RemoveDownvote()
+		{
+			Downvotes = Downvotes -1;
+			CalculateScore();
+		}
 
         public void CalculateScore()
         {

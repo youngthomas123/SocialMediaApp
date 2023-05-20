@@ -17,6 +17,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		List<Guid> GetUpvotedUserIdsByComment(Guid commentId);
 
+		void DeleteRecord(Guid commentId);
+
 
     }
 }

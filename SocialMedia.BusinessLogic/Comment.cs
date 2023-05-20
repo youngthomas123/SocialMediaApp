@@ -116,12 +116,22 @@ namespace SocialMedia.BusinessLogic
 			CalculateScore();
 
         }
+
+		public void RemoveUpvote()
+		{
+			Upvotes = Upvotes - 1;
+			CalculateScore();
+        }
 		public void Downvote()
 		{
 			Downvotes = Downvotes + 1;
 			CalculateScore();
 		}
-
+		public void Removedownvote()
+		{
+			Downvotes = Downvotes - 1;
+			CalculateScore();
+		}
 
 		public void CalculateScore()
 		{

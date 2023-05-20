@@ -50,7 +50,7 @@ namespace SocialMediaWebApp.Pages
 			}
 			else
 			{
-				post.upvote();
+				post.Upvote();
 				post.AddUpvotedUserId(userId);
 			
 				_postContainer.UpdatePostScore(post, userId, direction);
@@ -69,7 +69,7 @@ namespace SocialMediaWebApp.Pages
 			}
 			else
 			{
-				post.downvote();
+				post.RemoveUpvote();
 				post.RemoveUpvotedUserId(userId);
 				
 				_postContainer.UpdatePostScore(post, userId, direction);
@@ -89,7 +89,7 @@ namespace SocialMediaWebApp.Pages
 			{
 				return NotFound();
 			}
-			post.downvote();
+			post.Downvote();
 			post.AddDownvotedUserId(userId);
 			
 			_postContainer.UpdatePostScore(post, userId, direction);
@@ -105,7 +105,7 @@ namespace SocialMediaWebApp.Pages
 				return NotFound();
 			}
 
-			post.upvote();
+			post.RemoveDownvote();
 			post.RemoveDownvotedUserId(userId);
 			
 			_postContainer.UpdatePostScore(post, userId, direction);

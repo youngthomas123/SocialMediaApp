@@ -247,6 +247,31 @@ namespace SocialMedia.DataAccess
             conn.Close();
             return Comment;
         }
+        public void UpdateComment(Guid commentId, string body)
+        {
+            SqlConnection conn = new SqlConnection(connection);
 
+            conn.Open();
+
+            string sql =  $"update Comments " +
+                          $"set Body = @UpdateBody " +
+                          $"where CommentId = @CommentID ";
+
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            
+            cmd.Parameters.AddWithValue("@UpdateBody", body); 
+            cmd.Parameters.AddWithValue("@CommentID", commentId);
+
+
+          
+
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
     }
 }

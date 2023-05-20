@@ -16,7 +16,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		List<Guid> GetDownvotedUserIdsByComment(Guid commentId);
 
-
+		void DeleteRecord(Guid commentId);
 
 
 

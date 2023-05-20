@@ -131,6 +131,19 @@
                             <i class="bi bi-three-dots"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="commentDropdown1">
+                            @if (comment.Author == User.FindFirst("UserName").Value)
+                            {
+                                <li><a class="dropdown-item" asp-page="/EditComment" asp-route-CommentId="@comment.CommentId">Edit</a></li>
+                                <li>
+                                    <form method="post" asp-page-handler="DeleteComment">
+
+                                        <button type="submit" class="dropdown-item">Delete</button>
+                                        <input type="hidden" name="PostId" value="@Model.Postid" />
+                                        <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                    </form>
+                                   
+                                </li>
+                            }
                             <li><a class="dropdown-item" href="#">Report</a></li>
                         </ul>
                     </div>

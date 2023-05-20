@@ -87,7 +87,7 @@ namespace SocialMediaWebApp.Pages
             }
             else
             {
-                post.upvote();
+                post.Upvote();
                 post.AddUpvotedUserId(userId);
 		
 				_postContainer.UpdatePostScore(post, userId, direction);
@@ -110,7 +110,7 @@ namespace SocialMediaWebApp.Pages
 			}
 			else
 			{
-				post.downvote();
+				post.RemoveUpvote();
                 post.RemoveUpvotedUserId(userId);
 
 				_postContainer.UpdatePostScore(post, userId, direction);
@@ -129,7 +129,7 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-            post.downvote();
+            post.Downvote();
             post.AddDownvotedUserId(userId);
 			
 			_postContainer.UpdatePostScore(post, userId, direction);
@@ -148,7 +148,7 @@ namespace SocialMediaWebApp.Pages
 			{
 				return NotFound();
 			}
-			post.upvote();
+			post.RemoveDownvote();
             post.RemoveDownvotedUserId(userId);
 
 			_postContainer.UpdatePostScore(post, userId, direction);
@@ -188,7 +188,7 @@ namespace SocialMediaWebApp.Pages
 			{
 				return NotFound();
 			}
-			comment.Downvote();
+			comment.RemoveUpvote();
 			comment.RemoveUpvotedUserId(userId);
 
 			_commentContainer.UpdateCommentScore(comment, userId, direction);
@@ -223,11 +223,19 @@ namespace SocialMediaWebApp.Pages
 			{
 				return NotFound();
 			}
-			comment.Upvote();
+			comment.Removedownvote();
 			comment.RemoveDownvotedUserId(userId);
 			_commentContainer.UpdateCommentScore(comment, userId, direction);
 			return RedirectToPage("/Comments", new { PostId });
 		}
+
+        public IActionResult OnPostDeleteComment(Guid PostId, Guid CommentId)
+        {
+
+            _commentContainer.DeleteComment(CommentId);
+            return RedirectToPage("/Comments", new { PostId });
+        }
+        
 
     }
 }
