@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMediaWebApp.ViewModels;
 
@@ -32,19 +33,18 @@ namespace SocialMediaWebApp.Pages
         {
             if (ModelState.IsValid)
             {
-                bool isUserNameUnique = _userContainer.CheckUserName(SignUpData.UserName);
-
-                if(isUserNameUnique ==true)
-                {
-                    TempData["SignInMessage"] = "Successfully account created.";
-                    var user = new User(SignUpData.UserName, SignUpData.Password, SignUpData.Email);
-                    _userContainer.SaveUser(user);
-                }
-                else
-                {
-                    TempData["SignInMessage"] = "Username is not available.";
-                }
                
+                try
+                {
+                    _userContainer.CreateAndSaveSignedUpUser(SignUpData.UserName, SignUpData.Password, SignUpData.Email);
+                    TempData["SignInMessage"] = "User Created successfully";
+                }
+                catch (UserCreationException ex)
+                {
+                    TempData["SignInMessage"] = ex.Message;
+                    
+                }
+
             }
            
             return Page();

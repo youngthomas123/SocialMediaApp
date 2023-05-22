@@ -273,5 +273,46 @@ namespace SocialMedia.DataAccess
 
             conn.Close();
         }
+
+        public List<Guid>LoadCommentIdsInPost(Guid postId)
+        {
+            List<Guid> CommentIds = new List<Guid>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommentId " +
+                         $"from Comments " +
+                         $"where PostId = @PostId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@PostId", postId);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+           
+            int CommentIdIndex = dr.GetOrdinal("CommentId");
+            
+
+
+            while (dr.Read())
+            {
+              
+                var CommentId = (Guid)dr[CommentIdIndex];
+
+                CommentIds.Add(CommentId);
+
+
+            }
+
+
+            dr.Close();
+
+            conn.Close();
+
+            return CommentIds;
+        }
     }
 }

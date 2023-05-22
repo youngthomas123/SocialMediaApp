@@ -22,6 +22,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void UpdateComment(Guid commentId, string body);
 
+        List<Guid> LoadCommentIdsInPost(Guid postId);
+
 
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic
 {
-	public class User
+	public abstract class User
 	{
 		
 		public User(string userName, string password, string email)
@@ -22,6 +22,8 @@ namespace SocialMedia.BusinessLogic
 			Gender = null;
 			Location = null;
 			ProfilePicture = null;
+			UserCreatedPosts = new List<Post>();
+			UserCreatedComments = new List<Comment>();
 
 		}
 
@@ -37,6 +39,8 @@ namespace SocialMedia.BusinessLogic
             Salt = salt;
             Email = email;
             DateCreated = dateCreated;
+            UserCreatedPosts = new List<Post>();
+            UserCreatedComments = new List<Comment>();
         }
 
         public Guid UserId { get; private set; }
@@ -57,6 +61,20 @@ namespace SocialMedia.BusinessLogic
 		public string? Location { get; private set; }
 
         public byte[]? ProfilePicture { get; private set; }
+
+		public List<Post>UserCreatedPosts { get; private set; }
+
+		public List<Comment>UserCreatedComments { get; private set; }
+
+		public void AddToUserCreatedPosts(Post post)
+		{
+			UserCreatedPosts.Add(post);
+		}
+
+		public void AddToUserCreatedComments(Comment comment)
+		{
+			UserCreatedComments.Add(comment);
+		}
 
         public void SetHashedPassword(string password)
 		{

@@ -50,6 +50,24 @@ namespace SocialMedia.DataAccess
             conn.Close();
         }
 
+        public void DeleteRecord(Guid postId)
+        {
+            SqlConnection conn = new SqlConnection(connection);
+            conn.Open();
+
+            string sql = $"delete from UpvotedPosts " +
+                         $"where  PostId = @PostId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+           
+            cmd.Parameters.AddWithValue("@PostId", postId);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
         public bool HasUserUpvoted(Guid userId, Guid postId)
         {
             int record =-1;

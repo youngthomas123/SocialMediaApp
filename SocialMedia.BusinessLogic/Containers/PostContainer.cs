@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Dto;
+﻿using SocialMedia.BusinessLogic.Custom_exception;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
@@ -22,14 +23,94 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IUpvotedPostsDataAccess _upvotedPostsDataAccess;
 
         private readonly IDownvotedPostsDataAccess _downvotedPostsDataAccess;
+
+        private readonly ICommentDataAccess _commentDataAccess;
+
+        private readonly IUpvotedCommentsDataAccess _upvotedCommentsDataAccess;
+
+        private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
         
-        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess)
         {
             _postDataAccess = postDataAcess;
             _userDataAccess = userDataAccess;
             _communityDataAccess = communityDataAccess;
             _upvotedPostsDataAccess = upvotedPostsDataAccess;
             _downvotedPostsDataAccess = downvotedPostsDataAccess;
+            _commentDataAccess = commentDataAccess;
+            _upvotedCommentsDataAccess = upvotedCommentsDataAccess;
+            _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
+        }
+
+        public void Upvote(Guid postId, string direction, Guid userId)
+        {
+            var post = LoadPostById(postId);
+
+            if(post != null)
+            {
+                post.Upvote();
+
+                UpdatePostScore(post, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+
+        }
+
+        public void RemoveUpvote(Guid postId, string direction, Guid userId)
+        {
+
+            var post = LoadPostById(postId);
+
+            if (post != null)
+            {
+                post.RemoveUpvote();
+
+                UpdatePostScore(post, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+
+        }
+
+        public void Downvote(Guid postId, string direction, Guid userId)
+        {
+            var post = LoadPostById(postId);
+
+            if (post != null)
+            {
+                post.Downvote();
+
+                UpdatePostScore(post, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+        }
+
+        public void RemoveDownvote(Guid postId, string direction, Guid userId)
+        {
+            var post = LoadPostById(postId);
+
+            if (post != null)
+            {
+                post.RemoveDownvote();
+
+                UpdatePostScore(post, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
         }
 
         public List<Post> LoadAllPosts()
@@ -57,12 +138,39 @@ namespace SocialMedia.BusinessLogic.Containers
         public void SavePost(Post post)
         {
             _postDataAccess.SavePost(post);
+
+            
         }
 
         public void UpdatePost(Post post)
         {
-
-            _postDataAccess.UpdatePost(post);
+            if(post.Body !=null && post.ImageURL == null)
+            {
+                if(post.Title.Length <=250 && post.Body.Length <=750)
+                {
+                    _postDataAccess.UpdatePost(post);
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+            }
+            else if(post.Body == null && post.ImageURL!=null)
+            {
+                if (post.Title.Length <= 250 )
+                {
+                    _postDataAccess.UpdatePost(post);
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+            }
+            else
+            {
+                throw new InvalidInputException();
+            }
+           
         }
         public List<PostPageDto>GetPostPageDtos(Guid userId)
         {
@@ -244,7 +352,26 @@ namespace SocialMedia.BusinessLogic.Containers
             _postDataAccess.UpdatePost(postId, title, body, imageUrl);
         }
 
+        public void DeletePost(Guid PostId)
+        {
+            //delete all comments in post
+            //get all comment ids in post (in loop)
+            // delete upvotedComents with commentId
+            // delete downvotedComments with commentId
+            //delete comment
+            var commentIds = _commentDataAccess.LoadCommentIdsInPost(PostId);
 
+            foreach (var commentId in commentIds)
+            {
+                _upvotedCommentsDataAccess.DeleteRecord(commentId);
+                _downvotedCommentsDataAccess.DeleteRecord(commentId);
+                _commentDataAccess.DeleteComment(commentId);
+            }
+
+            _upvotedPostsDataAccess.DeleteRecord(PostId);
+            _downvotedPostsDataAccess.DeleteRecord(PostId);
+            _postDataAccess.DeletePost(PostId);
+        }
 
     }
 }

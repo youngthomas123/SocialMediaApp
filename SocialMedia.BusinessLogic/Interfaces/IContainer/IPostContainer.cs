@@ -9,6 +9,16 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 {
     public interface IPostContainer
     {
+
+        void Upvote(Guid postId, string direction, Guid userId);
+
+        void RemoveUpvote(Guid postId, string direction, Guid userId);
+
+        void Downvote(Guid postId, string direction, Guid userId);
+
+        void RemoveDownvote(Guid postId, string direction, Guid userId);
+
+        // old
         List<Post> LoadAllPosts();
         Post LoadPostById(Guid postId);
         void SavePost(Post post);
@@ -30,6 +40,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         void SetVoteUserIds(Post post);
 
         void UpdatePost(Guid postId, string title, string? body, string? imageUrl);
+
+        void DeletePost(Guid PostId);
 
 
     }

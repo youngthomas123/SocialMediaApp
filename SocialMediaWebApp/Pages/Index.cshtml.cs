@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using System.Net;
@@ -42,79 +43,64 @@ namespace SocialMediaWebApp.Pages
 		public IActionResult OnPostUpvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				post.Upvote();
-				post.AddUpvotedUserId(userId);
 			
-				_postContainer.UpdatePostScore(post, userId, direction);
+			try
+			{
+				_postContainer.Upvote(postId, direction, userId);
+                return RedirectToPage();
+            }
+			catch(ItemNullException ex)
+			{
+                return NotFound();
+            }
 
-				return RedirectToPage();
-			}
 
 		}
 		public IActionResult OnPostRemoveUpvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				post.RemoveUpvote();
-				post.RemoveUpvotedUserId(userId);
-				
-				_postContainer.UpdatePostScore(post, userId, direction);
 
-				return RedirectToPage();
-			}
-
-		}
+            try
+            {
+                _postContainer.RemoveUpvote(postId, direction, userId);
+                return RedirectToPage();
+            }
+            catch (ItemNullException ex)
+            {
+                return NotFound();
+            }
+        }
 
 
 		public IActionResult OnPostDownvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			post.Downvote();
-			post.AddDownvotedUserId(userId);
-			
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage();
-		}
+            try
+            {
+                _postContainer.Downvote(postId, direction, userId);
+                return RedirectToPage();
+            }
+            catch (ItemNullException ex)
+            {
+                return NotFound();
+            }
+        }
 
 		public IActionResult OnPostRemoveDownvote(Guid postId, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
 
-			post.RemoveDownvote();
-			post.RemoveDownvotedUserId(userId);
-			
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage();
-
-		}
-
-
-
+            try
+            {
+                _postContainer.RemoveDownvote(postId, direction, userId);
+                return RedirectToPage();
+            }
+            catch (ItemNullException ex)
+            {
+                return NotFound();
+            }
+        }
 
 
 		public IActionResult OnPostViewComments(Guid postId)
@@ -123,8 +109,15 @@ namespace SocialMediaWebApp.Pages
 
 			return RedirectToPage("/Comments", new { PostId = postId });
 
-			
-
 		}
+
+		public IActionResult OnPostDeletePost(Guid PostId)
+		{
+
+			_postContainer.DeletePost(PostId);
+
+
+            return RedirectToPage();
+        }
 	}
 }

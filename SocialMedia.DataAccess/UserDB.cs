@@ -75,6 +75,7 @@ namespace SocialMedia.DataAccess
             int DateCreatedIndex = dr.GetOrdinal("DateCreated");
             int UserIdIndex = dr.GetOrdinal("UserId");
             int SaltIndex = dr.GetOrdinal("Salt");
+            int UserTypeIndex = dr.GetOrdinal("UserType");
 
 
 
@@ -88,10 +89,20 @@ namespace SocialMedia.DataAccess
                 var DateCreated = (DateTime)dr[DateCreatedIndex];
                 var UserId = (Guid)dr[UserIdIndex];
                 var Salt = (string)dr[SaltIndex];
+                var UserType = (string)dr[UserTypeIndex];
 
-                User user = new User(UserId, UserName, Password, Salt, Email, DateCreated);
+                if(UserType == "RegularUser")
+                {
+                    User User = new RegularUser (UserId, UserName, Password, Salt, Email, DateCreated);
+                    users.Add(User);
+                }
+                else if(UserType == "PremiumUser")
+                {
+                    User User = new PremiumUser(UserId, UserName, Password, Salt, Email, DateCreated);
+                    users.Add(User);
+                }
+               
 
-                users.Add(user);
             }
 
 
@@ -107,16 +118,17 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Users ([UserName], [Password], [Email], [DateCreated], [Salt], [UserId]) " +
-                         "Values (@username, @password, @email, @datecreated, @salt, @UserId)";
+            string sql = "insert into Users ([UserName], [Password], [Email], [DateCreated], [Salt], [UserId], [UserType]) " +
+                         "Values (@username, @password, @email, @datecreated, @salt, @UserId, @userType)";
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@username", user.UserName);
             cmd.Parameters.AddWithValue("@password", user.Password);
-            cmd.Parameters.AddWithValue("@email", user.Email ?? "null");
+            cmd.Parameters.AddWithValue("@email", user.Email);
             cmd.Parameters.AddWithValue("@datecreated", user.DateCreated);
             cmd.Parameters.AddWithValue("@salt", user.Salt);
             cmd.Parameters.AddWithValue("@UserId", user.UserId);
+            cmd.Parameters.AddWithValue("@userType", user.GetType().Name);
 
 
             cmd.ExecuteNonQuery();

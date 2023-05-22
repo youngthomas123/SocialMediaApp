@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Dto;
+﻿using SocialMedia.BusinessLogic.Custom_exception;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
@@ -28,6 +29,26 @@ namespace SocialMedia.BusinessLogic.Containers
 			_userFriendsDataAccess = userFriendsDataAccess;
 
 		}
+
+
+        public void CreateAndSaveSignedUpUser(string username, string password, string email)
+        {
+            bool isUserNameUnique = CheckUserName(username);
+
+          
+
+            if(isUserNameUnique == true)
+            {
+                User user = new RegularUser(username, password, email);
+                SaveUser (user);
+            }
+            else
+            {
+                throw new UserCreationException();
+            }
+
+
+        }
 
         public void SaveUser(User user)
         {
@@ -77,6 +98,7 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public void UpdateUserProfileData(Guid userId, string username, string bio, string gender, byte[] picture, string location)
         {
+            // check if userId and username exists and bui is less than 200 characters
             _profileDataAccess.UpdateRecord(userId, username, bio, gender, picture, location);
         }
 
