@@ -8,6 +8,6 @@ namespace SocialMedia.BusinessLogic.Interfaces
 {
     public interface IAuthenticationSystem
     {
-        bool ValidateCredentials(string username, string password);
+        bool ValidateCredentials(string username, string password, string? salt,string? passwordFromDataBase);
     }
 }

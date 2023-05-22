@@ -10,17 +10,17 @@ namespace SocialMedia.BusinessLogic
 {
 	public class AuthenticationSystem : IAuthenticationSystem
 	{
-		private readonly IUserDataAccess _userDataAccess;
+		
 		private readonly IPasswordHelper _passwordHelper;
 
-		public AuthenticationSystem(IUserDataAccess userDataAccess, IPasswordHelper passwordHelper)
+		public AuthenticationSystem(IPasswordHelper passwordHelper)
 		{
-            _userDataAccess = userDataAccess;
+            
 			_passwordHelper = passwordHelper;
         }
 
 
-        public bool ValidateCredentials(string username, string password) 
+        public bool ValidateCredentials(string username, string password, string? salt,string? passwordFromDataBase) 
 		{
 			bool isUserValid = false;
 
@@ -31,12 +31,12 @@ namespace SocialMedia.BusinessLogic
 			//in database, check if this created password is equal to password at username
 
 			
-			var salt = _userDataAccess.GetSalt(username);
+			
 			if (salt != null)
 			{
 				var userEnteredHashedPassword = _passwordHelper.GetHashedPassword(password, salt);
 
-				var passwordFromDataBase = _userDataAccess.GetPassword(username);
+				
 
 				if(userEnteredHashedPassword == passwordFromDataBase)
 				{

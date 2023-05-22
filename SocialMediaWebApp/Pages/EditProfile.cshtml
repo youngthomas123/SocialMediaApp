@@ -11,25 +11,35 @@
         <div class="mb-3">
             <label asp-for="EditProfileVM.ProfilePic" class="form-label"></label>
             <input asp-for="EditProfileVM.ProfilePic" type="file" accept="image/*" class="form-control-file" />
+            <span asp-validation-for="EditProfileVM.ProfilePic" class="text-danger"></span>
+            
         </div>
 
         <div class="mb-3">
             <label asp-for="EditProfileVM.Bio" class="form-label"></label>
             <textarea asp-for="EditProfileVM.Bio" rows="3" class="form-control"></textarea>
+            <span asp-validation-for="EditProfileVM.Bio" class="text-danger"></span>
+            
         </div>
 
 
         <div class="mb-3">
             <label asp-for="EditProfileVM.Gender" class="form-label"></label>
             <input asp-for="EditProfileVM.Gender" class="form-control" />
+            <span asp-validation-for="EditProfileVM.Gender" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="EditProfileVM.Location" class="form-label"></label>
             <input asp-for="EditProfileVM.Location" class="form-control" />
+            <span asp-validation-for="EditProfileVM.Location" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </div>
 
+@section Scripts
+    {
+    <partial name="_ValidationScriptsPartial" />
+}

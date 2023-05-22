@@ -78,7 +78,7 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.AddWithValue("@UpdateUserName", username);
             cmd.Parameters.AddWithValue("@UpdateBio", (object)bio ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@UpdateGender", (object)gender ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@UpdateProfilePic", picture);
+            cmd.Parameters.AddWithValue("@UpdateProfilePic", picture );
             cmd.Parameters.AddWithValue("@UpdateLocation", (object)location ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@userId", userId);
 

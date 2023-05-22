@@ -38,12 +38,14 @@ namespace SocialMediaWebApp.Pages
         }
         public void OnPost() 
         {
-            var userId = Guid.Parse(User.FindFirst("UserId").Value);
-            var userName = (User.FindFirst("UserName").Value);
-
-
-            if (EditProfileVM.ProfilePic != null)
+            if(ModelState.IsValid)
             {
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
+                var userName = (User.FindFirst("UserName").Value);
+
+
+                if (EditProfileVM.ProfilePic != null)
+                {
                     byte[] profilePicData;
                     using (var memoryStream = new MemoryStream())
                     {
@@ -53,14 +55,16 @@ namespace SocialMediaWebApp.Pages
                     }
 
                     _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, profilePicData, EditProfileVM.Location);
-                  
 
-                
+
+
+                }
+                else
+                {
+                    _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, EditProfileVM.Location);
+                }
             }
-            else
-            {
-                _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender,  EditProfileVM.Location);
-            }
+          
 
 
         }

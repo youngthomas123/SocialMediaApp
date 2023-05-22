@@ -7,8 +7,10 @@ namespace SocialMediaWebApp.ViewModels
         public EditPostVM() { }
 
         [Required]
+        [MaxLength(250)]
         public string Title { get; set; }
-
+        
+        [MaxLength(750)]
         public string? Body { get; set; }
 
         public string? ImageUrl { get; set; }

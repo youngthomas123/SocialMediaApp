@@ -77,7 +77,9 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public bool ValidateCredentials(string username, string password)
         {
-            bool isValid = _authenticationSystem.ValidateCredentials(username, password);
+            var salt = _userDataAccess.GetSalt(username);
+            var passwordFromDataBase = _userDataAccess.GetPassword(username);
+            bool isValid = _authenticationSystem.ValidateCredentials(username, password, salt, passwordFromDataBase);
             return isValid;
         }
         public string GetUserId(string username)
@@ -98,13 +100,67 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public void UpdateUserProfileData(Guid userId, string username, string bio, string gender, byte[] picture, string location)
         {
-            // check if userId and username exists and bui is less than 200 characters
-            _profileDataAccess.UpdateRecord(userId, username, bio, gender, picture, location);
+            // check if userId exists and bio is less than 200 characters
+            bool doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+           
+
+
+            if (doesUserIdExist == true)
+            {
+                if(bio != null && gender!=null && location!=null)
+                {
+                    if (bio.Length <= 200 && gender.Length <= 20 && location.Length <= 50)
+                    {
+                        _profileDataAccess.UpdateRecord(userId, username, bio, gender, picture, location);
+                    }
+                    else
+                    {
+                        throw new InvalidInputException();
+                    }
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+               
+            }
+            else
+            {
+                throw new ItemNotFoundException("UserId does not exist");
+            }
+
+           
         }
 
         public void UpdateUserProfileData(Guid userId, string username, string bio, string gender, string location)
         {
-            _profileDataAccess.UpdateRecord(userId, username, bio, gender,  location);
+            bool doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+            
+            if (doesUserIdExist == true)
+            {
+                if(bio != null && gender!=null && location!=null)
+                {
+                    if (bio.Length <= 200 && gender.Length <= 20 && location.Length <= 50)
+                    {
+                        _profileDataAccess.UpdateRecord(userId, username, bio, gender, location);
+                    }
+                    else
+                    {
+                        throw new InvalidInputException();
+                    }
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+                
+            }
+            else
+            {
+                throw new ItemNotFoundException("UserId does not exist");
+            }
+
+           
         }
 
         public void UpdateProfilePicture(Guid userId, byte[] picture)

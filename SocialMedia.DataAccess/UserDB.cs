@@ -384,5 +384,51 @@ namespace SocialMedia.DataAccess
 
 		}
 
+        public bool DoesUserIdExist(Guid userId)
+        {
+            bool doesRecordExists = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(UserId) as record " +
+                         $"from Users " +
+                         $"where UserId = @userId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+
+           
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
+        }
+
     }
+
 }
+

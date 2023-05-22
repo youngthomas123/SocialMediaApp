@@ -22,5 +22,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         List<Post> LoadPostsByCommunity(Guid communityId);
 
         void UpdatePost(Guid postId, string title, string? body, string? imageUrl);
+
+        bool DoesPostIdExist(Guid postId);
     }
 }

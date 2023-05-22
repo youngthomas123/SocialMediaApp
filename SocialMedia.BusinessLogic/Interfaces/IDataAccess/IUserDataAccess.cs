@@ -30,6 +30,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         List<string[]>? SearchUserNameAndId(string searchquery);
 
+        bool DoesUserIdExist(Guid userId);
 
-	}
+
+
+    }
 }

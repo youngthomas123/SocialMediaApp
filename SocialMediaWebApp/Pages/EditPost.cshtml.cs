@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.DataAccess;
@@ -9,12 +11,14 @@ using System.Reflection;
 
 namespace SocialMediaWebApp.Pages
 {
+   
+    [Authorize]
     public class EditPostModel : PageModel
     {
         private readonly IPostContainer _postContainer;
 
 
-        
+        public bool IsPostIdValid { get; set; }
         public PostPageDto PostDto { get; set; }
 
         [BindProperty]
@@ -25,21 +29,42 @@ namespace SocialMediaWebApp.Pages
             _postContainer = postContainer;
         }
 
-        public void OnGet(Guid PostId)
+        public void OnGet(Guid? PostId)
         {
-            EditPostVM = new EditPostVM();
+            if(PostId.HasValue)
+            {
 
-            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+                EditPostVM = new EditPostVM();
 
-            PostDto = _postContainer.GetPostPageDtoById(PostId, userId);
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-            
+                try
+                {
+                    PostDto = _postContainer.GetPostPageDtoById(PostId.Value, userId);
+                    EditPostVM.Title = PostDto.Title;
 
-            EditPostVM.Title = PostDto.Title;
+                    EditPostVM.Body = PostDto.Body;
 
-            EditPostVM.Body = PostDto.Body;
+                    EditPostVM.ImageUrl = PostDto.ImageUrl;
 
-            EditPostVM.ImageUrl = PostDto.ImageUrl;
+                    IsPostIdValid = true;
+
+                }
+                catch(ItemNotFoundException ex)
+                {
+                    TempData["Error"]  = ex.Message;
+                    IsPostIdValid = false;
+                   
+                }
+                
+            }
+            else
+            {
+                TempData["Error"] = "No valid Post Id supplied";
+                IsPostIdValid= false;
+            }
+
+
         }
 
         public IActionResult OnPostEditPost(Guid PostId)

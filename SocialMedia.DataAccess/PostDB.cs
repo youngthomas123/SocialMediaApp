@@ -330,5 +330,48 @@ namespace SocialMedia.DataAccess
             conn.Close();
         }
         
+        public bool DoesPostIdExist(Guid postId)
+        {
+            bool doesRecordExists = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(PostId) as record " +
+                         $"from Posts " +
+                         $"where PostId = @postId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@postId", postId);
+
+
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
+        }
     }
 }
