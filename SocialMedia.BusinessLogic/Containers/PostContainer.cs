@@ -42,6 +42,34 @@ namespace SocialMedia.BusinessLogic.Containers
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
         }
 
+        public void CreateAndSavePost(Guid userId, string title, string? body, string? imageUrl, Guid communityid)
+        {
+            if(body!=null && imageUrl == null)
+            {
+                if(title.Length <=250 && body.Length <=750)
+                {
+                    Post post = new Post(userId, title, body, null, communityid);
+                    SavePost(post);
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+            }
+            else if(body == null && imageUrl != null)
+            {
+                if(title.Length <=250)
+                {
+                    Post post = new Post(userId, title, null, imageUrl, communityid);
+                    SavePost(post);
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+            }
+        }
+
         public void Upvote(Guid postId, string direction, Guid userId)
         {
             var post = LoadPostById(postId);

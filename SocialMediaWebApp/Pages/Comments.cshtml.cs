@@ -56,9 +56,6 @@ namespace SocialMediaWebApp.Pages
 
             Postid = PostId;
 
-            
-
-            
 
             if (ModelState.IsValid)
             {

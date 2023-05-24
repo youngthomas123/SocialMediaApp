@@ -77,12 +77,17 @@ namespace SocialMediaWebApp.Pages
                 if(EditPostVM.Body == null && EditPostVM.ImageUrl != null )
                 {
                     _postContainer.UpdatePost(PostId, EditPostVM.Title, null, EditPostVM.ImageUrl);
+                    TempData["EditStatus"] = "Post edited successfully";
                 }
                 else if (EditPostVM.Body != null  && EditPostVM.ImageUrl == null )
                 {
                     _postContainer.UpdatePost(PostId, EditPostVM.Title, EditPostVM.Body, null);
+                    TempData["EditStatus"] = "Post edited successfully";
                 }
-                
+                else
+                {
+                    TempData["EditStatus"] = "Failed to edit post";
+                }
                 
             }
            

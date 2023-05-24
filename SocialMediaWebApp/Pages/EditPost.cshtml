@@ -3,6 +3,13 @@
 @{
 }
 
+@if (TempData["EditStatus"] != null)
+{
+    <div>
+        <p> @TempData["EditStatus"] </p>
+    </div>
+
+}
 
 @if(Model.IsPostIdValid == true)
 {

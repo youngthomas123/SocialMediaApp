@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
@@ -8,6 +9,7 @@ using SocialMediaWebApp.ViewModels;
 
 namespace SocialMediaWebApp.Pages
 {
+    [Authorize]
     public class EditCommentModel : PageModel
     {
         private readonly ICommentContainer _commentContainer;

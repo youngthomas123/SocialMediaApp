@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialMediaWebApp.ViewModels
 {
+    [Authorize]
     public class EditCommentVM
     {
 

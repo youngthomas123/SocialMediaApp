@@ -9,7 +9,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 {
     public interface IPostContainer
     {
+        void CreateAndSavePost(Guid userId, string title, string? body, string? imageUrl, Guid communityid);
 
+        //old
         void Upvote(Guid postId, string direction, Guid userId);
 
         void RemoveUpvote(Guid postId, string direction, Guid userId);

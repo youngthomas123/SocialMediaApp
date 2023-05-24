@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Newtonsoft.Json.Linq;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Containers;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
@@ -65,15 +66,32 @@ namespace SocialMediaWebApp.Pages
 
                 if (PostData.Option == "Text" && PostData.Body != null)
                 {
-                    Post post = new Post(userId, PostData.Title, PostData.Body, null, new Guid(PostData.CommunityId));
-                    _postContainer.SavePost(post);
-                    TempData["PostStatus"] = "Post created successfully";
+                    
+
+                    try
+                    {
+                        _postContainer.CreateAndSavePost(userId, PostData.Title, PostData.Body, null, new Guid(PostData.CommunityId));
+                        TempData["PostStatus"] = "Post created successfully";
+                    }
+                    catch(InvalidInputException ex)
+                    {
+                        TempData["PostStatus"] = ex.Message;
+                    }
                 }
                 else if (PostData.Option == "Image" && PostData.ImageURl != null)
                 {
-                    Post post = new Post(userId, PostData.Title, null, PostData.ImageURl, new Guid(PostData.CommunityId));
-                    _postContainer.SavePost(post);
-                    TempData["PostStatus"] = "Post created successfully";
+               
+
+                    try
+                    {
+                        _postContainer.CreateAndSavePost(userId, PostData.Title, null, PostData.ImageURl, new Guid(PostData.CommunityId));
+                        TempData["PostStatus"] = "Post created successfully";
+                    }
+                    catch (InvalidInputException ex)
+                    {
+                        TempData["PostStatus"] = ex.Message;
+                    }
+
                 }
                 else
                 {
