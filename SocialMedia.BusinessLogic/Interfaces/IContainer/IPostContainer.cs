@@ -41,9 +41,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void SetVoteUserIds(Post post);
 
-        void UpdatePost(Guid postId, string title, string? body, string? imageUrl);
+        void UpdatePost(Guid postId, string title, string? body, string? imageUrl, Guid LoggedInUserId);
 
-        void DeletePost(Guid PostId);
+        void DeletePost(Guid PostId, Guid LoggedInUserId);
 
 
     }

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Custom_exception
 {
-    public class ItemNullException : Exception
+    public class AccessException : Exception
     {
-        public ItemNullException() : base("The Item is null")
+        public AccessException() : base("You do not have access to modify this item.")
         {
            
         }
 
-        public ItemNullException(string message) : base(message)
+        public AccessException(string message) : base(message)
         {
-
+            
         }
     }
 }

@@ -28,7 +28,11 @@ namespace SocialMediaWebApp.Pages
 
 		public void OnGet()
 		{
-			postDtos = _postContainer.GetPostPageDtos(Guid.Parse(User.FindFirst("UserId").Value));
+
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+
+            postDtos = _postContainer.GetPostPageDtos(userId);
 
 			
 
@@ -49,7 +53,7 @@ namespace SocialMediaWebApp.Pages
 				_postContainer.Upvote(postId, direction, userId);
                 return RedirectToPage();
             }
-			catch(ItemNullException ex)
+			catch(ItemNullException)
 			{
                 return NotFound();
             }
@@ -65,7 +69,7 @@ namespace SocialMediaWebApp.Pages
                 _postContainer.RemoveUpvote(postId, direction, userId);
                 return RedirectToPage();
             }
-            catch (ItemNullException ex)
+            catch (ItemNullException)
             {
                 return NotFound();
             }
@@ -81,7 +85,7 @@ namespace SocialMediaWebApp.Pages
                 _postContainer.Downvote(postId, direction, userId);
                 return RedirectToPage();
             }
-            catch (ItemNullException ex)
+            catch (ItemNullException)
             {
                 return NotFound();
             }
@@ -96,7 +100,7 @@ namespace SocialMediaWebApp.Pages
                 _postContainer.RemoveDownvote(postId, direction, userId);
                 return RedirectToPage();
             }
-            catch (ItemNullException ex)
+            catch (ItemNullException)
             {
                 return NotFound();
             }
@@ -113,8 +117,20 @@ namespace SocialMediaWebApp.Pages
 
 		public IActionResult OnPostDeletePost(Guid PostId)
 		{
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			_postContainer.DeletePost(PostId);
+			try
+			{
+                _postContainer.DeletePost(PostId, userId);
+            }
+			catch(AccessException)
+			{
+                RedirectToPage();
+            }
+            catch(ItemNotFoundException)
+			{
+                return NotFound();
+            }
 
 
             return RedirectToPage();

@@ -3,27 +3,44 @@
 @{
 }
 
-<div class="container">
-    <h1>Edit Comment</h1>
-    <br />
-    <form method="post" asp-page-handler="EditComment">
-        <!-- Comment body -->
-        <div class="form-group">
+@if (TempData["EditStatus"] != null)
+{
+    <div>
+        <p> @TempData["EditStatus"] </p>
+    </div>
 
-            <label asp-for="EditCommentVM.Body"></label>
-            <textarea asp-for="EditCommentVM.Body" class="form-control" rows="3"> </textarea>
-            <span asp-validation-for="EditCommentVM.Body" class="text-danger"></span>
+}
 
-        </div>
-      
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <input type="hidden" name="CommentId" value="@Model.Comment.CommentId" />
+@if(Model.IsCommentIdValid == true)
+{
+    <div class="container">
+        <h1>Edit Comment</h1>
+        <br />
+        <form method="post" asp-page-handler="EditComment">
+            <!-- Comment body -->
+            <div class="form-group">
 
-    </form>
+                <label asp-for="EditCommentVM.Body"></label>
+                <textarea asp-for="EditCommentVM.Body" class="form-control" rows="3"> </textarea>
+                <span asp-validation-for="EditCommentVM.Body" class="text-danger"></span>
+
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <input type="hidden" name="CommentId" value="@Model.Comment.CommentId" />
+
+        </form>
 
 
-</div>
+    </div>
+}
+
+else
+{
+    <p>@TempData["Error"]</p>
+}
+
 
 @section Scripts
     {

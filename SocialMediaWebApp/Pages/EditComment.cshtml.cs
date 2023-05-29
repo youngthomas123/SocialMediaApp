@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.DataAccess;
@@ -14,6 +15,7 @@ namespace SocialMediaWebApp.Pages
     {
         private readonly ICommentContainer _commentContainer;
 
+        public bool IsCommentIdValid { get; set; }
         [BindProperty]
         public EditCommentVM EditCommentVM { get; set; }
 
@@ -24,24 +26,56 @@ namespace SocialMediaWebApp.Pages
             _commentContainer = commentContainer;
         }
 
-        public void OnGet(Guid CommentId)
+        public void OnGet(Guid? CommentId)
         {
-            EditCommentVM = new EditCommentVM();
+            if(CommentId.HasValue)
+            {
+                EditCommentVM = new EditCommentVM();
 
+                try
+                {
+                    Comment = _commentContainer.LoadCommentById(CommentId.Value);
 
-            Comment = _commentContainer.LoadCommentById(CommentId);
+                    EditCommentVM.Body = Comment.Body;
 
-            EditCommentVM.Body = Comment.Body;
+                    IsCommentIdValid = true;
+                }
+                catch(ItemNotFoundException ex)
+                {
+                    TempData["Error"] = ex.Message;
+                    IsCommentIdValid = false;
+                }
+               
+            }
+            else
+            {
+                TempData["Error"] = "No valid Comment Id supplied";
+                IsCommentIdValid = false;
+            }
+ 
 
-
-            
         }
 
         public IActionResult OnPostEditComment(Guid CommentId)
         {
-            if(ModelState.IsValid)
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+            if (ModelState.IsValid)
             {
-                _commentContainer.UpdateComment(CommentId, EditCommentVM.Body);
+                try
+                {
+                    _commentContainer.UpdateComment(CommentId, EditCommentVM.Body, userId);
+                    TempData["EditStatus"] = "Comment edited successfully";
+                }
+                catch(ItemNotFoundException ex)
+                {
+                    TempData["EditStatus"] = ex.Message;
+                }
+                catch(AccessException ex)
+                {
+                    TempData["EditStatus"] = ex.Message;
+                }
+                
             }
             return RedirectToPage("/EditComment", new { CommentId });
         }

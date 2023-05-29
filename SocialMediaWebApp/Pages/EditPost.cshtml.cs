@@ -69,20 +69,44 @@ namespace SocialMediaWebApp.Pages
 
         public IActionResult OnPostEditPost(Guid PostId)
         {
-            if(ModelState.IsValid)
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+            if (ModelState.IsValid)
             {
              
-             
-
                 if(EditPostVM.Body == null && EditPostVM.ImageUrl != null )
                 {
-                    _postContainer.UpdatePost(PostId, EditPostVM.Title, null, EditPostVM.ImageUrl);
-                    TempData["EditStatus"] = "Post edited successfully";
+                    try
+                    {
+                        _postContainer.UpdatePost(PostId, EditPostVM.Title, null, EditPostVM.ImageUrl, userId);
+                        TempData["EditStatus"] = "Post edited successfully";
+                    }
+                    catch(AccessException ex)
+                    {
+                        TempData["EditStatus"] = ex.Message;
+                    }
+                    catch(ItemNotFoundException ex)
+                    {
+                        TempData["EditStatus"] = ex.Message;
+                    }
+                    
                 }
                 else if (EditPostVM.Body != null  && EditPostVM.ImageUrl == null )
                 {
-                    _postContainer.UpdatePost(PostId, EditPostVM.Title, EditPostVM.Body, null);
-                    TempData["EditStatus"] = "Post edited successfully";
+                    try
+                    {
+                        _postContainer.UpdatePost(PostId, EditPostVM.Title, EditPostVM.Body, null, userId);
+                        TempData["EditStatus"] = "Post edited successfully";
+                    }
+                    catch(AccessException ex)
+                    {
+                        TempData["EditStatus"] = ex.Message;
+                    }
+                    catch(ItemNotFoundException ex)
+                    {
+                        TempData["EditStatus"] = ex.Message;
+                    }
+                    
                 }
                 else
                 {

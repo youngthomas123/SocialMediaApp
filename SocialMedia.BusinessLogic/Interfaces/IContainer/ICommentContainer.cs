@@ -27,7 +27,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool IsCommentDownvoted(Guid userId, Guid commentId);
 
-        void UpdateComment(Guid commentId, string body);
+        void UpdateComment(Guid commentId, string body, Guid LoggedInUserId);
 
         void DeleteComment(Guid commentId);
 

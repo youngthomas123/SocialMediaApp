@@ -10,12 +10,12 @@ namespace SocialMedia.BusinessLogic.Custom_exception
     {
         public ItemNotFoundException() : base("Was unable to find the item")
         {
-            // This constructor sets the default message to "Username is invalid".
+            
         }
 
         public ItemNotFoundException(string message) : base(message)
         {
-            // This constructor allows specifying a custom message.
+          
         }
     }
 }

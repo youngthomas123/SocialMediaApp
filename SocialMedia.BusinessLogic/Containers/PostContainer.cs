@@ -389,36 +389,75 @@ namespace SocialMedia.BusinessLogic.Containers
                 post.AddUpvotedUserId(downvotedUserId);
             }
         }
-        public void UpdatePost(Guid postId, string title, string? body, string? imageUrl)
+        public void UpdatePost(Guid postId, string title, string? body, string? imageUrl, Guid LoggedInUserId)
         {
             bool doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
 
             if(doesPostIdExist == true)
             {
-                _postDataAccess.UpdatePost(postId, title, body, imageUrl);
+                var post = _postDataAccess.LoadPostById(postId);
+                if(post.UserId == LoggedInUserId)
+                {
+                    _postDataAccess.UpdatePost(postId, title, body, imageUrl);
+                }
+                else
+                {
+                    throw new AccessException("You are not the owner of this post, hence cannot edit it.");
+                }
+               
 
+            }
+            else
+            {
+                throw new ItemNotFoundException();
             }
         }
 
-        public void DeletePost(Guid PostId)
+        public void DeletePost(Guid PostId, Guid LoggedInUserId)
         {
+            // validation - does postid/userId exist and is the logged in user the creator of the post
+
+
             //delete all comments in post
             //get all comment ids in post (in loop)
             // delete upvotedComents with commentId
             // delete downvotedComments with commentId
             //delete comment
-            var commentIds = _commentDataAccess.LoadCommentIdsInPost(PostId);
 
-            foreach (var commentId in commentIds)
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(PostId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(LoggedInUserId);
+
+            if(doesPostIdExist == true && doesUserIdExist == true)
             {
-                _upvotedCommentsDataAccess.DeleteRecord(commentId);
-                _downvotedCommentsDataAccess.DeleteRecord(commentId);
-                _commentDataAccess.DeleteComment(commentId);
-            }
+                var post = _postDataAccess.LoadPostById(PostId);
+                if(post.UserId == LoggedInUserId)
+                {
+                    var commentIds = _commentDataAccess.LoadCommentIdsInPost(PostId);
 
-            _upvotedPostsDataAccess.DeleteRecord(PostId);
-            _downvotedPostsDataAccess.DeleteRecord(PostId);
-            _postDataAccess.DeletePost(PostId);
+                    foreach (var commentId in commentIds)
+                    {
+                        _upvotedCommentsDataAccess.DeleteRecord(commentId);
+                        _downvotedCommentsDataAccess.DeleteRecord(commentId);
+                        _commentDataAccess.DeleteComment(commentId);
+                    }
+
+                    _upvotedPostsDataAccess.DeleteRecord(PostId);
+                    _downvotedPostsDataAccess.DeleteRecord(PostId);
+                    _postDataAccess.DeletePost(PostId);
+                }
+                else
+                {
+                    throw new AccessException("You are not the owner of this post");
+                }
+
+             
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+           
+           
         }
 
     }

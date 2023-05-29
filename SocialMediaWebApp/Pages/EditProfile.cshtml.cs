@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMediaWebApp.ViewModels;
 
 namespace SocialMediaWebApp.Pages
 {
+    [Authorize]
     public class EditProfileModel : PageModel
     {
 
@@ -31,12 +34,8 @@ namespace SocialMediaWebApp.Pages
             EditProfileVM.Bio = CurrentData.Bio;
 
 
-
-
-
-
         }
-        public void OnPost() 
+        public IActionResult OnPost() 
         {
             if(ModelState.IsValid)
             {
@@ -54,17 +53,46 @@ namespace SocialMediaWebApp.Pages
 
                     }
 
-                    _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, profilePicData, EditProfileVM.Location);
 
-
-
+                    try
+                    {
+                        _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, profilePicData, EditProfileVM.Location);
+                        return RedirectToPage();
+                    }
+                    catch(InvalidInputException ex)
+                    {
+                        TempData["Error"] = ex.Message;
+                       
+                    }
+                    catch (ItemNotFoundException ex)
+                    {
+                        TempData["Error"] = ex.Message;
+                        
+                    }
+    
                 }
                 else
                 {
-                    _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, EditProfileVM.Location);
+                    try
+                    {
+                        _userContainer.UpdateUserProfileData(userId, userName, EditProfileVM.Bio, EditProfileVM.Gender, EditProfileVM.Location);
+                        return RedirectToPage();
+                    }
+                    catch (InvalidInputException ex)
+                    {
+                        TempData["Error"] = ex.Message;
+                       
+                    }
+                    catch (ItemNotFoundException ex)
+                    {
+                        TempData["Error"] = ex.Message;
+                        
+                    }
+
                 }
             }
-          
+            return RedirectToPage();
+
 
 
         }

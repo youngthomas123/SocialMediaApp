@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
@@ -84,8 +85,18 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public Comment LoadCommentById(Guid commentId)
         {
-            var comment = _commentDataAccess.LoadCommentById(commentId);
-            return comment;
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
+
+            if (doesCommentIdExist == true) 
+            {
+                var comment = _commentDataAccess.LoadCommentById(commentId);
+                return comment;
+            }
+            else
+            {
+                throw new ItemNotFoundException("Invalid CommentId");
+            }
+           
         }
 
         public void UpDateComment(Comment comment)
@@ -131,11 +142,28 @@ namespace SocialMedia.BusinessLogic.Containers
 			return isCommentDownvoted;
 		}
 
-        public void UpdateComment(Guid commentId, string body)
+        public void UpdateComment(Guid commentId, string body, Guid LoggedInUserId)
         {
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
 
+            if (doesCommentIdExist)
+            {
+                var comment = _commentDataAccess.LoadCommentById(commentId);
+                if(comment.UserId == LoggedInUserId)
+                {
+                    _commentDataAccess.UpdateComment(commentId, body);
+                }
+                else
+                {
+                    throw new AccessException("You are not the owner of the comment, hence cannot edit.");
+                }
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
 
-            _commentDataAccess.UpdateComment(commentId, body);
+            
         }
 
         public void DeleteComment(Guid commentId)
