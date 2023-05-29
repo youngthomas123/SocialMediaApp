@@ -125,7 +125,7 @@ namespace SocialMediaWebApp.Pages
             }
 			catch(AccessException)
 			{
-                RedirectToPage();
+				return BadRequest();
             }
             catch(ItemNotFoundException)
 			{

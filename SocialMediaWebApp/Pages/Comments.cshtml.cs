@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Hosting;
 using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.DataAccess;
@@ -18,6 +20,8 @@ namespace SocialMediaWebApp.Pages
         
 		
         public Guid Postid { get; set; }
+
+        public bool IsPostIdValid { get; set; }
 
         public PostPageDto PostDto { get; set; }
 
@@ -41,31 +45,53 @@ namespace SocialMediaWebApp.Pages
 
 
         
-        public void OnGet(Guid PostId)
+        public void OnGet(Guid? PostId)
         {
-			 Postid = PostId;
-			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+			if(PostId.HasValue)
+            {
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			PostDto = _postContainer.GetPostPageDtoById(Postid , userId);
-            CommentDtos = _commentContainer.GetCommentPageDtosInPost(Postid, userId);
+                try
+                {
+                
+                    PostDto = _postContainer.GetPostPageDtoById(PostId.Value, userId);
+                    CommentDtos = _commentContainer.GetCommentPageDtosInPost(PostId.Value, userId);
+                    Postid = PostId.Value;
+                    IsPostIdValid = true;
+                }
+                catch (ItemNotFoundException ex)
+                {
+                    TempData["Error"] = ex.Message;
+                    IsPostIdValid = false;
+                }
+
+            }
+            else
+            {
+                TempData["Error"] = "No valid Post Id supplied";
+                IsPostIdValid = false;
+            }
 
 			
 		}
         public IActionResult OnPostAddComment(Guid PostId)
         {
-
-            Postid = PostId;
-
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
             if (ModelState.IsValid)
             {
                 
-                var userId = Guid.Parse(User.FindFirst("UserId").Value);
+                Comment comment = new Comment(userId, CommentData.Body, PostId);
 
-                
-                Comment comment = new Comment(userId, CommentData.Body, Postid);
-                _commentContainer.AddComment(comment);
-
+                try
+                {
+                    _commentContainer.AddComment(comment);
+                }
+                catch(InvalidInputException ex)
+                {
+                    TempData["Status"] = ex.Message;
+                }
+               
 
             }
             return RedirectToPage("/Comments", new { PostId });
@@ -74,21 +100,14 @@ namespace SocialMediaWebApp.Pages
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
-
-            
-            var post = _postContainer.LoadPostById(Postid);
-            if (post == null)
+            try
+            {
+                _postContainer.Upvote(PostId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
             {
                 return NotFound();
-            }
-            else
-            {
-                post.Upvote();
-                post.AddUpvotedUserId(userId);
-		
-				_postContainer.UpdatePostScore(post, userId, direction);
-				return RedirectToPage("/Comments", new { PostId });
             }
 
         }
@@ -97,40 +116,32 @@ namespace SocialMediaWebApp.Pages
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
+            try
+            {
+                _postContainer.RemoveUpvote(PostId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
 
-
-			var post = _postContainer.LoadPostById(Postid);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				post.RemoveUpvote();
-                post.RemoveUpvotedUserId(userId);
-
-				_postContainer.UpdatePostScore(post, userId, direction);
-				return RedirectToPage("/Comments", new { PostId });
-			}
-		}
+        }
 
         public IActionResult OnPostDownvotePost(Guid PostId, string direction)
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
 
-            var post = _postContainer.LoadPostById(Postid);
-            if (post == null)
+            try
+            {
+                _postContainer.Downvote(PostId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
             {
                 return NotFound();
             }
-            post.Downvote();
-            post.AddDownvotedUserId(userId);
-			
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage("/Comments", new { PostId });
 
         }
 
@@ -138,19 +149,16 @@ namespace SocialMediaWebApp.Pages
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
-
-			var post = _postContainer.LoadPostById(Postid);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			post.RemoveDownvote();
-            post.RemoveDownvotedUserId(userId);
-
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage("/Comments", new { PostId });
-		}
+            try
+            {
+                _postContainer.RemoveDownvote(PostId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
+        }
 
 
 
@@ -158,56 +166,47 @@ namespace SocialMediaWebApp.Pages
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
-
-
-            var comment = _commentContainer.LoadCommentById(commentId);
-            if (comment == null)
+            try
+            {
+                _commentContainer.Upvote(commentId, direction, userId);
+              
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch(ItemNullException)
             {
                 return NotFound();
             }
-            comment.Upvote();
-            comment.AddUpvotedUserId(userId);
-
-            _commentContainer.UpdateCommentScore(comment, userId, direction);
-            return RedirectToPage("/Comments", new { PostId });
         }
 
         public IActionResult OnPostRemoveUpvoteComment(Guid commentId, Guid PostId, string direction)
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			Postid = PostId;
-
-
-			var comment = _commentContainer.LoadCommentById(commentId);
-			if (comment == null)
-			{
-				return NotFound();
-			}
-			comment.RemoveUpvote();
-			comment.RemoveUpvotedUserId(userId);
-
-			_commentContainer.UpdateCommentScore(comment, userId, direction);
-			return RedirectToPage("/Comments", new { PostId });
-		}
+            try
+            {
+                _commentContainer.RemoveUpvote(commentId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
+        }
 
         public IActionResult OnPostDownvoteComment(Guid commentId, Guid PostId, string direction)
         {
 
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-
-			var comment = _commentContainer.LoadCommentById(commentId);
-            if (comment == null)
+            try
+            {
+                _commentContainer.Downvote(commentId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
             {
                 return NotFound();
             }
-            comment.Downvote();
-            comment.AddDownvotedUserId(userId);
-			_commentContainer.UpdateCommentScore(comment, userId, direction);
-			return RedirectToPage("/Comments", new { PostId });
-
         }
 
         public IActionResult OnPostRemoveDownvoteComment(Guid commentId, Guid PostId, string direction)
@@ -228,8 +227,21 @@ namespace SocialMediaWebApp.Pages
 
         public IActionResult OnPostDeleteComment(Guid PostId, Guid CommentId)
         {
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-            _commentContainer.DeleteComment(CommentId);
+            try
+            {
+                _commentContainer.DeleteComment(CommentId, userId);
+            }
+            catch(AccessException)
+            {
+                return BadRequest();    
+            }
+            catch(ItemNotFoundException)
+            {
+                return NotFound() ; 
+            }
+           
             return RedirectToPage("/Comments", new { PostId });
         }
         

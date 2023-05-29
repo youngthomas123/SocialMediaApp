@@ -10,6 +10,7 @@ namespace SocialMediaWebApp.ViewModels
         public EditCommentVM() { }
 
         [Required]
+        [MaxLength(350)]
         public string Body { get; set; }
     }
 }

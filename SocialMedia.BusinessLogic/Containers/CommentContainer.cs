@@ -17,14 +17,87 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IUpvotedCommentsDataAccess _upvotedCommentsDataAccess;
         private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess)
+        private readonly IPostDataAccess _postDataAccess;
+        
+
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
 			_upvotedCommentsDataAccess = upvotedCommentsDataAccess;
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
+            _postDataAccess = postDataAccess;
 
 		}
+
+        public void Upvote(Guid commentId, string direction, Guid userId)
+        {
+            var comment = LoadCommentById(commentId);
+
+            if (comment != null)
+            {
+                comment.Upvote();
+
+                UpdateCommentScore(comment, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+        }
+
+        public void RemoveUpvote(Guid commentId, string direction, Guid userId)
+        {
+            var comment = LoadCommentById(commentId);
+
+            if (comment != null)
+            {
+                comment.RemoveUpvote();
+
+                UpdateCommentScore(comment, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+        }
+
+        public void Downvote(Guid commentId, string direction, Guid userId)
+        {
+            var comment = LoadCommentById(commentId);
+
+            if (comment != null)
+            {
+                comment.Downvote();
+
+                UpdateCommentScore(comment, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+        }
+
+        public void RemoveDownvote(Guid commentId, string direction, Guid userId)
+        {
+            var comment = LoadCommentById(commentId);
+
+            if (comment != null)
+            {
+                comment.Removedownvote();
+
+                UpdateCommentScore(comment, userId, direction);
+
+            }
+            else
+            {
+                throw new ItemNullException();
+            }
+        }
+
 
         public List<Comment>GetComments() 
         {
@@ -36,7 +109,15 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public void AddComment(Comment comment)
         {
-            _commentDataAccess.SaveComment(comment);
+            if(comment.Body.Length <=350)
+            {
+                _commentDataAccess.SaveComment(comment);
+            }
+            else
+            {
+                throw new InvalidInputException("Comment body is too big");
+            }
+            
         }
         public List<Comment> LoadCommentInPost(Guid PostId)
         {
@@ -45,43 +126,55 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public List<CommentPageDto> GetCommentPageDtosInPost(Guid postId, Guid userId)
         {
-            List<CommentPageDto> commentPageDtos = new List<CommentPageDto>();
 
-            foreach (Comment comment in _commentDataAccess.LoadCommentsInPost(postId))
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+            if(doesPostIdExist == true && doesUserIdExist == true)
             {
-                CommentPageDto commentPageDto = new CommentPageDto();
+                List<CommentPageDto> commentPageDtos = new List<CommentPageDto>();
 
-                commentPageDto.Author = _userDataAccess.GetUserName(comment.UserId);
+                foreach (Comment comment in _commentDataAccess.LoadCommentsInPost(postId))
+                {
+                    CommentPageDto commentPageDto = new CommentPageDto();
 
-                commentPageDto.DateCreated = comment.DateCreated;
-                
-                commentPageDto.Body = comment.Body;
-                commentPageDto.Score = comment.Score;
-                commentPageDto.PostId = comment.PostId;
-                commentPageDto.CommentId = comment.CommentId;
+                    commentPageDto.Author = _userDataAccess.GetUserName(comment.UserId);
 
-				if (IsCommentUpvoted(userId, comment.CommentId))
-				{
-					commentPageDto.IsUpvoted = true;
-				}
-				else
-				{
-					commentPageDto.IsUpvoted = false;
-				}
+                    commentPageDto.DateCreated = comment.DateCreated;
 
-				if (IsCommentDownvoted(userId, comment.CommentId))
-				{
-					commentPageDto.IsDownvoted = true;
-				}
-				else
-				{
-					commentPageDto.IsDownvoted = false;
-				}
+                    commentPageDto.Body = comment.Body;
+                    commentPageDto.Score = comment.Score;
+                    commentPageDto.PostId = comment.PostId;
+                    commentPageDto.CommentId = comment.CommentId;
+
+                    if (IsCommentUpvoted(userId, comment.CommentId))
+                    {
+                        commentPageDto.IsUpvoted = true;
+                    }
+                    else
+                    {
+                        commentPageDto.IsUpvoted = false;
+                    }
+
+                    if (IsCommentDownvoted(userId, comment.CommentId))
+                    {
+                        commentPageDto.IsDownvoted = true;
+                    }
+                    else
+                    {
+                        commentPageDto.IsDownvoted = false;
+                    }
 
 
-				commentPageDtos.Add(commentPageDto);
+                    commentPageDtos.Add(commentPageDto);
+                }
+                return commentPageDtos;
             }
-            return commentPageDtos;
+            else
+            {
+                throw new ItemNotFoundException (); 
+            }
+           
         }
         public Comment LoadCommentById(Guid commentId)
         {
@@ -166,11 +259,35 @@ namespace SocialMedia.BusinessLogic.Containers
             
         }
 
-        public void DeleteComment(Guid commentId)
+        public void DeleteComment(Guid commentId, Guid LoggedInUserId)
         {
-            _upvotedCommentsDataAccess.DeleteRecord(commentId);
-            _downvotedCommentsDataAccess.DeleteRecord(commentId);
-            _commentDataAccess.DeleteComment(commentId);
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(LoggedInUserId);
+
+
+            if(doesCommentIdExist == true && doesUserIdExist == true)
+            {
+                var comment = _commentDataAccess.LoadCommentById(commentId);
+
+                if(comment.UserId == LoggedInUserId)
+                {
+                    _upvotedCommentsDataAccess.DeleteRecord(commentId);
+                    _downvotedCommentsDataAccess.DeleteRecord(commentId);
+                    _commentDataAccess.DeleteComment(commentId);
+                }
+                else
+                {
+                    throw new AccessException("You are not the owner of this comment");
+                }
+             
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+            
+
+
         }
 	}
 }

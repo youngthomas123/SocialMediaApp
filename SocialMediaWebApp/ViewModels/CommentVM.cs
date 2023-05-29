@@ -7,6 +7,7 @@ namespace SocialMediaWebApp.ViewModels
         public CommentVM() { }
 
         [Required]
+        [MaxLength(350)]
         public string Body { get; set; }
     }
 }

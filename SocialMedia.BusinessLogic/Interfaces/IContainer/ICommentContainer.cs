@@ -9,6 +9,13 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 {
     public interface ICommentContainer
     {
+        void Upvote(Guid commentId, string direction, Guid userId);
+
+        void RemoveUpvote(Guid commentId, string direction, Guid userId);
+
+        void Downvote(Guid commentId, string direction, Guid userId);
+
+        void RemoveDownvote(Guid commentId, string direction, Guid userId);
         List<Comment> GetComments();
 
         void AddComment(Comment comment);
@@ -29,7 +36,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void UpdateComment(Guid commentId, string body, Guid LoggedInUserId);
 
-        void DeleteComment(Guid commentId);
+        void DeleteComment(Guid commentId, Guid LoggedInUserId);
 
 
     }
