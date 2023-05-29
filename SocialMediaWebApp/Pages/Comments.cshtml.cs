@@ -213,17 +213,17 @@ namespace SocialMediaWebApp.Pages
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
+            try
+            {
+                _commentContainer.RemoveDownvote(commentId, direction, userId);
+                return RedirectToPage("/Comments", new { PostId });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
 
-			var comment = _commentContainer.LoadCommentById(commentId);
-			if (comment == null)
-			{
-				return NotFound();
-			}
-			comment.Removedownvote();
-			comment.RemoveDownvotedUserId(userId);
-			_commentContainer.UpdateCommentScore(comment, userId, direction);
-			return RedirectToPage("/Comments", new { PostId });
-		}
+        }
 
         public IActionResult OnPostDeleteComment(Guid PostId, Guid CommentId)
         {
