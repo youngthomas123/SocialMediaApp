@@ -428,6 +428,50 @@ namespace SocialMedia.DataAccess
             return doesRecordExists;
         }
 
+        public bool DoesUsernameExist(string username)
+        {
+            bool doesRecordExists = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(UserName) as record " +
+                         $"from Users " +
+                         $"where UserName = @username ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@username", username);
+
+
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
+        }
+
     }
 
 }

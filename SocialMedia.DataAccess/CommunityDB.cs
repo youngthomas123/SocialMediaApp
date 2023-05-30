@@ -2,6 +2,7 @@
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.Metrics;
@@ -380,8 +381,93 @@ namespace SocialMedia.DataAccess
 			return CommunityNamesAndIds;
 
 		}
+        public bool DoesCommunityIdExist(Guid communityId)
+        {
+            bool doesRecordExists = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(CommunityId) as record " +
+                         $"from Communities " +
+                         $"where CommunityId = @communityId ";
 
 
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityId", communityId);
+
+
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
+        }
+
+        public bool DoesCommunityNameExist(string communityName)
+        {
+            bool doesRecordExists = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(CommunityName) as record " +
+                         $"from Communities " +
+                         $"where CommunityName = @communityName ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityName", communityName);
+
+
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
+        }
 
 
 

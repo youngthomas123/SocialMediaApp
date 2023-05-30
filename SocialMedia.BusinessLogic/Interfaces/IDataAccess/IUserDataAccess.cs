@@ -32,6 +32,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         bool DoesUserIdExist(Guid userId);
 
+        bool DoesUsernameExist(string username);
+
 
 
     }

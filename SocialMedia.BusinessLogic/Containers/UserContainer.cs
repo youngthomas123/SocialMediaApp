@@ -84,9 +84,19 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public string GetUserId(string username)
         {
-            var userId = _userDataAccess.GetUserId(username);
+            var doesUsernameExist = _userDataAccess.DoesUsernameExist(username);
 
-            return userId;
+            if(doesUsernameExist == true)
+            {
+                var userId = _userDataAccess.GetUserId(username);
+
+                return userId;
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+           
         }
 
         public List<string[]>SearchUser(string query)
@@ -178,33 +188,76 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public ProfileDto GetProfileDto(Guid userId)
         {
-            ProfileDto profile = _profileDataAccess.LoadProfileRecord(userId);
 
-            var friends = _userFriendsDataAccess.GetUserFriends(userId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
 
-            foreach (Guid friend in friends )
+            if(doesUserIdExist == true)
             {
-                profile.Friends.Add(friend);
+                ProfileDto profile = _profileDataAccess.LoadProfileRecord(userId);
 
+                var friends = _userFriendsDataAccess.GetUserFriends(userId);
+
+                foreach (Guid friend in friends)
+                {
+                    profile.Friends.Add(friend);
+
+                }
+
+                return profile;
             }
-
-            return profile;
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+           
         }
 
         public void AddFriend(Guid userId, Guid friendId)
         {
-            _userFriendsDataAccess.CreateRecord(userId, friendId);
+            var isUserAlreadyFriends = CheckIfUserIsFriends(userId, friendId);
+            if(isUserAlreadyFriends == false)
+            {
+                _userFriendsDataAccess.CreateRecord(userId, friendId);
+            }
+            else
+            {
+                throw new AccessException("The user is already friends, hence cannot add friend");
+            }
+           
+
         }
 
         public void RemoveFriend(Guid userId, Guid friendId)
         {
-            _userFriendsDataAccess.DeleteRecord(userId, friendId);  
+
+            var isUserfriends = CheckIfUserIsFriends(userId, friendId);
+
+            if(isUserfriends == true) 
+            {
+                _userFriendsDataAccess.DeleteRecord(userId, friendId);
+            }
+            else
+            {
+                throw new AccessException("The user is not friends, hence cannot remove friend");
+            }
+             
         }
 
         public bool CheckIfUserIsFriends(Guid userId, Guid friendId)
         {
-            bool check = _userFriendsDataAccess.CheckRecordExists(userId, friendId);
-            return check;
+
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+            var doesFriendIdExist = _userDataAccess.DoesUserIdExist(friendId);
+
+            if(doesUserIdExist == true && doesFriendIdExist == true)
+            {
+                bool check = _userFriendsDataAccess.CheckRecordExists(userId, friendId);
+                return check;
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
         }
     }
 }

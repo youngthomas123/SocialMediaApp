@@ -30,5 +30,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         Community LoadCommunity(string communityName);
 
-	}
+        bool DoesCommunityIdExist(Guid communityId);
+
+        bool DoesCommunityNameExist(string communityName);
+
+
+    }
 }

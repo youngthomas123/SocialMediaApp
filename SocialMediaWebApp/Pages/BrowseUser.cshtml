@@ -3,64 +3,71 @@
 @{
 }
 
-
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="text-center mb-4">
-                <img src="@Model.ProfilePicture" alt="Profile Picture" class="profile-picture rounded-circle">
-            </div>
-            <h1 class="text-center">@Model.Profile.UserName</h1>
-            <p class="text-center">Your Bio</p>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">About Me</h5>
-                    <p class="card-text">
-                        @Model.Profile.Bio
-                    </p>
+@if(Model.isUsernameValid == true)
+{
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <img src="@Model.ProfilePicture" alt="Profile Picture" class="profile-picture rounded-circle">
                 </div>
-            </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Contact Information</h5>
-                    <ul class="list-unstyled">
-
-                        <li><strong>Gender:</strong> @Model.Profile.Gender</li>
-                        <li><strong>Location:</strong> @Model.Profile.Location</li>
-                    </ul>
+                <h1 class="text-center">@Model.Profile.UserName</h1>
+                <p class="text-center">Your Bio</p>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">About Me</h5>
+                        <p class="card-text">
+                            @Model.Profile.Bio
+                        </p>
+                    </div>
                 </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Contact Information</h5>
+                        <ul class="list-unstyled">
+
+                            <li><strong>Gender:</strong> @Model.Profile.Gender</li>
+                            <li><strong>Location:</strong> @Model.Profile.Location</li>
+                        </ul>
+                    </div>
+                </div>
+                @if (Model.isAlreadyFriend == false && Model.BrowseUserId != Model.LoggedInUser)
+                {
+                    <form method="post" asp-page-handler="AddFriend">
+                        <button>
+                            Add friend
+                        </button>
+
+                        <input type="hidden" name="FriendId" value="@Model.Profile.UserId" />
+                        <input type="hidden" name="BrowseUserName" value="@Model.Profile.UserName" />
+                    </form>
+
+                }
+                else if (Model.isAlreadyFriend == true && Model.BrowseUserId != Model.LoggedInUser)
+                {
+
+                    <form method="post" asp-page-handler="RemoveFriend">
+                        <button>
+                            Remove friend
+                        </button>
+
+                        <input type="hidden" name="FriendId" value="@Model.Profile.UserId" />
+                        <input type="hidden" name="BrowseUserName" value="@Model.Profile.UserName" />
+                    </form>
+
+
+
+                }
+
             </div>
-            @if (Model.isAlreadyFriend == false && Model.BrowseUserId != Model.LoggedInUser)
-            {
-                <form method="post" asp-page-handler="AddFriend"> 
-                    <button>
-                        Add friend
-                    </button>
-
-                    <input type="hidden" name="FriendId" value="@Model.Profile.UserId" />
-                    <input type="hidden" name="BrowseUserName" value="@Model.Profile.UserName" />
-                </form>
-                
-            }
-            else if (Model.isAlreadyFriend == true && Model.BrowseUserId != Model.LoggedInUser)
-            {
-
-                <form method="post" asp-page-handler="RemoveFriend">
-                    <button>
-                        Remove friend
-                    </button>
-
-                    <input type="hidden" name="FriendId" value="@Model.Profile.UserId" />
-                    <input type="hidden" name="BrowseUserName" value="@Model.Profile.UserName" />
-                </form>
-
-
-              
-            }
-            
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>@TempData["Error"]</p>
+}
+
 
 
 
