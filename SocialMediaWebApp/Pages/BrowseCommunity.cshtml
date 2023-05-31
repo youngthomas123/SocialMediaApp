@@ -4,202 +4,210 @@
 @{
 }
 
+@if(Model.isCommunitynameValid == true)
+{
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<!-- Main Section -->
+				<div class="mb-4">
+					<div class="d-flex align-items-center justify-content-between">
+						<div>
+							<h1>@Model.Community.CommunityName</h1>
+							<p>@Model.Community.Description</p>
+						</div>
 
+						@if (!Model.Community.FollowingUserIds.Contains(new Guid(User.FindFirst("UserId").Value)))
+						{
+							<form method="post" asp-page-handler="FollowCommunity">
 
-<div class="container">
-	<div class="row">
-		<div class="col-lg-8">
-			<!-- Main Section -->
-			<div class="mb-4">
-				<div class="d-flex align-items-center justify-content-between">
-					<div>
-						<h1>@Model.Community.CommunityName</h1>
-						<p>@Model.Community.Description</p>
-					</div>
-
-					@if (!Model.Community.FollowingUserIds.Contains(new Guid(User.FindFirst("UserId").Value)))
-					{
-						<form method="post" asp-page-handler="FollowCommunity">
-
-							<button class="btn btn-primary ">
-								Follow
-							</button>
-							<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
-							<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-
-						</form>
-					}
-					else
-					{
-						<form method="post" asp-page-handler="UnfollowCommunity">
-
-							<button class="btn btn-success ">
-								Unfollow
-							</button>
-							<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
-							<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-
-						</form>
-					}
-
-					
-
-
-				</div>
-			</div>
-
-			<!-- Sorting Section -->
-			<div class="mb-4">
-				<div class="panel-sorting">
-					<button type="button" class="btn btn-sm">New</button>
-					<button type="button" class="btn btn-sm">Top</button>
-				</div>
-			</div>
-
-			<!-- Posts Section -->
-			<div class="mb-4">
-				
-				@foreach (var post in Model.PostDtos)
-				{
-					<br />
-
-					<div class="card mb-3">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<div class="d-flex flex-column">
-								<div class="btn-group">
-									@if (post.IsUpvoted == false)
-									{
-										<form method="post" asp-page-handler="Upvote">
-											<button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
-												Upvote
-											</button>
-											<input type="hidden" name="postId" value="@post.PostId" />
-											<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-											<input type="hidden" name="direction" value="upvotePost" />
-										</form>
-									}
-									else
-									{
-										<form method="post" asp-page-handler="RemoveUpvote">
-											<button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()">
-												Remove Upvote
-											</button>
-											<input type="hidden" name="postId" value="@post.PostId" />
-											<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-											<input type="hidden" name="direction" value="removeUpvotePost" />
-										</form>
-									}
-
-									@if (post.IsDownvoted == false)
-									{
-										<form method="post" asp-page-handler="Downvote">
-											<button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
-												Downvote
-											</button>
-											<input type="hidden" name="postId" value="@post.PostId" />
-											<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-											<input type="hidden" name="direction" value="downvotePost" />
-										</form>
-									}
-									else
-									{
-										<form method="post" asp-page-handler="RemoveDownvote">
-											<button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()">
-												Remove Downvote
-											</button>
-											<input type="hidden" name="postId" value="@post.PostId" />
-											<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
-											<input type="hidden" name="direction" value="removeDownvotePost" />
-										</form>
-									}
-								</div>
-								<p class="card-text small text-muted mb-0">Score: @post.Score</p>
-							</div>
-							<div class="d-flex flex-column align-items-end">
-								<p class="card-text small text-muted mb-1">Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a></p>
-								<p class="card-text small text-muted mb-1">Author - <a asp-page="/BrowseUser" asp-route-UserName="@post.Author">@post.Author</a></p>
-								<p class="card-text small text-muted mb-0">Posted on  @post.DateCreated</p>
-							</div>
-							<div class="dropdown">
-								<button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-									<span class="visually-hidden">Toggle Dropdown</span>
+								<button class="btn btn-primary ">
+									Follow
 								</button>
-								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+								<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
+								<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
 
-									@if (post.Author == User.FindFirst("UserName").Value)
-									{
-										<li><a class="dropdown-item" asp-page="/EditPost" asp-route-PostId="@post.PostId"> Edit </a></li>
-										<li><a class="dropdown-item" href="#">Delete</a></li>
-									}
+							</form>
+						}
+						else
+						{
+							<form method="post" asp-page-handler="UnfollowCommunity">
 
-									<li><a class="dropdown-item" href="#">Report</a></li>
-									
-								</ul>
+								<button class="btn btn-success ">
+									Unfollow
+								</button>
+								<input type="hidden" name="CommunityId" value="@Model.Community.CommunityId" />
+								<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+
+							</form>
+						}
+
+
+
+
+					</div>
+				</div>
+
+				<!-- Sorting Section -->
+				<div class="mb-4">
+					<div class="panel-sorting">
+						<button type="button" class="btn btn-sm">New</button>
+						<button type="button" class="btn btn-sm">Top</button>
+					</div>
+				</div>
+
+				<!-- Posts Section -->
+				<div class="mb-4">
+
+					@foreach (var post in Model.PostDtos)
+					{
+						<br />
+
+						<div class="card mb-3">
+							<div class="card-header d-flex justify-content-between align-items-center">
+								<div class="d-flex flex-column">
+									<div class="btn-group">
+										@if (post.IsUpvoted == false)
+										{
+											<form method="post" asp-page-handler="Upvote">
+												<button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()" disabled="@(post.IsDownvoted)">
+													Upvote
+												</button>
+												<input type="hidden" name="postId" value="@post.PostId" />
+												<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+												<input type="hidden" name="direction" value="upvotePost" />
+											</form>
+										}
+										else
+										{
+											<form method="post" asp-page-handler="RemoveUpvote">
+												<button type="submit" class="btn btn-outline-success btn-sm me-2" onclick="maintainscrollposition()">
+													Remove Upvote
+												</button>
+												<input type="hidden" name="postId" value="@post.PostId" />
+												<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+												<input type="hidden" name="direction" value="removeUpvotePost" />
+											</form>
+										}
+
+										@if (post.IsDownvoted == false)
+										{
+											<form method="post" asp-page-handler="Downvote">
+												<button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()" disabled="@(post.IsUpvoted)">
+													Downvote
+												</button>
+												<input type="hidden" name="postId" value="@post.PostId" />
+												<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+												<input type="hidden" name="direction" value="downvotePost" />
+											</form>
+										}
+										else
+										{
+											<form method="post" asp-page-handler="RemoveDownvote">
+												<button type="submit" class="btn btn-outline-danger btn-sm" onclick="maintainscrollposition()">
+													Remove Downvote
+												</button>
+												<input type="hidden" name="postId" value="@post.PostId" />
+												<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+												<input type="hidden" name="direction" value="removeDownvotePost" />
+											</form>
+										}
+									</div>
+									<p class="card-text small text-muted mb-0">Score: @post.Score</p>
+								</div>
+								<div class="d-flex flex-column align-items-end">
+									<p class="card-text small text-muted mb-1">Community - <a asp-page="/BrowseCommunity" asp-route-CommunityName="@post.CommunityName">@post.CommunityName</a></p>
+									<p class="card-text small text-muted mb-1">Author - <a asp-page="/BrowseUser" asp-route-UserName="@post.Author">@post.Author</a></p>
+									<p class="card-text small text-muted mb-0">Posted on  @post.DateCreated</p>
+								</div>
+								<div class="dropdown">
+									<button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+										<span class="visually-hidden">Toggle Dropdown</span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+
+										@if (post.Author == User.FindFirst("UserName").Value)
+										{
+											<li><a class="dropdown-item" asp-page="/EditPost" asp-route-PostId="@post.PostId"> Edit </a></li>
+											<li><a class="dropdown-item" href="#">Delete</a></li>
+										}
+
+										<li><a class="dropdown-item" href="#">Report</a></li>
+
+									</ul>
+								</div>
 							</div>
+							<div class="card-body">
+								<h5 class="card-title">@post.Title</h5>
+
+								@if (post.Body != null && post.ImageUrl == null)
+								{
+									<div class="card-text">
+										<p>@post.Body</p>
+									</div>
+								}
+								@if (post.Body == null && post.ImageUrl != null)
+								{
+									<img src="@post.ImageUrl" alt="Image" class="img-fluid">
+								}
+							</div>
+							<div class="card-footer">
+								<form method="post" asp-page-handler="ViewComments">
+									<button type="submit" class="btn btn-primary">
+										View comments
+									</button>
+									<input type="hidden" name="postId" value="@post.PostId" />
+								</form>
+							</div>
+						</div>
+						<br />
+					}
+
+
+
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<!-- Sidebar Section -->
+				<div class="mb-4">
+					<!-- Community Rules -->
+					<div class="card card-rules">
+						<div class="card-body">
+							<h5 class="card-title">Community Rules</h5>
+							<ul class="list-group list-group-flush">
+
+								@foreach (string rule in Model.Community.Rules)
+								{
+									<li class="list-group-item">@rule</li>
+								}
+
+							</ul>
+						</div>
+					</div>
+					<br />
+					<!-- Moderators -->
+					<div class="card card-moderators">
+						<div class="card-header">
+							<h5 class="card-title">Moderators</h5>
 						</div>
 						<div class="card-body">
-							<h5 class="card-title">@post.Title</h5>
-
-							@if (post.Body != null && post.ImageUrl == null)
-							{
-								<div class="card-text">
-									<p>@post.Body</p>
-								</div>
-							}
-							@if (post.Body == null && post.ImageUrl != null)
-							{
-								<img src="@post.ImageUrl" alt="Image" class="img-fluid">
-							}
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item">Moderator 1</li>
+								<li class="list-group-item">Moderator 2</li>
+								<li class="list-group-item">Moderator 3</li>
+							</ul>
 						</div>
-						<div class="card-footer">
-							<form method="post" asp-page-handler="ViewComments">
-								<button type="submit" class="btn btn-primary">
-									View comments
-								</button>
-								<input type="hidden" name="postId" value="@post.PostId" />
-							</form>
-						</div>
-					</div>
-					<br />
-				}
-
-				
-				
-			</div>
-		</div>
-
-		<div class="col-lg-4">
-			<!-- Sidebar Section -->
-			<div class="mb-4">
-				<!-- Community Rules -->
-				<div class="card card-rules">
-					<div class="card-body">
-						<h5 class="card-title">Community Rules</h5>
-						<ul class="list-group list-group-flush">
-
-							@foreach (string rule in Model.Community.Rules)
-							{
-								<li class="list-group-item">@rule</li>
-							}
-							
-						</ul>
-					</div>
-				</div>
-				<br />
-				<!-- Moderators -->
-				<div class="card card-moderators">
-					<div class="card-header">
-						<h5 class="card-title">Moderators</h5>
-					</div>
-					<div class="card-body">
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item">Moderator 1</li>
-							<li class="list-group-item">Moderator 2</li>
-							<li class="list-group-item">Moderator 3</li>
-						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+}
+else
+{
+	<p>@TempData["Error"]</p>
+
+}
+
+

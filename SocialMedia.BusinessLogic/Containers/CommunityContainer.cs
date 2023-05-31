@@ -1,9 +1,11 @@
-﻿using SocialMedia.BusinessLogic.Dto;
+﻿using SocialMedia.BusinessLogic.Custom_exception;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,16 +18,17 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly ICommunityMembersDataAccess _communityMembersAccess;
         private readonly ICommunityRulesDataAccess _communityRulesAccess;
         private readonly IPostDataAccess _postDataAccess;
+        private readonly IUserDataAccess _userDataAccess;
 
 
 
-        public CommunityContainer(ICommunityDataAccess communityDataAcess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityRulesDataAccess communityRulesDataAccess, IPostDataAccess postDataAccess)
+        public CommunityContainer(ICommunityDataAccess communityDataAcess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityRulesDataAccess communityRulesDataAccess, IPostDataAccess postDataAccess, IUserDataAccess userDataAccess)
         {
             _communityDataAccess = communityDataAcess;
             _communityMembersAccess = communityMembersDataAccess;
             _communityRulesAccess = communityRulesDataAccess;
             _postDataAccess = postDataAccess;
-
+            _userDataAccess = userDataAccess;
 
         }
 
@@ -62,28 +65,39 @@ namespace SocialMedia.BusinessLogic.Containers
 
 		public CommunityFullDto LoadCompleteCommunityDto(string communityName)
 		{
-			var community = _communityDataAccess.LoadCommunity(communityName);
+
+            var doesCommunityNameExist = _communityDataAccess.DoesCommunityNameExist(communityName);
+
+            if (doesCommunityNameExist == true) 
+            {
+                var community = _communityDataAccess.LoadCommunity(communityName);
 
 
-				var rules = _communityRulesAccess.LoadRules(community.CommunityId);
-				var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
-				var postids = _postDataAccess.GetPostIds(community.CommunityId);
+                var rules = _communityRulesAccess.LoadRules(community.CommunityId);
+                var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
+                var postids = _postDataAccess.GetPostIds(community.CommunityId);
 
-				CommunityFullDto communityFullDto = new CommunityFullDto();
+                CommunityFullDto communityFullDto = new CommunityFullDto();
 
 
-				communityFullDto.UserId = community.UserId;
-				communityFullDto.Rules = rules;
-				communityFullDto.DateCreated = community.DateCreated;
-				communityFullDto.CommunityId = community.CommunityId;
-				communityFullDto.CommunityName = community.CommunityName;
-				communityFullDto.Description = community.Description;
-				communityFullDto.PostIds = postids;
-				communityFullDto.FollowingUserIds = UserIds;
+                communityFullDto.UserId = community.UserId;
+                communityFullDto.Rules = rules;
+                communityFullDto.DateCreated = community.DateCreated;
+                communityFullDto.CommunityId = community.CommunityId;
+                communityFullDto.CommunityName = community.CommunityName;
+                communityFullDto.Description = community.Description;
+                communityFullDto.PostIds = postids;
+                communityFullDto.FollowingUserIds = UserIds;
 
-				
 
-			return communityFullDto;
+
+                return communityFullDto;
+            }
+            else
+            {
+                throw new ItemNotFoundException("Invalid community name");
+            }
+			
 		}
 
 		public List<string> LoadCommunityNames()
@@ -136,12 +150,55 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public void FollowCommunity(Guid communityId, Guid userId)
         {
-            _communityMembersAccess.CreateMember(communityId, userId);
+            var doesCommunityIdExist = _communityDataAccess.DoesCommunityIdExist(communityId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+
+            if(doesCommunityIdExist == true && doesUserIdExist == true)
+            {
+                var doesUserAlreadyFollowCommunity = _communityMembersAccess.CheckRecordExists(communityId, userId);
+
+                if (doesUserAlreadyFollowCommunity == false)
+                {
+                    _communityMembersAccess.CreateMember(communityId, userId);
+                }
+                else
+                {
+                    throw new AccessException("User already follows the community");
+                }
+               
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+            
         }
 
         public void UnfollowCommunity(Guid communityId, Guid userId)
         {
-            _communityMembersAccess?.DeleteMember(communityId, userId);
+            var doesCommunityIdExist = _communityDataAccess.DoesCommunityIdExist(communityId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+            if(doesCommunityIdExist == true && doesUserIdExist == true)
+            {
+                var doesUserAlreadyFollowCommunity = _communityMembersAccess.CheckRecordExists(communityId, userId);
+
+                if(doesUserAlreadyFollowCommunity == true)
+                {
+                    _communityMembersAccess.DeleteMember(communityId, userId);
+                }
+                else
+                {
+                    throw new AccessException("User does not follow the community, hence cannot unfollow");
+                }
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+
+          
         }
     }
 }

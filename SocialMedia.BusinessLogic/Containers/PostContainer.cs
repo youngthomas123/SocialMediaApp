@@ -295,43 +295,54 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public List<PostPageDto> GetPostPageDtosByCommunity(Guid communityId, Guid userId)
         {
-            List<PostPageDto> postPageDtos = new List<PostPageDto>();
+            var doesCommunityIdExist = _communityDataAccess.DoesCommunityIdExist(communityId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
 
-            foreach (Post post in _postDataAccess.LoadPostsByCommunity(communityId))
+            if(doesCommunityIdExist == true && doesUserIdExist == true)
             {
-                PostPageDto postPageDto = new PostPageDto();
+                List<PostPageDto> postPageDtos = new List<PostPageDto>();
 
-                postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
-                postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
-                postPageDto.DateCreated = post.DateCreated;
-                postPageDto.Title = post.Title;
-                postPageDto.Body = post.Body;
-                postPageDto.Score = post.Score;
-                postPageDto.PostId = post.PostId;
-				postPageDto.ImageUrl = post.ImageURL;
-
-				if (IsPostUpvoted(userId, post.PostId))
+                foreach (Post post in _postDataAccess.LoadPostsByCommunity(communityId))
                 {
-                    postPageDto.IsUpvoted = true;
-                }
-                else
-                {
-                    postPageDto.IsUpvoted = false;
-                }
+                    PostPageDto postPageDto = new PostPageDto();
 
-                if (IsPostDownvoted(userId, post.PostId))
-                {
-                    postPageDto.IsDownvoted = true;
-                }
-                else
-                {
-                    postPageDto.IsDownvoted = false;
-                }
+                    postPageDto.Author = _userDataAccess.GetUserName(post.UserId);
+                    postPageDto.CommunityName = _communityDataAccess.GetCommunityName(post.CommunityId);
+                    postPageDto.DateCreated = post.DateCreated;
+                    postPageDto.Title = post.Title;
+                    postPageDto.Body = post.Body;
+                    postPageDto.Score = post.Score;
+                    postPageDto.PostId = post.PostId;
+                    postPageDto.ImageUrl = post.ImageURL;
+
+                    if (IsPostUpvoted(userId, post.PostId))
+                    {
+                        postPageDto.IsUpvoted = true;
+                    }
+                    else
+                    {
+                        postPageDto.IsUpvoted = false;
+                    }
+
+                    if (IsPostDownvoted(userId, post.PostId))
+                    {
+                        postPageDto.IsDownvoted = true;
+                    }
+                    else
+                    {
+                        postPageDto.IsDownvoted = false;
+                    }
 
 
-                postPageDtos.Add(postPageDto);
+                    postPageDtos.Add(postPageDto);
+                }
+                return postPageDtos;
             }
-            return postPageDtos;
+            else
+            {
+                throw new ItemNotFoundException("Invalid community id");
+            }
+            
         }
 
         public bool IsPostUpvoted(Guid userId, Guid postId)

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
@@ -14,7 +15,9 @@ namespace SocialMediaWebApp.Pages
 		private readonly ICommunityContainer _communityContainer;
         
 
-		 public CommunityFullDto Community{ get; set; }
+		public bool isCommunitynameValid { get; set; }	
+
+        public CommunityFullDto Community{ get; set; }
 
         public List<PostPageDto> PostDtos { get; set; }
 		
@@ -26,18 +29,34 @@ namespace SocialMediaWebApp.Pages
 			_communityContainer = communityContainer;
         }
 
-        public void OnGet(string CommunityName)
+        public void OnGet(string? CommunityName)
         {
-			
+			if(CommunityName != null)
+			{
+                var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			
-            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+				try
+				{
+                    Community = _communityContainer.LoadCompleteCommunityDto(CommunityName);
 
 
-			Community = _communityContainer.LoadCompleteCommunityDto(CommunityName);
+                    PostDtos = _postContainer.GetPostPageDtosByCommunity(Community.CommunityId, userId);
 
-			
-            PostDtos = _postContainer.GetPostPageDtosByCommunity(Community.CommunityId, userId);
+                    isCommunitynameValid = true;
+                }
+				catch(ItemNotFoundException ex)
+				{
+                    TempData["Error"] = ex.Message;
+                    isCommunitynameValid = false;
+                }
+               
+            }
+			else
+			{
+                TempData["Error"] = "No communityname supplied";
+                isCommunitynameValid = false;
+            }
 			
 
         }
@@ -46,75 +65,63 @@ namespace SocialMediaWebApp.Pages
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				post.Upvote();
-				post.AddUpvotedUserId(userId);
-				
-				_postContainer.UpdatePostScore(post, userId, direction);
+            try
+            {
+                _postContainer.Upvote(postId, direction, userId);
+                return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
 
-				return RedirectToPage("/BrowseCommunity",  new { CommunityName = CommunityName });
-			}
-
-		}
+        }
 
 		public IActionResult OnPostRemoveUpvote(Guid postId, string CommunityName, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
+            try
+            {
+                _postContainer.RemoveUpvote(postId, direction, userId);
+                return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
 
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				post.RemoveUpvote();
-				post.RemoveUpvotedUserId(userId);
-
-				_postContainer.UpdatePostScore(post, userId, direction);
-
-				return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
-			}
-		}
+        }
 
 		public IActionResult OnPostDownvote(Guid postId, string CommunityName, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			post.Downvote();
-			post.AddDownvotedUserId(userId);
-			
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
-		}
+            try
+            {
+                _postContainer.Downvote(postId, direction, userId);
+                return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
+        }
 
 		public IActionResult OnPostRemoveDownvote(Guid postId, string CommunityName, string direction)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			var post = _postContainer.LoadPostById(postId);
-			if (post == null)
-			{
-				return NotFound();
-			}
-			post.RemoveDownvote();
-			post.RemoveDownvotedUserId(userId);
-
-			_postContainer.UpdatePostScore(post, userId, direction);
-			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
-		}
+            try
+            {
+                _postContainer.RemoveDownvote(postId, direction, userId);
+                return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+            }
+            catch (ItemNullException)
+            {
+                return NotFound();
+            }
+        }
 
 		public IActionResult OnPostViewComments(Guid postId)
 		{
@@ -129,17 +136,39 @@ namespace SocialMediaWebApp.Pages
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			_communityContainer.FollowCommunity(communityId, userId);
-
+            try
+            {
+                _communityContainer.FollowCommunity(communityId, userId);
+            }
+            catch(AccessException)
+            {
+                return BadRequest();
+            }
+            catch(ItemNotFoundException)
+            {
+                return NotFound();
+            }
+			
 			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
 		public IActionResult OnPostUnfollowCommunity(string CommunityName, Guid communityId)
 		{
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-			_communityContainer.UnfollowCommunity(communityId, userId);
+            try
+            {
+                _communityContainer.UnfollowCommunity(communityId, userId);
+            }
+            catch (AccessException)
+            {
+                return BadRequest();
+            }
+            catch (ItemNotFoundException)
+            {
+                return NotFound();
+            }
 
-			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+            return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
 
 	}

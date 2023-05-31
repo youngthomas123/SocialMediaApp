@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+﻿using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -46,6 +47,51 @@ namespace SocialMedia.DataAccess
 
             conn.Close();
 
+        }
+
+        public bool CheckRecordExists(Guid communityId, Guid UserId)
+        {
+            bool doesRecordExists = false;
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select count(*) as record " +
+                         $"from CommunityMembers " +
+                         $"where CommunityId = @communityId and UserId = @userId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityId", communityId);
+
+
+            cmd.Parameters.AddWithValue("@userId", UserId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int RecordIndex = dr.GetOrdinal("record");
+
+
+
+            while (dr.Read())
+            {
+
+                var Record = (int)dr[RecordIndex];
+
+                if (Record == 0)
+                {
+                    doesRecordExists = false;
+                }
+                else if (Record == 1)
+                {
+                    doesRecordExists = true;
+                }
+
+            }
+            return doesRecordExists;
         }
         public List<Guid> LoadUserIds(Guid CommunityId)
         {
