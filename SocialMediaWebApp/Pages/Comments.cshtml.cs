@@ -72,30 +72,9 @@ namespace SocialMediaWebApp.Pages
                 IsPostIdValid = false;
             }
 
-			
 		}
-        public IActionResult OnPostAddComment(Guid PostId)
-        {
-            var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-            if (ModelState.IsValid)
-            {
-                
-                Comment comment = new Comment(userId, CommentData.Body, PostId);
-
-                try
-                {
-                    _commentContainer.AddComment(comment);
-                }
-                catch(InvalidInputException ex)
-                {
-                    TempData["Status"] = ex.Message;
-                }
-               
-
-            }
-            return RedirectToPage("/Comments", new { PostId });
-        }
+       // post functionality
         public IActionResult OnPostUpvotePost(Guid PostId, string direction)
         {
 			var userId = Guid.Parse(User.FindFirst("UserId").Value);
@@ -160,7 +139,52 @@ namespace SocialMediaWebApp.Pages
             }
         }
 
+        public IActionResult OnPostDeletePost(Guid PostId)
+        {
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
+            try
+            {
+                _postContainer.DeletePost(PostId, userId);
+            }
+            catch (AccessException)
+            {
+                return BadRequest();
+            }
+            catch (ItemNotFoundException)
+            {
+                return NotFound();
+            }
+
+
+            return RedirectToPage("/Index");
+        }
+
+
+        // comment functionality
+
+        public IActionResult OnPostAddComment(Guid PostId)
+        {
+            var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+            if (ModelState.IsValid)
+            {
+
+                Comment comment = new Comment(userId, CommentData.Body, PostId);
+
+                try
+                {
+                    _commentContainer.AddComment(comment);
+                }
+                catch (InvalidInputException ex)
+                {
+                    TempData["Status"] = ex.Message;
+                }
+
+
+            }
+            return RedirectToPage("/Comments", new { PostId });
+        }
 
         public IActionResult OnPostUpvoteComment(Guid commentId, Guid PostId, string direction)
         {
