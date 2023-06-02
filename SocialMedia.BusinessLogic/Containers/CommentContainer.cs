@@ -19,83 +19,129 @@ namespace SocialMedia.BusinessLogic.Containers
 
         private readonly IPostDataAccess _postDataAccess;
         
+        private readonly IReportedCommentsDataAccess _reportedCommentsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess)
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
 			_upvotedCommentsDataAccess = upvotedCommentsDataAccess;
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
             _postDataAccess = postDataAccess;
+            _reportedCommentsDataAccess = reportedCommentsDataAccess;
 
 		}
 
         public void Upvote(Guid commentId, string direction, Guid userId)
         {
-            var comment = LoadCommentById(commentId);
+            var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
 
-            if (comment != null)
+            if(didUserAlreadyUpvote == false)
             {
-                comment.Upvote();
+				var comment = LoadCommentById(commentId);
 
-                UpdateCommentScore(comment, userId, direction);
+				if (comment != null)
+				{
+					comment.Upvote();
 
-            }
+					UpdateCommentScore(comment, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has already upvoted this comment");
             }
+
+           
         }
 
         public void RemoveUpvote(Guid commentId, string direction, Guid userId)
         {
-            var comment = LoadCommentById(commentId);
+			var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
 
-            if (comment != null)
+            if(didUserAlreadyUpvote == true)
             {
-                comment.RemoveUpvote();
+				var comment = LoadCommentById(commentId);
 
-                UpdateCommentScore(comment, userId, direction);
+				if (comment != null)
+				{
+					comment.RemoveUpvote();
 
-            }
+					UpdateCommentScore(comment, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has not upvoted this comment");
             }
+
+			
         }
 
         public void Downvote(Guid commentId, string direction, Guid userId)
         {
-            var comment = LoadCommentById(commentId);
+            var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
 
-            if (comment != null)
+            if(didUserAlreadyDownvote == false)
             {
-                comment.Downvote();
+				var comment = LoadCommentById(commentId);
 
-                UpdateCommentScore(comment, userId, direction);
+				if (comment != null)
+				{
+					comment.Downvote();
 
-            }
+					UpdateCommentScore(comment, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has already downvoted this comment");
             }
+
+			
         }
 
         public void RemoveDownvote(Guid commentId, string direction, Guid userId)
         {
-            var comment = LoadCommentById(commentId);
+			var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
 
-            if (comment != null)
+            if(didUserAlreadyDownvote == true)
             {
-                comment.Removedownvote();
+				var comment = LoadCommentById(commentId);
 
-                UpdateCommentScore(comment, userId, direction);
+				if (comment != null)
+				{
+					comment.Removedownvote();
 
-            }
+					UpdateCommentScore(comment, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has not downvoted this comment");
             }
+
+			
         }
 
 
@@ -234,6 +280,13 @@ namespace SocialMedia.BusinessLogic.Containers
 
 			return isCommentDownvoted;
 		}
+
+        public bool IsCommentReported(Guid userId, Guid commentId)
+        {
+            var isCommentReported = _reportedCommentsDataAccess.CheckRecordExists(commentId, userId);
+
+            return isCommentReported;
+        }
 
         public void UpdateComment(Guid commentId, string body, Guid LoggedInUserId)
         {

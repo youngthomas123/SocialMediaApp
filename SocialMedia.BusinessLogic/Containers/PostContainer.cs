@@ -29,8 +29,10 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IUpvotedCommentsDataAccess _upvotedCommentsDataAccess;
 
         private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
+
+        private readonly IReportedPostsDataAccess _reportedPostsDataAccess;
         
-        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess)
         {
             _postDataAccess = postDataAcess;
             _userDataAccess = userDataAccess;
@@ -40,7 +42,9 @@ namespace SocialMedia.BusinessLogic.Containers
             _commentDataAccess = commentDataAccess;
             _upvotedCommentsDataAccess = upvotedCommentsDataAccess;
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
-        }
+			_reportedPostsDataAccess = reportedPostsDataAccess;
+
+		}
 
         public void CreateAndSavePost(Guid userId, string title, string? body, string? imageUrl, Guid communityid)
         {
@@ -72,73 +76,118 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public void Upvote(Guid postId, string direction, Guid userId)
         {
-            var post = LoadPostById(postId);
+            // check if user has already upvoted
 
-            if(post != null)
+            var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
+
+            if(didUserAlreadyUpvote == false)
             {
-                post.Upvote();
+				var post = LoadPostById(postId);
 
-                UpdatePostScore(post, userId, direction);
+				if (post != null)
+				{
+					post.Upvote();
 
-            }
+					UpdatePostScore(post, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has already upvoted this post");
             }
+           
 
         }
 
         public void RemoveUpvote(Guid postId, string direction, Guid userId)
         {
+            
+            var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
 
-            var post = LoadPostById(postId);
-
-            if (post != null)
+            if(didUserAlreadyUpvote == true)
             {
-                post.RemoveUpvote();
+				var post = LoadPostById(postId);
 
-                UpdatePostScore(post, userId, direction);
+				if (post != null)
+				{
+					post.RemoveUpvote();
 
-            }
+					UpdatePostScore(post, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has not upvoted this post");
             }
+
+			
 
         }
 
         public void Downvote(Guid postId, string direction, Guid userId)
         {
-            var post = LoadPostById(postId);
+            var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
 
-            if (post != null)
+            if(didUserAlreadyDownvote == false)
             {
-                post.Downvote();
+				var post = LoadPostById(postId);
 
-                UpdatePostScore(post, userId, direction);
+				if (post != null)
+				{
+					post.Downvote();
 
-            }
+					UpdatePostScore(post, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has already downvoted this post");
             }
+           
         }
 
         public void RemoveDownvote(Guid postId, string direction, Guid userId)
         {
-            var post = LoadPostById(postId);
+            var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
 
-            if (post != null)
+            if(didUserAlreadyDownvote == true)
             {
-                post.RemoveDownvote();
+				var post = LoadPostById(postId);
 
-                UpdatePostScore(post, userId, direction);
+				if (post != null)
+				{
+					post.RemoveDownvote();
 
-            }
+					UpdatePostScore(post, userId, direction);
+
+				}
+				else
+				{
+					throw new ItemNullException();
+				}
+			}
             else
             {
-                throw new ItemNullException();
+                throw new AccessException("User has not downvoted this post");
             }
+
+
+			
         }
 
         public List<Post> LoadAllPosts()
@@ -357,6 +406,13 @@ namespace SocialMedia.BusinessLogic.Containers
             var isPostDownvoted = _downvotedPostsDataAccess.HasUserDownvoted(userId, postId);
 
             return isPostDownvoted;
+        }
+
+        public bool IsPostReported(Guid userId, Guid postId)
+        {
+            var isPostReported = _reportedPostsDataAccess.CheckRecordExists(postId, userId);
+
+            return isPostReported;
         }
 
         public void UpdatePostScore(Post post,Guid userId ,string direction)

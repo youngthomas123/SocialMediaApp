@@ -37,7 +37,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool IsPostDownvoted(Guid userId, Guid postId);
 
-        void UpdatePostScore(Post post, Guid userId, string UpOrDown);
+        bool IsPostReported(Guid userId, Guid postId);
+
+
+		void UpdatePostScore(Post post, Guid userId, string UpOrDown);
 
         void SetVoteUserIds(Post post);
 
