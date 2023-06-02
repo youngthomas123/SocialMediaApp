@@ -287,6 +287,15 @@ namespace SocialMedia.BusinessLogic.Containers
 					postPageDto.IsDownvoted = false;
 				}
 
+                if(IsPostReported(userId, post.PostId))
+                {
+                    postPageDto.IsReported = true;
+                }
+                else
+                {
+					postPageDto.IsReported = false;
+				}
+
 
 				postPageDtos.Add(postPageDto);  
             }
@@ -334,7 +343,16 @@ namespace SocialMedia.BusinessLogic.Containers
                     postPageDto.IsDownvoted = false;
                 }
 
-                return postPageDto;
+				if (IsPostReported(userId, post.PostId))
+				{
+					postPageDto.IsReported = true;
+				}
+				else
+				{
+					postPageDto.IsReported = false;
+				}
+
+				return postPageDto;
             }
             else
             {
@@ -382,8 +400,17 @@ namespace SocialMedia.BusinessLogic.Containers
                         postPageDto.IsDownvoted = false;
                     }
 
+					if (IsPostReported(userId, post.PostId))
+					{
+						postPageDto.IsReported = true;
+					}
+					else
+					{
+						postPageDto.IsReported = false;
+					}
 
-                    postPageDtos.Add(postPageDto);
+
+					postPageDtos.Add(postPageDto);
                 }
                 return postPageDtos;
             }

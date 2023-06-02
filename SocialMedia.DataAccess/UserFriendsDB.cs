@@ -84,6 +84,8 @@ namespace SocialMedia.DataAccess
 				Friends.Add(FriendId);
 
             }
+			dr.Close();
+			conn.Close();
             return Friends;
         }
 
@@ -129,6 +131,8 @@ namespace SocialMedia.DataAccess
 				}
 
             }
+			dr.Close();
+			conn.Close();
 			return doesRecordExists;
         }
 

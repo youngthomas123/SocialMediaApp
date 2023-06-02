@@ -75,6 +75,7 @@ namespace SocialMedia.DataAccess
 			}
 
 			dr.Close();
+            conn.Close();
 
 			return Community;
 
@@ -118,6 +119,7 @@ namespace SocialMedia.DataAccess
             }
 
             dr.Close();
+            conn.Close();
 
             return communities;
             
@@ -422,6 +424,8 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
         }
 
@@ -466,6 +470,8 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
         }
 

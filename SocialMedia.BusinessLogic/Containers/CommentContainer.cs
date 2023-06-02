@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SocialMedia.BusinessLogic.Custom_exception;
@@ -211,6 +212,14 @@ namespace SocialMedia.BusinessLogic.Containers
                         commentPageDto.IsDownvoted = false;
                     }
 
+                    if(IsCommentReported(userId, comment.CommentId))
+                    {
+                        commentPageDto.IsReported = true;
+                    }
+                    else
+                    {
+						commentPageDto.IsReported = false;
+					}
 
                     commentPageDtos.Add(commentPageDto);
                 }

@@ -108,6 +108,8 @@ namespace SocialMedia.DataAccess
 
             dr.Close();
 
+            conn.Close();
+
             return users;
 
 
@@ -199,6 +201,7 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+            conn.Close();
 
             return userNames;
 
@@ -233,6 +236,7 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+            conn.Close();
 
             return salt;
 
@@ -266,6 +270,7 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+            conn.Close();
 
             return password;
         }
@@ -425,6 +430,8 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
         }
 
@@ -469,6 +476,8 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
         }
 

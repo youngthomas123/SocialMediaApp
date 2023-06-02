@@ -94,6 +94,8 @@ namespace SocialMedia.DataAccess
 				}
 
 			}
+			dr.Close();
+			conn.Close();
 			return doesRecordExists;
 		}
 	}

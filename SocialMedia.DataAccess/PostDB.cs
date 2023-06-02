@@ -326,7 +326,7 @@ namespace SocialMedia.DataAccess
 
 
             cmd.ExecuteNonQuery();
-
+            
             conn.Close();
         }
         
@@ -371,7 +371,11 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
+
+            
         }
     }
 }

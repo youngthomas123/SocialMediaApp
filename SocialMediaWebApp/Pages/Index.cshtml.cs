@@ -135,5 +135,13 @@ namespace SocialMediaWebApp.Pages
 
             return RedirectToPage();
         }
+
+		public IActionResult OnPostReportPost(Guid postId)
+		{
+
+
+
+			return RedirectToPage();
+		}
 	}
 }

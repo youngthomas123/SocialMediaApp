@@ -29,5 +29,7 @@ namespace SocialMedia.BusinessLogic.Dto
 
 		public bool IsDownvoted { get; set; }
 
+        public bool IsReported { get; set; }
+
 	}
 }

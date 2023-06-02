@@ -163,6 +163,8 @@ namespace SocialMedia.DataAccess
 
              
             }
+            dr.Close();
+            conn.Close();
 
             return picture;
         }
@@ -220,6 +222,9 @@ namespace SocialMedia.DataAccess
 
 
             }
+
+            dr.Close();
+            conn.Close();
             return profile;
 
         }

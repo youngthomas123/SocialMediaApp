@@ -76,6 +76,7 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+            conn.Close();
 
             return messages;
 

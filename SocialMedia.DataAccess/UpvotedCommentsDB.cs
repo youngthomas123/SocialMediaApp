@@ -153,6 +153,7 @@ namespace SocialMedia.DataAccess
 
 
             dr.Close();
+			conn.Close();
 
             return userIds;
         }

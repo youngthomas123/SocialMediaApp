@@ -91,6 +91,8 @@ namespace SocialMedia.DataAccess
                 }
 
             }
+            dr.Close();
+            conn.Close();
             return doesRecordExists;
         }
         public List<Guid> LoadUserIds(Guid CommunityId)
