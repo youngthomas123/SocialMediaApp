@@ -48,6 +48,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void DeletePost(Guid PostId, Guid LoggedInUserId);
 
+        void ReportPost(Guid postId, Guid userId);
 
-    }
+
+
+	}
 }

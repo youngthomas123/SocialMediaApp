@@ -521,7 +521,7 @@ namespace SocialMedia.BusinessLogic.Containers
             var doesPostIdExist = _postDataAccess.DoesPostIdExist(PostId);
             var doesUserIdExist = _userDataAccess.DoesUserIdExist(LoggedInUserId);
 
-            if(doesPostIdExist == true && doesUserIdExist == true)
+            if(doesPostIdExist && doesUserIdExist)
             {
                 var post = _postDataAccess.LoadPostById(PostId);
                 if(post.UserId == LoggedInUserId)
@@ -552,6 +552,33 @@ namespace SocialMedia.BusinessLogic.Containers
             }
            
            
+        }
+
+        public void ReportPost(Guid postId, Guid userId)
+        {
+			// check if post is already reported
+
+			var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+			
+            if(doesPostIdExist == true && doesUserIdExist == true)
+            {
+				var didUserAlreadyReport = IsPostReported(userId, postId);
+
+				if (didUserAlreadyReport == false)
+				{
+					_reportedPostsDataAccess.CreateRecord(postId, userId);
+				}
+				else
+				{
+					throw new AccessException("The post has already been reported by user");
+				}
+			}
+            else
+            {
+                throw new ItemNotFoundException("Invalid postId or userId");
+            }
+			
         }
 
     }

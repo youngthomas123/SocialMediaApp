@@ -142,8 +142,15 @@
 
 											
 										}
+										<form method="post" asp-page-handler="ReportPost">
+											<button type="submit" class="dropdown-item" disabled="@(post.IsReported)">
+												Report
+											</button>
+											<input type="hidden" name="postId" value="@post.PostId" />
+											<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+										</form>
 
-										<li><a class="dropdown-item" href="#">Report</a></li>
+										
 
 									</ul>
 								</div>
