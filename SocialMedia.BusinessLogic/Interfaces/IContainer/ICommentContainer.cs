@@ -38,6 +38,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void DeleteComment(Guid commentId, Guid LoggedInUserId);
 
+        List<ReportReasonsDto> LoadReportReasonsDtos();
+
 
     }
 }

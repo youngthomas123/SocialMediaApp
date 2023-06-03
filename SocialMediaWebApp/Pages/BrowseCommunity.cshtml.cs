@@ -144,26 +144,7 @@ namespace SocialMediaWebApp.Pages
 			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
 
-		public IActionResult OnPostReportPost(Guid postId, string CommunityName)
-		{
-			var userId = Guid.Parse(User.FindFirst("UserId").Value);
-			try
-			{
-				_postContainer.ReportPost(postId, userId);
-			}
-			catch (AccessException)
-			{
-				return BadRequest();
-			}
-			catch (ItemNotFoundException)
-			{
-				return NotFound();
-			}
-
-
-
-			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
-		}
+		
 
 		public IActionResult OnPostViewComments(Guid postId)
 		{

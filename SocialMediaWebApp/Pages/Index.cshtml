@@ -84,14 +84,16 @@
                                         
                                     </li>
                                 }
-                                <form method="post" asp-page-handler="ReportPost">
-                                    <button type="submit" class="dropdown-item" disabled="@(post.IsReported)">
-                                        Report
-                                    </button>
-                                    <input type="hidden" name="postId" value="@post.PostId" />
-                                </form>
-                                 
-                               
+                                @if(post.IsReported == false)
+                                {
+                                    <li><a class="dropdown-item" asp-page="/ReportPost" asp-route-postId="@post.PostId"> Report </a></li>
+                                }
+                                else
+                                {
+                                    <li class="dropdown-item disabled" aria-disabled="true">Report</li>
+                                }
+
+
                             </ul>
                         </div>
                     </div>

@@ -22,7 +22,9 @@ namespace SocialMedia.BusinessLogic.Containers
         
         private readonly IReportedCommentsDataAccess _reportedCommentsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess)
+        private readonly IReportReasonsDataAccess _reportReasonsDataAccess;
+
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
@@ -30,8 +32,10 @@ namespace SocialMedia.BusinessLogic.Containers
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
             _postDataAccess = postDataAccess;
             _reportedCommentsDataAccess = reportedCommentsDataAccess;
+            _reportReasonsDataAccess = reportReasonsDataAccess;
 
-		}
+
+        }
 
         public void Upvote(Guid commentId, string direction, Guid userId)
         {
@@ -351,5 +355,12 @@ namespace SocialMedia.BusinessLogic.Containers
 
 
         }
-	}
+
+        public List<ReportReasonsDto> LoadReportReasonsDtos()
+        {
+            var reportReasonsDtos = _reportReasonsDataAccess.LoadReportReasonsDtos();
+
+            return reportReasonsDtos;
+        }
+    }
 }

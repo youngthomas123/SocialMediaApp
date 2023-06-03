@@ -31,8 +31,12 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
 
         private readonly IReportedPostsDataAccess _reportedPostsDataAccess;
+
+        private readonly IReportedCommentsDataAccess _reportedCommentsDataAccess;
+
+        private readonly IReportReasonsDataAccess _reportReasonsDataAccess;
         
-        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess)
         {
             _postDataAccess = postDataAcess;
             _userDataAccess = userDataAccess;
@@ -43,8 +47,11 @@ namespace SocialMedia.BusinessLogic.Containers
             _upvotedCommentsDataAccess = upvotedCommentsDataAccess;
             _downvotedCommentsDataAccess = downvotedCommentsDataAccess;
 			_reportedPostsDataAccess = reportedPostsDataAccess;
+			_reportedCommentsDataAccess = reportedCommentsDataAccess;
+			_reportReasonsDataAccess = reportReasonsDataAccess;
 
-		}
+
+        }
 
         public void CreateAndSavePost(Guid userId, string title, string? body, string? imageUrl, Guid communityid)
         {
@@ -511,9 +518,10 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             // validation - does postid/userId exist and is the logged in user the creator of the post
 
-
+            
             //delete all comments in post
             //get all comment ids in post (in loop)
+            //delete all the reported comment recored which are part of the post
             // delete upvotedComents with commentId
             // delete downvotedComments with commentId
             //delete comment
@@ -530,11 +538,12 @@ namespace SocialMedia.BusinessLogic.Containers
 
                     foreach (var commentId in commentIds)
                     {
+                        _reportedCommentsDataAccess.DeleteRecord(commentId);
                         _upvotedCommentsDataAccess.DeleteRecord(commentId);
                         _downvotedCommentsDataAccess.DeleteRecord(commentId);
                         _commentDataAccess.DeleteComment(commentId);
                     }
-
+                    _reportedPostsDataAccess.DeleteRecord(PostId);
                     _upvotedPostsDataAccess.DeleteRecord(PostId);
                     _downvotedPostsDataAccess.DeleteRecord(PostId);
                     _postDataAccess.DeletePost(PostId);
@@ -554,7 +563,7 @@ namespace SocialMedia.BusinessLogic.Containers
            
         }
 
-        public void ReportPost(Guid postId, Guid userId)
+        public void ReportPost(Guid postId, Guid userId, int reasonId)
         {
 			// check if post is already reported
 
@@ -567,11 +576,11 @@ namespace SocialMedia.BusinessLogic.Containers
 
 				if (didUserAlreadyReport == false)
 				{
-					_reportedPostsDataAccess.CreateRecord(postId, userId);
+					_reportedPostsDataAccess.CreateRecord(postId, userId, reasonId);
 				}
 				else
 				{
-					throw new AccessException("The post has already been reported by user");
+					throw new AccessException("You have already reported this post. Cannot report again.");
 				}
 			}
             else
@@ -579,6 +588,13 @@ namespace SocialMedia.BusinessLogic.Containers
                 throw new ItemNotFoundException("Invalid postId or userId");
             }
 			
+        }
+
+        public List<ReportReasonsDto>LoadReportReasonsDtos()
+        {
+            var reportReasonsDtos = _reportReasonsDataAccess.LoadReportReasonsDtos();
+
+            return reportReasonsDtos;
         }
 
     }

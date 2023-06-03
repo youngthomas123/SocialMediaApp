@@ -34,6 +34,7 @@ builder.Services.AddTransient<IUserFriendsDataAccess, UserFriendsDB>();
 builder.Services.AddTransient<IReportedPostsDataAccess, ReportedPostsDB>();
 builder.Services.AddTransient<IReportedCommentsDataAccess, ReportedCommentsDB>();
 builder.Services.AddTransient<ICommunityModeratorsDataAccess, CommunityModeratorsDB>();
+builder.Services.AddTransient<IReportReasonsDataAccess, ReportReasonsDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();

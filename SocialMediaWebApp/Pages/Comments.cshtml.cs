@@ -160,26 +160,7 @@ namespace SocialMediaWebApp.Pages
             return RedirectToPage("/Index");
         }
 
-        public IActionResult OnPostReportPost(Guid postId)
-        {
-            var userId = Guid.Parse(User.FindFirst("UserId").Value);
-            try
-            {
-                _postContainer.ReportPost(postId, userId);
-            }
-            catch (AccessException)
-            {
-                return BadRequest();
-            }
-            catch (ItemNotFoundException)
-            {
-                return NotFound();
-            }
-
-
-
-            return RedirectToPage("/Comments", new { postId });
-        }
+      
 
 
         // comment functionality

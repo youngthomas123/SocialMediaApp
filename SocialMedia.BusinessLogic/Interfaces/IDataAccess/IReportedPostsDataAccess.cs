@@ -8,10 +8,12 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 {
 	public interface IReportedPostsDataAccess
 	{
-		public void CreateRecord(Guid postId, Guid userId);
+		void CreateRecord(Guid postId, Guid userId, int reasonId);
 
-		public void DeleteRecord(Guid postId, Guid userId);
+		void DeleteRecord(Guid postId, Guid userId);
 
-		public bool CheckRecordExists(Guid postId, Guid userId);
+		void DeleteRecord(Guid postId);
+
+		bool CheckRecordExists(Guid postId, Guid userId);
 	}
 }

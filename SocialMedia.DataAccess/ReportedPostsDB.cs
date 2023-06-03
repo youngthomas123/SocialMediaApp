@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+﻿using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -12,22 +13,23 @@ namespace SocialMedia.DataAccess
 	{
 		private string connection = "Server=mssqlstud.fhict.local;Database=dbi511464_i511464fh;User Id=dbi511464_i511464fh;Password=12345;";
 
-		public void CreateRecord(Guid postId, Guid userId)
+		public void CreateRecord(Guid postId, Guid userId, int reasonId)
 		{
 			SqlConnection conn = new SqlConnection(connection);
 
 			conn.Open();
 
-			string sql = $"insert into ReportedPosts ([PostId], [UserId]) " +
-						 $"Values (@postId, @userId) ";
+			string sql = $"insert into ReportedPosts ([PostId], [UserId], [ReasonId]) " +
+						 $"Values (@postId, @userId, @reasonId) ";
 
 			SqlCommand cmd = new SqlCommand(sql, conn);
 
 			cmd.Parameters.AddWithValue("@postId", postId);
 			cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@reasonId", reasonId);
 
 
-			cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
 
 			conn.Close();
 		}
@@ -45,6 +47,25 @@ namespace SocialMedia.DataAccess
 
 			cmd.Parameters.AddWithValue("@postId", postId);
 			cmd.Parameters.AddWithValue("@userId", userId);
+
+
+			cmd.ExecuteNonQuery();
+
+			conn.Close();
+		}
+
+		public void DeleteRecord(Guid postId)
+		{
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"Delete from ReportedPosts " +
+						 $"where PostId = @postId ";
+
+			SqlCommand cmd = new SqlCommand(sql, conn);
+
+			cmd.Parameters.AddWithValue("@postId", postId);
 
 
 			cmd.ExecuteNonQuery();
