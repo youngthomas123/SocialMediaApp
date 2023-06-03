@@ -265,7 +265,7 @@ namespace SocialMediaWebApp.Pages
             }
             catch(ItemNotFoundException)
             {
-                return NotFound() ; 
+                return NotFound(); 
             }
            
             return RedirectToPage("/Comments", new { PostId });

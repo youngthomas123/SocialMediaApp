@@ -169,7 +169,16 @@
 
                                     </li>
                                 }
-                                <li><a class="dropdown-item" href="#">Report</a></li>
+
+                                @if (comment.IsReported == false)
+                                {
+                                    <li><a class="dropdown-item" asp-page="/ReportComment" asp-route-commentId="@comment.CommentId"> Report </a></li>
+                                }
+                                else
+                                {
+                                    <li class="dropdown-item disabled" aria-disabled="true">Report</li>
+                                }
+
                             </ul>
                         </div>
                     </div>

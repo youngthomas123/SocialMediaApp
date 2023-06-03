@@ -337,6 +337,7 @@ namespace SocialMedia.BusinessLogic.Containers
 
                 if(comment.UserId == LoggedInUserId)
                 {
+                    _reportedCommentsDataAccess.DeleteRecord(commentId);
                     _upvotedCommentsDataAccess.DeleteRecord(commentId);
                     _downvotedCommentsDataAccess.DeleteRecord(commentId);
                     _commentDataAccess.DeleteComment(commentId);
@@ -352,8 +353,6 @@ namespace SocialMedia.BusinessLogic.Containers
                 throw new ItemNotFoundException();
             }
             
-
-
         }
 
         public List<ReportReasonsDto> LoadReportReasonsDtos()
@@ -362,5 +361,31 @@ namespace SocialMedia.BusinessLogic.Containers
 
             return reportReasonsDtos;
         }
-    }
+
+        public void ReportComment(Guid commentId, Guid userId, int reasonId)
+        {
+            var doesCommentExist = _commentDataAccess.DoesCommentIdExist(commentId);
+			var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+			if (doesCommentExist == true && doesUserIdExist == true)
+			{
+				var didUserAlreadyReport = IsCommentReported(userId, commentId);
+
+				if (didUserAlreadyReport == false)
+				{
+                    _reportedCommentsDataAccess.CreateRecord(commentId, userId, reasonId);
+					
+				}
+				else
+				{
+					throw new AccessException("You have already reported this comment. Cannot report again.");
+				}
+			}
+			else
+			{
+				throw new ItemNotFoundException("Invalid postId or userId");
+			}
+
+		}
+	}
 }

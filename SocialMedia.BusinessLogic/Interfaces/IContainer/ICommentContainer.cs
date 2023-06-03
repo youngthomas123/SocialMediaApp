@@ -40,6 +40,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<ReportReasonsDto> LoadReportReasonsDtos();
 
+        void ReportComment(Guid commentId, Guid userId, int reasonId);
 
-    }
+
+
+	}
 }
