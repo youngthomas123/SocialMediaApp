@@ -24,5 +24,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
         void UpdatePost(Guid postId, string title, string? body, string? imageUrl);
 
         bool DoesPostIdExist(Guid postId);
+
+        List<Post> LoadPostsByUser(Guid userId);
     }
 }

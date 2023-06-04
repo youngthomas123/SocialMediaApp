@@ -147,5 +147,55 @@ namespace SocialMedia.DataAccess
 
 
         }
+
+        public List<Message>UserReceivedMessages(Guid recipientId)
+        {
+            List<Message> messages = new List<Message>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select * " +
+                         $"from Messages " +
+                         $"where RecipientId = @recipientId";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@recipientId", recipientId);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+            int MessageIdIndex = dr.GetOrdinal("MessageId");
+            int SubjectIndex = dr.GetOrdinal("Subject");
+            int BodyIndex = dr.GetOrdinal("Body");
+            int SenderIdIndex = dr.GetOrdinal("SenderId");
+            int RecipientIdIndex = dr.GetOrdinal("RecipientId");
+
+
+
+            while (dr.Read())
+            {
+
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var MessageId = (Guid)dr[MessageIdIndex];
+                var Subject = (string)dr[SubjectIndex];
+                var Body = (string)dr[BodyIndex];
+                var SenderId = (Guid)dr[SenderIdIndex];
+                var RecipientId = (Guid)dr[RecipientIdIndex];
+
+                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderId, RecipientId);
+
+
+                messages.Add(message);
+            }
+
+
+            dr.Close();
+            conn.Close();
+
+            return messages;
+        }
     }
 }

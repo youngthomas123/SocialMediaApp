@@ -20,15 +20,28 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IProfileDataAccess _profileDataAccess;
         private readonly IUserFriendsDataAccess _userFriendsDataAccess;
 
-        public UserContainer(IUserDataAccess userDataAcess, IPasswordHelper passwordHelper, IAuthenticationSystem authenticationSystem, IProfileDataAccess profileDataAccess, IUserFriendsDataAccess userFriendsDataAccess)
+        private readonly IPostDataAccess _postDataAccess;
+        private readonly ICommentDataAccess _commentDataAccess;
+        private readonly IMessageDataAccess _messageDataAccess;
+        private readonly ICommunityMembersDataAccess _communityMembersDataAccess;
+        private readonly ICommunityModeratorsDataAccess _communityModeratorsDataAccess;
+        private readonly ICommunityDataAccess _communityDataAccess;
+    
+        public UserContainer(IUserDataAccess userDataAcess, IPasswordHelper passwordHelper, IAuthenticationSystem authenticationSystem, IProfileDataAccess profileDataAccess, IUserFriendsDataAccess userFriendsDataAccess, IPostDataAccess postDataAccess, ICommentDataAccess commentDataAccess, IMessageDataAccess messageDataAccess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityModeratorsDataAccess communityModeratorsDataAccess, ICommunityDataAccess communityDataAccess)
         {
             _userDataAccess = userDataAcess;
             _passwordHelper = passwordHelper;
             _authenticationSystem = authenticationSystem;
             _profileDataAccess = profileDataAccess;
 			_userFriendsDataAccess = userFriendsDataAccess;
+            _postDataAccess = postDataAccess;
+            _commentDataAccess = commentDataAccess;
+            _messageDataAccess = messageDataAccess;
+            _communityMembersDataAccess = communityMembersDataAccess;
+            _communityModeratorsDataAccess = communityModeratorsDataAccess;
+            _communityDataAccess = communityDataAccess;
 
-		}
+        }
 
 
         public void CreateAndSaveSignedUpUser(string username, string password, string email)
@@ -267,6 +280,55 @@ namespace SocialMedia.BusinessLogic.Containers
             if(doesUsernameExist == true)
             {
                 var User = _userDataAccess.LoadUser(username);
+
+                var profile = GetProfileDto(User.UserId);
+
+                User.UpdateProfile(profile.Bio, profile.Gender, profile.Location, profile.ProfilePic);
+
+
+                var userCreatedPosts = _postDataAccess.LoadPostsByUser(User.UserId);
+
+                foreach (var post in userCreatedPosts)
+                {
+                    User.AddToUserCreatedPosts(post);
+                }
+
+                var userCreatedComments = _commentDataAccess.LoadCommentsByUser(User.UserId);
+
+                foreach (var comment in userCreatedComments)
+                {
+                    User.AddToUserCreatedComments(comment);
+                }
+
+                var userFollowingCommunities = _communityMembersDataAccess.LoadCommunityIdsByMember(User.UserId);
+
+                foreach(var communityId in userFollowingCommunities)
+                {
+                    var CommunityName = _communityDataAccess.GetCommunityName(communityId);
+                    User.AddToUserFollowingCommunities(CommunityName);
+                }
+
+                var userModeratingCommunities = _communityModeratorsDataAccess.LoadCommunityIdsByUser(User.UserId);
+
+                foreach(var communityId in userModeratingCommunities)
+                {
+                    var CommunityName = _communityDataAccess.GetCommunityName(communityId);
+                    User.AddToUserModeratingCommunities(CommunityName);
+                }
+
+                var ReceivedMessages = _messageDataAccess.UserReceivedMessages(User.UserId);
+                foreach (var message in ReceivedMessages)
+                {
+                    User.AddToReceivedMessages(message);
+                }
+
+                var UserFriends = _userFriendsDataAccess.GetUserFriends(User.UserId);
+                foreach (var friendId in UserFriends)
+                {
+                    var FriendName = _userDataAccess.GetUserName(friendId);
+                    User.AddToUserFriends(FriendName);
+                }
+
                 return User;
             }
             else

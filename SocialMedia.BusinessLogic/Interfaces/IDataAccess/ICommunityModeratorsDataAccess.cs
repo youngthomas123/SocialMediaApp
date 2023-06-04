@@ -13,5 +13,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 		public void DeleteRecord(Guid communityId, Guid moderatorId);
 
 		public bool CheckRecordExists(Guid communityId, Guid moderatorId);
-	}
+
+		List<Guid> LoadCommunityIdsByUser(Guid userId);
+
+    }
 }

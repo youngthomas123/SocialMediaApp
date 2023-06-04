@@ -13,9 +13,14 @@ namespace SocialMedia.BusinessLogic.Containers
 
         private readonly IMessageDataAccess _messageDataAccess;
 
-        public MessageContainer (IMessageDataAccess dataAcess)
+        public MessageContainer (IMessageDataAccess messageDataAccess)
         {
-            _messageDataAccess = dataAcess;
+            _messageDataAccess = messageDataAccess;
+        }
+
+        public void CreateAndSaveMessage()
+        {
+
         }
     }
 }

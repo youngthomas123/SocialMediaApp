@@ -25,12 +25,13 @@ namespace SocialMedia.BusinessLogic
 			ProfilePicture = null;
 			UserCreatedPosts = new List<Post>();
 			UserCreatedComments = new List<Comment>();
+			UserFollowingCommunities = new List<string>();
+			UserModeratingCommunities = new List<string>();
+            ReceivedMessages = new List<Message>();
+			UserFriends = new List<string>();
 
-		}
+        }
 
-		
-
-		
 
         public User(Guid userId, string userName, string password, string salt, string? email, DateTime dateCreated) // to load from UserDB
         {
@@ -42,6 +43,10 @@ namespace SocialMedia.BusinessLogic
             DateCreated = dateCreated;
             UserCreatedPosts = new List<Post>();
             UserCreatedComments = new List<Comment>();
+            UserFollowingCommunities = new List<string>();
+            UserModeratingCommunities = new List<string>();
+            ReceivedMessages = new List<Message>();
+            UserFriends = new List<string>();
         }
 
         public Guid UserId { get; private set; }
@@ -63,9 +68,19 @@ namespace SocialMedia.BusinessLogic
 
         public byte[]? ProfilePicture { get; private set; }
 
-		public List<Post>UserCreatedPosts { get; private set; }
+		public List<Post>?UserCreatedPosts { get; private set; }
 
-		public List<Comment>UserCreatedComments { get; private set; }
+		public List<Comment>?UserCreatedComments { get; private set; }
+
+		public List<string>?UserFollowingCommunities { get; private set; }
+
+		public List<string>?UserModeratingCommunities { get; private set; }
+
+		public List<Message>?ReceivedMessages { get; private set; }
+
+		public List<string>?UserFriends { get; private set; }
+
+
 
 		public void AddToUserCreatedPosts(Post post)
 		{
@@ -75,6 +90,26 @@ namespace SocialMedia.BusinessLogic
 		public void AddToUserCreatedComments(Comment comment)
 		{
 			UserCreatedComments.Add(comment);
+		}
+
+		public void AddToUserFollowingCommunities(string communityName)
+		{
+			UserFollowingCommunities.Add(communityName);
+		}
+
+		public void AddToUserModeratingCommunities(string communityName)
+		{
+			UserModeratingCommunities.Add(communityName);
+		}
+
+		public void AddToUserFriends(string friendName)
+		{
+			UserFriends.Add(friendName);
+		}
+
+		public void AddToReceivedMessages(Message message)
+		{
+			ReceivedMessages.Add(message);
 		}
 
         public void SetHashedPassword(string password)
@@ -87,7 +122,7 @@ namespace SocialMedia.BusinessLogic
 
         }
 
-		public void UpdateProfile(string bio, string gender, string location, byte[] pic)
+		public void UpdateProfile(string? bio, string? gender, string? location, byte[]? pic)
 		{
 			Bio = bio;
 			Gender = gender;

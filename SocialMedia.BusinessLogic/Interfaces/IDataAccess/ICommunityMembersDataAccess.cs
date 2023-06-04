@@ -20,6 +20,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         bool CheckRecordExists(Guid communityId, Guid UserId);
 
+        List<Guid> LoadCommunityIdsByMember(Guid userId);
+
 
 
 

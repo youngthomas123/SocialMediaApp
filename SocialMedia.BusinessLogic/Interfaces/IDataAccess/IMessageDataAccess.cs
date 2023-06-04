@@ -16,6 +16,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeleteMessage(Guid id);
 
+        List<Message> UserReceivedMessages(Guid recipientId);
+
 
 
     }

@@ -44,7 +44,7 @@ namespace SocialMediaFormsApp
 
             services.AddTransient<IMessageDataAccess, MessageDB>();
 
-
+            services.AddTransient<ICommentDataAccess, CommentDB>();
 
             //Other
             services.AddTransient<IPasswordHelper, PasswordHelper>();

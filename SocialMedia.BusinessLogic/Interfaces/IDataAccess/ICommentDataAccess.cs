@@ -24,6 +24,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         List<Guid> LoadCommentIdsInPost(Guid postId);
 
+        List<Comment> LoadCommentsByUser(Guid userId);
+
         bool DoesCommentIdExist(Guid commentId);
 
 

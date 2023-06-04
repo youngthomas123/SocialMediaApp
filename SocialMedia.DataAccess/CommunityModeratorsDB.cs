@@ -98,5 +98,39 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 			return doesRecordExists;
 		}
+		
+		public List<Guid>LoadCommunityIdsByUser(Guid userId)
+		{
+            SqlConnection conn = new SqlConnection(connection);
+            conn.Open();
+
+            List<Guid> CommunityIds = new List<Guid>();
+
+            string sql = $"Select CommunityId " +
+                         $"from CommunityModerators " +
+                         $"where ModeratorId = @userId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int CommunityIdIndex = dr.GetOrdinal("CommunityId");
+
+            while (dr.Read())
+            {
+
+                var communityId = (Guid)dr[CommunityIdIndex];
+
+                CommunityIds.Add(communityId);
+            }
+            dr.Close();
+            conn.Close();
+            return CommunityIds;
+        }
+
 	}
 }

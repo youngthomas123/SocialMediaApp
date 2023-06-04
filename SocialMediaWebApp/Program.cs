@@ -18,6 +18,7 @@ builder.Services.AddTransient<IPostContainer,PostContainer>();
 builder.Services.AddTransient<IUserContainer, UserContainer>();
 builder.Services.AddTransient<ICommunityContainer, CommunityContainer>();
 builder.Services.AddTransient<ICommentContainer, CommentContainer>();
+builder.Services.AddTransient<IMessageContainer, MessageContainer>();
 //DataAccess
 builder.Services.AddTransient<ICommunityDataAccess, CommunityDB>();
 builder.Services.AddTransient<IPostDataAccess, PostDB>();
@@ -35,6 +36,7 @@ builder.Services.AddTransient<IReportedPostsDataAccess, ReportedPostsDB>();
 builder.Services.AddTransient<IReportedCommentsDataAccess, ReportedCommentsDB>();
 builder.Services.AddTransient<ICommunityModeratorsDataAccess, CommunityModeratorsDB>();
 builder.Services.AddTransient<IReportReasonsDataAccess, ReportReasonsDB>();
+builder.Services.AddTransient<IMessageDataAccess, MessageDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();
