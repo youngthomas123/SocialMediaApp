@@ -21,6 +21,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         string GetUserId(string username);
 
+        string GetUserName(Guid userId);
+
         List<string[]> SearchUser(string query);
 
         void UpdateUserProfileData(Guid userId, string username, string bio, string gender, byte[] picture, string location);

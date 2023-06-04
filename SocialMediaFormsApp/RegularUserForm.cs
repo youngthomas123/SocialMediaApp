@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using System.Xml.Linq;
+using SocialMedia.BusinessLogic.Custom_exception;
 
 namespace SocialMediaFormsApp
 {
@@ -70,12 +73,38 @@ namespace SocialMediaFormsApp
 
         private void SendMessageBT_Click(object sender, EventArgs e)
         {
-            
+            var RecipientName = ToTB.Text;
+            var Subject = SubjectTB.Text;
+            var Body = BodyRTB.Text;
+
+
+            try
+            {
+                var RecipientId = new Guid(_userContainer.GetUserId(RecipientName));
+
+                _messageContainer.CreateAndSaveMessage(Subject, Body, User.UserId, RecipientId);
+            }
+            catch (ItemNotFoundException)
+            {
+                MessageBox.Show("Invalid Username");
+            }
+            catch(InvalidInputException)
+            {
+                MessageBox.Show("Invalid Input");
+            }
+
+            ToTB.Clear();
+            SubjectTB.Clear();
+            BodyRTB.Clear();
+
         }
 
         private void ViewMessageBT_Click(object sender, EventArgs e)
         {
+            var SelectedMessage = (SocialMedia.BusinessLogic.Message)ReceivedMessagesLiB.SelectedItem;
 
+
+            MessageBox.Show($" Date : {Convert.ToString(SelectedMessage.DateCreated)} \nSubject : {SelectedMessage.Subject} \nBody : {SelectedMessage.Body}");
         }
     }
 }

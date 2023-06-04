@@ -112,6 +112,22 @@ namespace SocialMedia.BusinessLogic.Containers
            
         }
 
+        public string GetUserName(Guid userId)
+        {
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+            if (doesUserIdExist == true)
+            {
+                var username = _userDataAccess.GetUserName(userId);
+
+                return username;
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+        }
+
         public List<string[]>SearchUser(string query)
         {
             var namesAndIds = _userDataAccess.SearchUserNameAndId(query);

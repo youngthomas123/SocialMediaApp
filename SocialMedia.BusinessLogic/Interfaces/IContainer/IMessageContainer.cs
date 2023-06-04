@@ -8,6 +8,6 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 {
     public interface IMessageContainer
     {
-
+        void CreateAndSaveMessage(string subject, string body, Guid senderId, Guid recipientId);
     }
 }

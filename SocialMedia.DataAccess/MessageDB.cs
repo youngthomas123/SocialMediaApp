@@ -87,14 +87,14 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderId], [RecipientId] " +
-                "Values (@date, @messageId, @subject, @body, @senderId, @RecipientId ";
+            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderId], [RecipientId]) " +
+                "Values (@date, @messageId, @subject, @body, @senderId, @RecipientId) ";
 
             
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.Add("@status", SqlDbType.VarChar);
+           
 
             cmd.Parameters.AddWithValue("@date", message.DateCreated);
             cmd.Parameters.AddWithValue("@messageId", message.MessageId);
