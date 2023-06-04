@@ -19,17 +19,18 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly ICommunityRulesDataAccess _communityRulesAccess;
         private readonly IPostDataAccess _postDataAccess;
         private readonly IUserDataAccess _userDataAccess;
+        private readonly ICommunityModeratorsDataAccess _communityModeratorsAccess;
 
 
 
-        public CommunityContainer(ICommunityDataAccess communityDataAcess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityRulesDataAccess communityRulesDataAccess, IPostDataAccess postDataAccess, IUserDataAccess userDataAccess)
+        public CommunityContainer(ICommunityDataAccess communityDataAcess, ICommunityMembersDataAccess communityMembersDataAccess, ICommunityRulesDataAccess communityRulesDataAccess, IPostDataAccess postDataAccess, IUserDataAccess userDataAccess, ICommunityModeratorsDataAccess communityModeratorsDataAccess)
         {
             _communityDataAccess = communityDataAcess;
             _communityMembersAccess = communityMembersDataAccess;
             _communityRulesAccess = communityRulesDataAccess;
             _postDataAccess = postDataAccess;
             _userDataAccess = userDataAccess;
-
+            _communityModeratorsAccess = communityModeratorsDataAccess;
         }
 
         public List<CommunityFullDto> LoadCompleteCommunityDtos()

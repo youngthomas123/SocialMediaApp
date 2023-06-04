@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+﻿using SocialMedia.BusinessLogic.Interfaces.IContainer;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
-    public class MessageContainer
+    public class MessageContainer : IMessageContainer
     {
 
-        private readonly IMessageDataAccess messageDataAccess;
+        private readonly IMessageDataAccess _messageDataAccess;
 
         public MessageContainer (IMessageDataAccess dataAcess)
         {
-            messageDataAccess = dataAcess;
+            _messageDataAccess = dataAcess;
         }
     }
 }

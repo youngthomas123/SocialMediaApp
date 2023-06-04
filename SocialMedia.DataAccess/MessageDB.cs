@@ -55,7 +55,7 @@ namespace SocialMedia.DataAccess
             int BodyIndex = dr.GetOrdinal("Body");
             int SenderIdIndex = dr.GetOrdinal("SenderId");
             int RecipientIdIndex = dr.GetOrdinal("RecipientId");
-            int StatusIndex = dr.GetOrdinal("Status");
+            
 
 
             while (dr.Read())
@@ -67,8 +67,8 @@ namespace SocialMedia.DataAccess
                 var Body = (string)dr[BodyIndex];
                 var SenderId = (Guid)dr[SenderIdIndex];
                 var RecipientId = (Guid)dr[RecipientIdIndex];
-                var Status  = Enum.Parse<MessageStatus>((string)dr[StatusIndex]);
-                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderId, RecipientId, Status);
+                
+                Message message = new Message(DateCreated, MessageId, Subject, Body, SenderId, RecipientId);
 
 
                 messages.Add(message);
@@ -87,8 +87,8 @@ namespace SocialMedia.DataAccess
             SqlConnection conn = new SqlConnection(connection);
             conn.Open();
 
-            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderId], [RecipientId], [Status]) " +
-                "Values (@date, @messageId, @subject, @body, @senderId, @RecipientId, @status)";
+            string sql = "insert into Messages ([DateCreated], [MessageId], [Subject], [Body], [SenderId], [RecipientId] " +
+                "Values (@date, @messageId, @subject, @body, @senderId, @RecipientId ";
 
             
 
@@ -102,7 +102,7 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.AddWithValue("@body", message.Body);
             cmd.Parameters.AddWithValue("@senderId", message.SenderId);
             cmd.Parameters.AddWithValue("@RecipientId", message.RecipientId);
-            cmd.Parameters["@status"].Value = message.Status.ToString();
+           
 
 
             cmd.ExecuteNonQuery();
@@ -121,7 +121,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"update Messages " +
-                          $"set DateCreated = @UpdateMessageDate, Subject = @UpdateSubject, Body = @UpdateBody, SenderId = @UpdateSenderId, RecipientId = @UpdateRecipientId, Status = @updateStatus " +
+                          $"set DateCreated = @UpdateMessageDate, Subject = @UpdateSubject, Body = @UpdateBody, SenderId = @UpdateSenderId, RecipientId = @UpdateRecipientId " +
                           $" where MessageId = @UpdateMessageId ";
 
 
@@ -135,10 +135,10 @@ namespace SocialMedia.DataAccess
             cmd.Parameters.AddWithValue("@UpdateMessageId",message.MessageId);
 
             cmd.Parameters.Add("@UpdateMessageDate", SqlDbType.DateTime);
-            cmd.Parameters.Add("@updateStatus", SqlDbType.VarChar);
+            
 
             cmd.Parameters["@UpdateMessageDate"].Value = message.DateCreated;
-            cmd.Parameters["@updateStatus"].Value = message.Status.ToString();
+          
 
 
             cmd.ExecuteNonQuery();

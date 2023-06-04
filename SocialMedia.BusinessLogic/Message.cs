@@ -20,10 +20,10 @@ namespace SocialMedia.BusinessLogic
 			Body = body;
 			SenderId = senderId;
 			RecipientId = recipientId;
-			Status = MessageStatus.None;
+			
 		}
 
-		public Message(DateTime dateCreated, Guid messageId, string subject, string body, Guid senderId, Guid recipientId, MessageStatus status)
+		public Message(DateTime dateCreated, Guid messageId, string subject, string body, Guid senderId, Guid recipientId)
 		{
             DateCreated = dateCreated;
 			MessageId = messageId;
@@ -31,7 +31,7 @@ namespace SocialMedia.BusinessLogic
 			Body = body;
 			SenderId = senderId;
 			RecipientId = recipientId;
-			Status = status;
+			
 
         }
 
@@ -48,6 +48,6 @@ namespace SocialMedia.BusinessLogic
 
 		public Guid RecipientId { get; private set;}
 
-		public MessageStatus Status { get; private set; }	
+		
 	}
 }

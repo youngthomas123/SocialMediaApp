@@ -259,5 +259,20 @@ namespace SocialMedia.BusinessLogic.Containers
                 throw new ItemNotFoundException();
             }
         }
+
+        public User GetUserByName(string username)
+        {
+            var doesUsernameExist = _userDataAccess.DoesUsernameExist(username);
+
+            if(doesUsernameExist == true)
+            {
+                var User = _userDataAccess.LoadUser(username);
+                return User;
+            }
+            else
+            {
+                throw new ItemNotFoundException("Username Invalid");
+            }
+        }
     }
 }

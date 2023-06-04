@@ -34,6 +34,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         bool DoesUsernameExist(string username);
 
+        User? LoadUser(string username);
+
 
 
     }

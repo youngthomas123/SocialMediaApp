@@ -39,6 +39,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool CheckIfUserIsFriends(Guid userId, Guid friendId);
 
+        User GetUserByName(string username);
+
 
 
     }

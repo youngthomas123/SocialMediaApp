@@ -481,6 +481,69 @@ namespace SocialMedia.DataAccess
             return doesRecordExists;
         }
 
+        public User? LoadUser(string username)
+        {
+            User user = null; 
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select * " +
+                         $"from Users " +
+                         $"where UserName = @username ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@username", username);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int UserNameIndex = dr.GetOrdinal("UserName");
+            int PasswordIndex = dr.GetOrdinal("Password");
+            int EmailIndex = dr.GetOrdinal("Email");
+            int DateCreatedIndex = dr.GetOrdinal("DateCreated");
+            int UserIdIndex = dr.GetOrdinal("UserId");
+            int SaltIndex = dr.GetOrdinal("Salt");
+            int UserTypeIndex = dr.GetOrdinal("UserType");
+
+
+
+            while (dr.Read())
+            {
+
+
+                var UserName = (string)dr[UserNameIndex];
+                var Password = (string)dr[PasswordIndex];
+                var Email = (string)dr[EmailIndex];
+                var DateCreated = (DateTime)dr[DateCreatedIndex];
+                var UserId = (Guid)dr[UserIdIndex];
+                var Salt = (string)dr[SaltIndex];
+                var UserType = (string)dr[UserTypeIndex];
+
+                if (UserType == "RegularUser")
+                {
+                    User User = new RegularUser(UserId, UserName, Password, Salt, Email, DateCreated);
+                    user = User;
+                }
+                else if (UserType == "PremiumUser")
+                {
+                    User User = new PremiumUser(UserId, UserName, Password, Salt, Email, DateCreated);
+                    user = User;
+                }
+
+
+            }
+
+
+            dr.Close();
+
+            conn.Close();
+
+            return user;
+        }
     }
 
 }

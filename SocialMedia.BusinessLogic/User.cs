@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialMedia.BusinessLogic.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic
 {
-	public abstract class User
+	public abstract class User : IUser
 	{
 		
 		public User(string userName, string password, string email)
