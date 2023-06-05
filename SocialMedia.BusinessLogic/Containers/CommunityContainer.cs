@@ -4,10 +4,12 @@ using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
@@ -31,6 +33,49 @@ namespace SocialMedia.BusinessLogic.Containers
             _postDataAccess = postDataAccess;
             _userDataAccess = userDataAccess;
             _communityModeratorsAccess = communityModeratorsDataAccess;
+        }
+
+        // to be modified
+        public void CreateAndSaveCommunity(Guid userId, string communityName, string description)
+        {
+            var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
+
+            var isUserPremium = _userDataAccess.IsUserPremium(userId);
+            var isCommunityNameUnique = IsCommunityNameUnique(communityName);
+
+            if(doesUserIdExist == true && isUserPremium == true)
+            {
+                if(!string.IsNullOrEmpty(communityName) && !string.IsNullOrEmpty(description) && communityName.Length <= 35 && description.Length <= 150)
+                {
+                    Community community = new Community(userId, communityName, description);
+                    _communityDataAccess.SaveCommunity();
+                }
+                else
+                {
+                    throw new InvalidInputException();
+                }
+            }
+            else
+            {
+                throw new AccessException();
+            }
+            
+        }
+
+        public bool IsCommunityNameUnique(string communityName)
+        {
+            bool isCommunityNameUnique = true;
+
+            foreach (string _ in _communityDataAccess.GetCommunityNames())
+            {
+                if (communityName == _)
+                {
+                    isCommunityNameUnique = false;
+                    break;
+                }
+
+            }
+            return isCommunityNameUnique;
         }
 
         public List<CommunityFullDto> LoadCompleteCommunityDtos()

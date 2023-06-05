@@ -30,5 +30,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void UnfollowCommunity(Guid communityId, Guid userId);
 
-	}
+        bool IsCommunityNameUnique(string communityName);
+
+        void CreateAndSaveCommunity(Guid userId, string communityName, string description);
+
+
+    }
 }

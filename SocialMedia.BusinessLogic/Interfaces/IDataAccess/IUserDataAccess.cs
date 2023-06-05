@@ -36,6 +36,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         User? LoadUser(string username);
 
+        bool IsUserPremium(Guid userId);
+
 
 
     }

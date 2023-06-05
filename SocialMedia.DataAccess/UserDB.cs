@@ -544,6 +544,52 @@ namespace SocialMedia.DataAccess
 
             return user;
         }
+
+        public bool IsUserPremium(Guid userId)
+        {
+            bool isUserPremium = false;
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select UserType " +
+                         $"from Users " +
+                         $"where UserId = @userId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int UserTypeIndex = dr.GetOrdinal("UserType");
+
+
+
+            while (dr.Read())
+            {
+
+                var UserType = (string)dr[UserTypeIndex];
+
+                if (UserType == "PremiumUser")
+                {
+                    isUserPremium = true;
+                }
+                else if (UserType == "RegularUser")
+                {
+                    isUserPremium = false;
+                }
+
+            }
+            dr.Close();
+            conn.Close();
+            return isUserPremium;
+        }
     }
 
 }
