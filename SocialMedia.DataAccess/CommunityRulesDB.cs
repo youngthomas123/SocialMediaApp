@@ -86,7 +86,7 @@ namespace SocialMedia.DataAccess
             return rules;
 
         }
-
+        // could be incorrect
         public void UpdateRule(Guid communityId, string rule)
         {
             SqlConnection conn = new SqlConnection(connection);

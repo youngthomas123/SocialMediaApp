@@ -70,17 +70,20 @@ namespace SocialMediaFormsApp
                 ReceivedMessagesLiB.Items.Add(message);
             }
 
-            foreach(var createdCommunity in User.UserCreatedCommunities)
+            foreach (var createdCommunity in User.UserCreatedCommunities)
             {
                 CreatedCommunitiesLiB.Items.Add(createdCommunity);
+                SelectCommunityToUpdateCB.Items.Add(createdCommunity);
             }
 
-            foreach(var username in _userContainer.GetAllUsernames())
+            foreach (var username in _userContainer.GetAllUsernames())
             {
                 CreateCommunityAddModsCB.Items.Add(username);
             }
 
             ModsInCreatedCommunityLiB.Items.Add(User.UserName);
+
+
 
         }
 
@@ -124,7 +127,7 @@ namespace SocialMediaFormsApp
             var communityName = CreateCommunityNameTB.Text;
             var description = CreateCommunityDescriptionRTB.Text;
 
-            List<string>Rules = new List<string>();
+            List<string> Rules = new List<string>();
 
             var rule1 = CreateRule1TB.Text;
             var rule2 = CreateRule2TB.Text;
@@ -136,19 +139,19 @@ namespace SocialMediaFormsApp
                 Rules.Add(rule1);
             }
 
-            if(!string.IsNullOrEmpty(rule2))
+            if (!string.IsNullOrEmpty(rule2))
             {
                 Rules.Add(rule2);
             }
 
-            if(!string.IsNullOrEmpty(rule3))
+            if (!string.IsNullOrEmpty(rule3))
             {
                 Rules.Add(rule3);
             }
-            
+
             List<string> Mods = new List<string>();
 
-            foreach(var item in ModsInCreatedCommunityLiB.Items)
+            foreach (var item in ModsInCreatedCommunityLiB.Items)
             {
                 Mods.Add((string)item);
             }
@@ -157,15 +160,15 @@ namespace SocialMediaFormsApp
             {
                 _communityContainer.CreateAndSaveCommunity(User.UserId, communityName, description, Rules, Mods);
             }
-            catch(ItemNotFoundException)
+            catch (ItemNotFoundException)
             {
                 MessageBox.Show("Mod not found");
             }
-            catch(InvalidInputException ex)
+            catch (InvalidInputException ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            catch(AccessException)
+            catch (AccessException)
             {
                 MessageBox.Show("You dont have access to create community");
             }
@@ -182,22 +185,22 @@ namespace SocialMediaFormsApp
 
         private void CreateCommunityAddModBT_Click(object sender, EventArgs e)
         {
-            
+
             var selectedUser = (string)CreateCommunityAddModsCB.SelectedItem;
-            if(!string.IsNullOrEmpty(selectedUser))
+            if (!string.IsNullOrEmpty(selectedUser))
             {
-                if(ModsInCreatedCommunityLiB.Items.Count <= 2 && !ModsInCreatedCommunityLiB.Items.Contains(selectedUser))
+                if (ModsInCreatedCommunityLiB.Items.Count <= 2 && !ModsInCreatedCommunityLiB.Items.Contains(selectedUser))
                 {
                     ModsInCreatedCommunityLiB.Items.Add(selectedUser);
-                 
+
                 }
                 else
                 {
                     MessageBox.Show("Cannot add mod");
                 }
             }
-            
-            
+
+
         }
 
         private void CreateCommunityRemoveModBT_Click(object sender, EventArgs e)
@@ -205,6 +208,76 @@ namespace SocialMediaFormsApp
             var selectedUser = ModsInCreatedCommunityLiB.SelectedItem;
 
             ModsInCreatedCommunityLiB.Items.Remove(selectedUser);
+
+        }
+
+        private void SelectCommunityToUpdateCB_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateCommunityModsLiB.Items.Clear();
+
+            var selectedCommunityName = (string)SelectCommunityToUpdateCB.SelectedItem;
+
+            var community = _communityContainer.LoadCompleteCommunityDto(selectedCommunityName);
+
+            UpdateCommunityDescriptionRTB.Text = community.Description;
+
+            UpdateCommunityRule1TB.Text = community.Rules.Count > 0 ? community.Rules[0] : string.Empty;
+            UpdateCommunityRule2TB.Text = community.Rules.Count > 1 ? community.Rules[1] : string.Empty;
+            UpdateCommunityRule3TB.Text = community.Rules.Count > 2 ? community.Rules[2] : string.Empty;
+
+
+            foreach (var mod in community.Mods)
+            {
+
+                var ModName = _userContainer.GetUserName(mod);
+                UpdateCommunityModsLiB.Items.Add(ModName);
+            }
+
+
+
+        }
+
+        private void UpdateCommunityRemoveModBT_Click(object sender, EventArgs e)
+        {
+            var selectedUser = UpdateCommunityModsLiB.SelectedItem;
+
+            UpdateCommunityModsLiB.Items.Remove(selectedUser);
+        }
+
+        private void UpdateCommunityBT_Click(object sender, EventArgs e)
+        {
+           
+            var description = UpdateCommunityDescriptionRTB.Text;
+
+            List<string> Rules = new List<string>();
+
+            var rule1 = UpdateCommunityRule1TB.Text;
+            var rule2 = UpdateCommunityRule2TB.Text;
+            var rule3 = UpdateCommunityRule3TB.Text;
+
+            if (!string.IsNullOrEmpty(rule1))
+            {
+                Rules.Add(rule1);
+            }
+
+            if (!string.IsNullOrEmpty(rule2))
+            {
+                Rules.Add(rule2);
+            }
+
+            if (!string.IsNullOrEmpty(rule3))
+            {
+                Rules.Add(rule3);
+            }
+
+            List<string> Mods = new List<string>();
+
+            foreach (var item in UpdateCommunityModsLiB.Items)
+            {
+                Mods.Add((string)item);
+            }
+
+
 
         }
     }

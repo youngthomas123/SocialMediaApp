@@ -117,19 +117,22 @@ namespace SocialMedia.BusinessLogic.Containers
             {
                 var rules = _communityRulesAccess.LoadRules(community.CommunityId);
                 var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
-                var postids = _postDataAccess.GetPostIds(community.CommunityId); 
+                var postids = _postDataAccess.GetPostIds(community.CommunityId);
+                var modIds = _communityModeratorsAccess.GetModsInCommunity(community.CommunityId);
 
                 CommunityFullDto communityFullDto = new CommunityFullDto();
 
 
                 communityFullDto.UserId = community.UserId;
                 communityFullDto.Rules = rules;
+                communityFullDto.Mods = modIds;
                 communityFullDto.DateCreated = community.DateCreated;
                 communityFullDto.CommunityId = community.CommunityId;
                 communityFullDto.CommunityName = community.CommunityName;
                 communityFullDto.Description = community.Description;
                 communityFullDto.PostIds = postids;
                 communityFullDto.FollowingUserIds = UserIds;
+               
 
                 communityFullDtos.Add(communityFullDto);
             }
@@ -150,19 +153,21 @@ namespace SocialMedia.BusinessLogic.Containers
                 var rules = _communityRulesAccess.LoadRules(community.CommunityId);
                 var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
                 var postids = _postDataAccess.GetPostIds(community.CommunityId);
+                var modIds = _communityModeratorsAccess.GetModsInCommunity(community.CommunityId);
 
                 CommunityFullDto communityFullDto = new CommunityFullDto();
 
 
                 communityFullDto.UserId = community.UserId;
                 communityFullDto.Rules = rules;
+                communityFullDto.Mods = modIds;
                 communityFullDto.DateCreated = community.DateCreated;
                 communityFullDto.CommunityId = community.CommunityId;
                 communityFullDto.CommunityName = community.CommunityName;
                 communityFullDto.Description = community.Description;
                 communityFullDto.PostIds = postids;
                 communityFullDto.FollowingUserIds = UserIds;
-
+              
 
 
                 return communityFullDto;
@@ -173,6 +178,26 @@ namespace SocialMedia.BusinessLogic.Containers
             }
 			
 		}
+
+        //could be incorrect
+        public void UpdateFullCommunity(CommunityFullDto communityFullDto)
+        {
+            var doesCommunityIdExit = _communityDataAccess.DoesCommunityIdExist(communityFullDto.CommunityId);
+            if(doesCommunityIdExit == true)
+            {
+                Community community = new Community(communityFullDto.DateCreated , communityFullDto.CommunityName , communityFullDto.Description , communityFullDto.CommunityId, communityFullDto.UserId);
+                _communityDataAccess.UpdateCommunity(community);
+
+                foreach(var rule in communityFullDto.Rules)
+                {
+                    //could be incorrect
+                    _communityRulesAccess.UpdateRule(communityFullDto.CommunityId, rule);
+                }
+
+
+            }
+            
+        }
 
 		public List<string> LoadCommunityNames()
         {

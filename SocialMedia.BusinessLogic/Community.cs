@@ -23,7 +23,9 @@ namespace SocialMedia.BusinessLogic
 			Rules = null;	
 			FollowingUserIds = null;
 			PostIds = null;
-		}
+			ModsforCommunity = null;
+
+        }
 		public Community(DateTime dateCreated, string communityName, string description, Guid communityId, Guid userId )
 		{
             DateCreated = dateCreated;
@@ -34,6 +36,7 @@ namespace SocialMedia.BusinessLogic
             Rules = new List<string>();
             FollowingUserIds = new List<Guid>();
             PostIds = new List<Guid>();
+            ModsforCommunity = new List<string>();
 
         }
 
@@ -52,5 +55,7 @@ namespace SocialMedia.BusinessLogic
 		public List<Guid>? FollowingUserIds { get;  set; } // usernames
 
 		public List <Guid>? PostIds { get;  set; } // post Ids
+
+		public List<string>? ModsforCommunity { get; set; } // moderatorNames in community
 	} 
 }

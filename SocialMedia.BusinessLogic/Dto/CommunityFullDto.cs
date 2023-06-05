@@ -26,7 +26,7 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public List<string>? PostIds { get; set; } // post Ids
 
-
+        public List<Guid>?Mods { get; set; }
 
     }
 }

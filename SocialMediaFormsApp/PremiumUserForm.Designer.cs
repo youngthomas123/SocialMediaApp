@@ -655,6 +655,7 @@
             UpdateCommunityBT.TabIndex = 16;
             UpdateCommunityBT.Text = "Update Community";
             UpdateCommunityBT.UseVisualStyleBackColor = true;
+            UpdateCommunityBT.Click += UpdateCommunityBT_Click;
             // 
             // UpdateCommunityRule3TB
             // 
@@ -765,6 +766,7 @@
             UpdateCommunityRemoveModBT.TabIndex = 3;
             UpdateCommunityRemoveModBT.Text = "Remove Mod";
             UpdateCommunityRemoveModBT.UseVisualStyleBackColor = true;
+            UpdateCommunityRemoveModBT.Click += UpdateCommunityRemoveModBT_Click;
             // 
             // UpdateCommunityModsLiB
             // 
@@ -782,6 +784,7 @@
             SelectCommunityToUpdateCB.Name = "SelectCommunityToUpdateCB";
             SelectCommunityToUpdateCB.Size = new Size(256, 33);
             SelectCommunityToUpdateCB.TabIndex = 1;
+            SelectCommunityToUpdateCB.SelectedIndexChanged += SelectCommunityToUpdateCB_SelectedIndexChanged;
             // 
             // label20
             // 
