@@ -597,5 +597,29 @@ namespace SocialMedia.BusinessLogic.Containers
             return reportReasonsDtos;
         }
 
+        public List<Post>LoadAllReportedPosts()
+        {
+            var ReportedPostIds = _reportedPostsDataAccess.LoadAllReportedPostIds();
+
+            List<Post> reportedPosts = new List<Post>();
+
+            foreach(var id in ReportedPostIds)
+            {
+                var Post = _postDataAccess.LoadPostById(id);
+
+                reportedPosts.Add(Post);
+            }
+
+            return reportedPosts;
+
+
+        }
+
+        public int GetNumberOfReportsInPost(Guid postId)
+        {
+            var num = _reportedPostsDataAccess.GetReportCountInPost(postId);
+            return num;
+        }
+
     }
 }

@@ -42,7 +42,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void ReportComment(Guid commentId, Guid userId, int reasonId);
 
+        List<Comment> LoadAllReportedComments();
+
+        int GetNumberOfReportsInComment(Guid commentId);
 
 
-	}
+    }
 }

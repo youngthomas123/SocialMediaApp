@@ -123,5 +123,69 @@ namespace SocialMedia.DataAccess
 			return doesRecordExists;
 		}
 
-	}
+        public List<Guid> LoadAllReportedCommentIds()
+        {
+            List<Guid>commentIds = new List<Guid>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select Distinct(CommentId) " +
+                         $"from ReportedComments ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int CommentIdIndex = dr.GetOrdinal("CommentId");
+            while (dr.Read())
+            {
+                var CommentId = (Guid)dr[CommentIdIndex];
+
+                commentIds.Add(CommentId);
+            }
+
+            dr.Close();
+            conn.Close();
+            return commentIds;
+        }
+
+        public int GetReportCountInComment(Guid commentId)
+        {
+            int NumberOfReports = 0;
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select Count(CommentId) as Number " +
+                         $"from ReportedComments " +
+                         $"where CommentId = @commentId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@commentId", commentId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int NumberIndex = dr.GetOrdinal("Number");
+            while (dr.Read())
+            {
+                var number = (int)dr[NumberIndex];
+
+                NumberOfReports = number;
+            }
+
+            dr.Close();
+            conn.Close();
+            return NumberOfReports;
+        }
+
+    }
 }

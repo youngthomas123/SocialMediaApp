@@ -15,5 +15,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 		void DeleteRecord(Guid postId);
 
 		bool CheckRecordExists(Guid postId, Guid userId);
-	}
+
+		List<Guid> LoadAllReportedPostIds();
+
+		int GetReportCountInPost(Guid postId);
+
+    }
 }

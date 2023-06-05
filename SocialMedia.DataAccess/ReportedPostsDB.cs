@@ -120,5 +120,70 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 			return doesRecordExists;
 		}
+
+		public List<Guid>LoadAllReportedPostIds()
+		{
+            List<Guid> postIds = new List<Guid>();
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select Distinct(PostId) " +
+                         $"from ReportedPosts ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int PostIdIndex = dr.GetOrdinal("PostId");
+            while (dr.Read())
+            {
+                var PostId = (Guid)dr[PostIdIndex];
+
+                postIds.Add(PostId);
+            }
+
+            dr.Close();
+            conn.Close();
+            return postIds;
+        }
+
+		public int GetReportCountInPost(Guid postId)
+		{
+			int NumberOfReports = 0;
+
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select Count(PostId) as Number " +
+                         $"from ReportedPosts " +
+						 $"where PostId = @postId";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@postId", postId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int NumberIndex = dr.GetOrdinal("Number");
+            while (dr.Read())
+            {
+                var number = (int)dr[NumberIndex];
+
+				NumberOfReports = number;
+            }
+
+            dr.Close();
+            conn.Close();
+            return NumberOfReports;
+        }
+
 	}
 }

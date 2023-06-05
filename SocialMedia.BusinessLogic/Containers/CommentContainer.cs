@@ -387,5 +387,26 @@ namespace SocialMedia.BusinessLogic.Containers
 			}
 
 		}
+        public List<Comment>LoadAllReportedComments()
+        {
+            var ReportedCommentIds = _reportedCommentsDataAccess.LoadAllReportedCommentIds();
+
+            List<Comment> reportedComments = new List<Comment>();
+
+            foreach (var id in ReportedCommentIds)
+            {
+                var Comment = _commentDataAccess.LoadCommentById(id);
+
+                reportedComments.Add(Comment);
+            }
+
+            return reportedComments;
+        }
+
+        public int GetNumberOfReportsInComment(Guid commentId)
+        {
+            var num = _reportedCommentsDataAccess.GetReportCountInComment(commentId);
+            return num;
+        }
 	}
 }

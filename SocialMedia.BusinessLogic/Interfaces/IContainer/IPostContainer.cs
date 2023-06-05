@@ -52,6 +52,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<ReportReasonsDto> LoadReportReasonsDtos();
 
+        List<Post> LoadAllReportedPosts();
+
+        int GetNumberOfReportsInPost(Guid postId);
+
 
 
     }
