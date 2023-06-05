@@ -48,6 +48,12 @@ namespace SocialMedia.BusinessLogic
 
 		public Guid RecipientId { get; private set;}
 
+
+		public override string ToString()
+		{
+			return $"{Subject}";
+		}
 		
 	}
+
 }
