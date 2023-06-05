@@ -43,7 +43,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         User GetUserByName(string username);
 
-
+        List<string> GetAllUsernames();
 
     }
 }

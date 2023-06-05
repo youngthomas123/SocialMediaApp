@@ -4,9 +4,12 @@ using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -36,7 +39,7 @@ namespace SocialMedia.BusinessLogic.Containers
         }
 
         // to be modified
-        public void CreateAndSaveCommunity(Guid userId, string communityName, string description)
+        public void CreateAndSaveCommunity(Guid userId, string communityName, string description, List<string>Rules, List<string>Mods)
         {
             var doesUserIdExist = _userDataAccess.DoesUserIdExist(userId);
 
@@ -45,14 +48,39 @@ namespace SocialMedia.BusinessLogic.Containers
 
             if(doesUserIdExist == true && isUserPremium == true)
             {
-                if(!string.IsNullOrEmpty(communityName) && !string.IsNullOrEmpty(description) && communityName.Length <= 35 && description.Length <= 150)
+                if(!string.IsNullOrEmpty(communityName) && !string.IsNullOrEmpty(description) && communityName.Length <= 35 && description.Length <= 150 && isCommunityNameUnique == true)
                 {
                     Community community = new Community(userId, communityName, description);
-                    _communityDataAccess.SaveCommunity();
+                    _communityDataAccess.SaveCommunity(community);
+
+                    foreach(var rule in Rules)
+                    {
+
+                        _communityRulesAccess.CreateRule(community.CommunityId, rule);
+
+                    }
+
+                    foreach(var mod in Mods)
+                    {
+
+                        var doesModNameExist = _userDataAccess.DoesUsernameExist(mod);
+                        if(doesModNameExist == true)
+                        {
+                            var modId = new Guid(_userDataAccess.GetUserId(mod));
+                            _communityModeratorsAccess.CreateRecord(community.CommunityId, modId);
+                        }
+                        else
+                        {
+                            throw new ItemNotFoundException("Mod does not exist");
+                        }
+
+                    }
+                    
+
                 }
                 else
                 {
-                    throw new InvalidInputException();
+                    throw new InvalidInputException("Invalid community input or communityName not unique");
                 }
             }
             else
@@ -245,6 +273,20 @@ namespace SocialMedia.BusinessLogic.Containers
             }
 
           
+        }
+
+        public List<string>GetModNamesInCommunity(Guid communityId)
+        {
+            var modIds = _communityModeratorsAccess.GetModsInCommunity(communityId);
+            var modNames = new List<string>();
+            foreach(var id in modIds)
+            {
+                var modName = _userDataAccess.GetUserName(id);  
+                modNames.Add(modName);
+            }
+
+            return modNames;
+
         }
     }
 }

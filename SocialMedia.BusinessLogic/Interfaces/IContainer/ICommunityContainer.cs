@@ -32,8 +32,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool IsCommunityNameUnique(string communityName);
 
-        void CreateAndSaveCommunity(Guid userId, string communityName, string description);
+        void CreateAndSaveCommunity(Guid userId, string communityName, string description, List<string> Rules, List<string> Mods);
 
+        List<string> GetModNamesInCommunity(Guid communityId);
 
     }
 }

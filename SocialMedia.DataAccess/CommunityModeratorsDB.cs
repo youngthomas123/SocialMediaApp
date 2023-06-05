@@ -1,4 +1,5 @@
-﻿using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+﻿using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -132,5 +133,37 @@ namespace SocialMedia.DataAccess
             return CommunityIds;
         }
 
+		public List<Guid>GetModsInCommunity(Guid communityId)
+		{
+            SqlConnection conn = new SqlConnection(connection);
+            conn.Open();
+
+            List<Guid> ModeratorIds = new List<Guid>();
+
+            string sql = $"Select ModeratorId " +
+                         $"from CommunityModerators " +
+                         $"where CommunityId = @communityId ";
+
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityId", communityId);
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+
+            int ModeratorIdIndex = dr.GetOrdinal("ModeratorId");
+
+            while (dr.Read())
+            {
+
+                var ModeratorId = (Guid)dr[ModeratorIdIndex];
+
+                ModeratorIds.Add(ModeratorId);
+            }
+            dr.Close();
+            conn.Close();
+            return ModeratorIds;
+        }
 	}
 }

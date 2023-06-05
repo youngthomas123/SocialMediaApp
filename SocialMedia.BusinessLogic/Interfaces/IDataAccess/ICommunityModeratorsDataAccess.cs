@@ -16,5 +16,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		List<Guid> LoadCommunityIdsByUser(Guid userId);
 
+		List<Guid> GetModsInCommunity(Guid communityId);
+
     }
 }

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace SocialMediaFormsApp
 {
@@ -74,6 +75,12 @@ namespace SocialMediaFormsApp
                 CreatedCommunitiesLiB.Items.Add(createdCommunity);
             }
 
+            foreach(var username in _userContainer.GetAllUsernames())
+            {
+                CreateCommunityAddModsCB.Items.Add(username);
+            }
+
+            ModsInCreatedCommunityLiB.Items.Add(User.UserName);
 
         }
 
@@ -114,16 +121,90 @@ namespace SocialMediaFormsApp
 
         private void CreateCommunityBT_Click(object sender, EventArgs e)
         {
+            var communityName = CreateCommunityNameTB.Text;
+            var description = CreateCommunityDescriptionRTB.Text;
+
+            List<string>Rules = new List<string>();
+
+            var rule1 = CreateRule1TB.Text;
+            var rule2 = CreateRule2TB.Text;
+            var rule3 = CreateRule3TB.Text;
+
+
+            if (!string.IsNullOrEmpty(rule1))
+            {
+                Rules.Add(rule1);
+            }
+
+            if(!string.IsNullOrEmpty(rule2))
+            {
+                Rules.Add(rule2);
+            }
+
+            if(!string.IsNullOrEmpty(rule3))
+            {
+                Rules.Add(rule3);
+            }
+            
+            List<string> Mods = new List<string>();
+
+            foreach(var item in ModsInCreatedCommunityLiB.Items)
+            {
+                Mods.Add((string)item);
+            }
+
+            try
+            {
+                _communityContainer.CreateAndSaveCommunity(User.UserId, communityName, description, Rules, Mods);
+            }
+            catch(ItemNotFoundException)
+            {
+                MessageBox.Show("Mod not found");
+            }
+            catch(InvalidInputException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch(AccessException)
+            {
+                MessageBox.Show("You dont have access to create community");
+            }
+
+            CreateCommunityNameTB.Clear();
+            CreateCommunityDescriptionRTB.Clear();
+            CreateRule1TB.Clear();
+            CreateRule2TB.Clear();
+            CreateRule3TB.Clear();
+            ModsInCreatedCommunityLiB.Items.Clear();
+
 
         }
 
         private void CreateCommunityAddModBT_Click(object sender, EventArgs e)
         {
-
+            
+            var selectedUser = (string)CreateCommunityAddModsCB.SelectedItem;
+            if(!string.IsNullOrEmpty(selectedUser))
+            {
+                if(ModsInCreatedCommunityLiB.Items.Count <= 2 && !ModsInCreatedCommunityLiB.Items.Contains(selectedUser))
+                {
+                    ModsInCreatedCommunityLiB.Items.Add(selectedUser);
+                 
+                }
+                else
+                {
+                    MessageBox.Show("Cannot add mod");
+                }
+            }
+            
+            
         }
 
         private void CreateCommunityRemoveModBT_Click(object sender, EventArgs e)
         {
+            var selectedUser = ModsInCreatedCommunityLiB.SelectedItem;
+
+            ModsInCreatedCommunityLiB.Items.Remove(selectedUser);
 
         }
     }

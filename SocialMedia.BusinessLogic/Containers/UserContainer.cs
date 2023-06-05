@@ -6,6 +6,7 @@ using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -365,7 +366,11 @@ namespace SocialMedia.BusinessLogic.Containers
 
 
         }
-
+        public List<string>GetAllUsernames()
+        {
+            var unsernames = _userDataAccess.GetUserNames();
+            return unsernames;
+        }
        
     }
 }
