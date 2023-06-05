@@ -31,7 +31,7 @@ namespace SocialMedia.BusinessLogic.Containers
 
             if(doesSenderIdExist == true && doesRecipientIdExist == true)
             {
-                if (subject != null && body != null && subject.Length <= 50 && body.Length <= 150)
+                if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(body) && subject.Length <= 50 && body.Length <= 150)
                 {
                     Message message = new Message(subject, body, senderId, recipientId);
                     _messageDataAccess.SaveMessage(message);

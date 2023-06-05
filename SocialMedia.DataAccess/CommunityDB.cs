@@ -475,7 +475,42 @@ namespace SocialMedia.DataAccess
             return doesRecordExists;
         }
 
+        public List<string>GetCommunityNamesCreatedByUser(Guid userId)
+        {
+            List<string> Communitynames = new List<string>();
 
+
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"select CommunityName " +
+                         $"from Communities " +
+                         $"where UserId = @userId";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            int CommunityNameIndex = dr.GetOrdinal("CommunityName");
+
+            while (dr.Read())
+            {
+
+
+                var CommunityName = (string)dr[CommunityNameIndex];
+
+                Communitynames.Add(CommunityName);
+            }
+
+            dr.Close();
+
+            conn.Close();
+            return Communitynames;
+        }
 
 	}
 

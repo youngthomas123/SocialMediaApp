@@ -34,6 +34,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         bool DoesCommunityNameExist(string communityName);
 
+        List<string> GetCommunityNamesCreatedByUser(Guid userId);
+
 
     }
 }

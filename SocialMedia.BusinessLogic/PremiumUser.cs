@@ -10,19 +10,19 @@ namespace SocialMedia.BusinessLogic
     {
         public PremiumUser(string userName, string password, string email) : base(userName, password, email)
         {
-            UserCreatedCommunities = new List<Community>();
+            UserCreatedCommunities = new List<string>();
         }
 
         public PremiumUser (Guid userId, string userName, string password, string salt, string? email, DateTime dateCreated) : base(userId, userName, password, salt, email, dateCreated)
         {
-            UserCreatedCommunities = new List<Community>();
+            UserCreatedCommunities = new List<string>();
         }
 
-        public List<Community> UserCreatedCommunities { get;  private set; }
+        public List<string> UserCreatedCommunities { get;  private set; }
 
-        public void AddToUserCreatedCommunities(Community community)
+        public void AddToUserCreatedCommunities(string communityName)
         {
-            UserCreatedCommunities.Add(community);
+            UserCreatedCommunities.Add(communityName);
         }
 
     }

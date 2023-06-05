@@ -24,7 +24,9 @@ namespace SocialMediaFormsApp
         private readonly IMessageContainer _messageContainer;
         private readonly ICommunityContainer _communityContainer;
 
-        private IUser User { get; set; }
+        
+
+        private RegularUser User { get; set; }
 
         public RegularUserForm(IServiceProvider serviceProvider, IUser LoggedInUser)
         {
@@ -33,7 +35,7 @@ namespace SocialMediaFormsApp
             _userContainer = _serviceProvider.GetService<IUserContainer>();
             _messageContainer = _serviceProvider.GetService<IMessageContainer>();
             _communityContainer = _serviceProvider.GetService<ICommunityContainer>();
-            User = LoggedInUser;
+            User = LoggedInUser as RegularUser;
 
         }
 
@@ -97,6 +99,7 @@ namespace SocialMediaFormsApp
             SubjectTB.Clear();
             BodyRTB.Clear();
 
+            
         }
 
         private void ViewMessageBT_Click(object sender, EventArgs e)
@@ -104,7 +107,7 @@ namespace SocialMediaFormsApp
             var SelectedMessage = (SocialMedia.BusinessLogic.Message)ReceivedMessagesLiB.SelectedItem;
 
 
-            MessageBox.Show($" Date : {Convert.ToString(SelectedMessage.DateCreated)} \nSubject : {SelectedMessage.Subject} \nBody : {SelectedMessage.Body}");
+            MessageBox.Show($"Date : {Convert.ToString(SelectedMessage.DateCreated)} \nFrom : {_userContainer.GetUserName(SelectedMessage.SenderId)} \nSubject : {SelectedMessage.Subject} \nBody : {SelectedMessage.Body}");
         }
     }
 }

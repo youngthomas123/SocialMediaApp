@@ -345,6 +345,17 @@ namespace SocialMedia.BusinessLogic.Containers
                     User.AddToUserFriends(FriendName);
                 }
 
+                if(User is PremiumUser premiumUser)
+                {
+                    var UserCreatedCommunities = _communityDataAccess.GetCommunityNamesCreatedByUser(User.UserId);
+
+                    foreach(var communityName in UserCreatedCommunities)
+                    {
+                        premiumUser.AddToUserCreatedCommunities(communityName);
+                    }
+                    
+                }
+
                 return User;
             }
             else

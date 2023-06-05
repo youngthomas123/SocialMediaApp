@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SocialMedia.BusinessLogic;
+using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using System;
@@ -20,7 +22,9 @@ namespace SocialMediaFormsApp
         private readonly IMessageContainer _messageContainer;
         private readonly ICommunityContainer _communityContainer;
 
-        private IUser User { get; set; }
+
+        private PremiumUser User { get; set; }
+
         public PremiumUserForm(IServiceProvider serviceProvider, IUser LoggedInUser)
         {
             InitializeComponent();
@@ -28,7 +32,8 @@ namespace SocialMediaFormsApp
             _userContainer = _serviceProvider.GetService<IUserContainer>();
             _messageContainer = _serviceProvider.GetService<IMessageContainer>();
             _communityContainer = _serviceProvider.GetService<ICommunityContainer>();
-            User = LoggedInUser;
+
+            User = LoggedInUser as PremiumUser;
         }
 
         private void label24_Click(object sender, EventArgs e)
@@ -63,6 +68,63 @@ namespace SocialMediaFormsApp
             {
                 ReceivedMessagesLiB.Items.Add(message);
             }
+
+            foreach(var createdCommunity in User.UserCreatedCommunities)
+            {
+                CreatedCommunitiesLiB.Items.Add(createdCommunity);
+            }
+
+
+        }
+
+        private void ViewMessageBT_Click(object sender, EventArgs e)
+        {
+            var SelectedMessage = (SocialMedia.BusinessLogic.Message)ReceivedMessagesLiB.SelectedItem;
+
+
+            MessageBox.Show($"Date : {Convert.ToString(SelectedMessage.DateCreated)} \nFrom : {_userContainer.GetUserName(SelectedMessage.SenderId)} \nSubject : {SelectedMessage.Subject} \nBody : {SelectedMessage.Body}");
+        }
+
+        private void SendMessageBT_Click(object sender, EventArgs e)
+        {
+            var RecipientName = ToTB.Text;
+            var Subject = SubjectTB.Text;
+            var Body = MessageBodyRTB.Text;
+
+
+            try
+            {
+                var RecipientId = new Guid(_userContainer.GetUserId(RecipientName));
+
+                _messageContainer.CreateAndSaveMessage(Subject, Body, User.UserId, RecipientId);
+            }
+            catch (ItemNotFoundException)
+            {
+                MessageBox.Show("Invalid Username");
+            }
+            catch (InvalidInputException)
+            {
+                MessageBox.Show("Invalid Input");
+            }
+
+            ToTB.Clear();
+            SubjectTB.Clear();
+            MessageBodyRTB.Clear();
+        }
+
+        private void CreateCommunityBT_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CreateCommunityAddModBT_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CreateCommunityRemoveModBT_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
