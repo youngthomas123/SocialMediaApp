@@ -18,5 +18,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
 		List<Guid> GetModsInCommunity(Guid communityId);
 
+		void DeleteRecords(Guid communityId);
+
     }
 }

@@ -212,9 +212,11 @@
 						</div>
 						<div class="card-body">
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item">Moderator 1</li>
-								<li class="list-group-item">Moderator 2</li>
-								<li class="list-group-item">Moderator 3</li>
+
+								@foreach (var modName in Model.Community.ModNames)
+								{
+									<li class="list-group-item">@modName</li>
+								}
 							</ul>
 						</div>
 					</div>

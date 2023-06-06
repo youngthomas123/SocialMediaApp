@@ -36,5 +36,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         List<string> GetModNamesInCommunity(Guid communityId);
 
+        void UpdateFullCommunity(CommunityFullDto communityFullDto);
+
     }
 }

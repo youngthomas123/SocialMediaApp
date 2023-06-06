@@ -129,24 +129,7 @@ namespace SocialMedia.DataAccess
 
         }
 
-        public void UpdateUserId(Guid communityId, Guid UserId)
-        {
-            SqlConnection conn = new SqlConnection(connection);
-            conn.Open();
-
-            string sql = $"Update CommunityMembers " +
-                          $"set Members = @userId " +
-                          $"where CommunityId = '@Id' ";
-
-            SqlCommand cmd = new SqlCommand(sql, conn);
-
-            cmd.Parameters.AddWithValue("@userId", UserId);
-            cmd.Parameters.AddWithValue("@Id", communityId);
-
-            cmd.ExecuteNonQuery();
-
-            conn.Close();
-        }
+     
 
         public List<Guid>LoadCommunityIdsByMember(Guid userId)
         {

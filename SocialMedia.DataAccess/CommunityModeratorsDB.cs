@@ -34,25 +34,7 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 		}
 
-		// could be incorrent
-		public void UpdateRecord(Guid communityId, Guid moderatorId)
-		{
-            SqlConnection conn = new SqlConnection(connection);
-            conn.Open();
-
-            string sql =  $"Update CommunityModerators " +
-                          $"set ModeratorId = '@modId' " +
-                          $"where CommunityId = '@communityId' ";
-
-            SqlCommand cmd = new SqlCommand(sql, conn);
-
-            cmd.Parameters.AddWithValue("@modId", moderatorId);
-            cmd.Parameters.AddWithValue("@communityId", communityId);
-
-            cmd.ExecuteNonQuery();
-
-            conn.Close();
-        }
+	
 
 		public void DeleteRecord(Guid communityId, Guid moderatorId)
 		{
@@ -74,7 +56,27 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 		}
 
-		public bool CheckRecordExists(Guid communityId, Guid moderatorId)
+        public void DeleteRecords(Guid communityId)
+        {
+            SqlConnection conn = new SqlConnection(connection);
+
+            conn.Open();
+
+            string sql = $"Delete from CommunityModerators " +
+                         $"where CommunityId = @communityId ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@communityId", communityId);
+           
+
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        public bool CheckRecordExists(Guid communityId, Guid moderatorId)
 		{
 			bool doesRecordExists = false;
 

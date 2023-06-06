@@ -13,6 +13,7 @@ namespace SocialMediaWebApp.Pages
     {
         private readonly IPostContainer _postContainer;
 		private readonly ICommunityContainer _communityContainer;
+       
         
 
 		public bool isCommunitynameValid { get; set; }	
@@ -22,11 +23,14 @@ namespace SocialMediaWebApp.Pages
         public List<PostPageDto> PostDtos { get; set; }
 		
 		
+        
+
 		public BrowseCommunityModel(IPostContainer postContainer, ICommunityContainer communityContainer)
         {
             _postContainer = postContainer;
             
 			_communityContainer = communityContainer;
+            
         }
 
         public void OnGet(string? CommunityName)
@@ -35,7 +39,7 @@ namespace SocialMediaWebApp.Pages
 			{
                 var userId = Guid.Parse(User.FindFirst("UserId").Value);
 
-
+                
 				try
 				{
                     Community = _communityContainer.LoadCompleteCommunityDto(CommunityName);

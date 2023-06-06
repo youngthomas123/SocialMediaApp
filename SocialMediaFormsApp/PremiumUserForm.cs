@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.BusinessLogic;
 using SocialMedia.BusinessLogic.Custom_exception;
+using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using System;
@@ -270,14 +271,24 @@ namespace SocialMediaFormsApp
                 Rules.Add(rule3);
             }
 
-            List<string> Mods = new List<string>();
+            List<Guid> Mods = new List<Guid>();
 
-            foreach (var item in UpdateCommunityModsLiB.Items)
+            foreach (var modName in UpdateCommunityModsLiB.Items)
             {
-                Mods.Add((string)item);
+                var modId = new Guid(_userContainer.GetUserId((string)modName));
+                Mods.Add(modId);
             }
 
+            var selectedCommunityName = (string)SelectCommunityToUpdateCB.SelectedItem;
+            var community = _communityContainer.LoadCompleteCommunityDto(selectedCommunityName);
 
+            community.Description = description;
+            community.Rules = Rules;
+            community.Mods = Mods;
+
+
+
+            _communityContainer.UpdateFullCommunity(community);
 
         }
     }

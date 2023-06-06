@@ -14,7 +14,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         void DeleteRule(Guid communityId, string rule);
 
-        void UpdateRule(Guid communityId, string rule);
-        
+        void DeleteRecords(Guid communityId);
+
+
+
+
     }
 }

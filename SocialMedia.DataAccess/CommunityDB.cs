@@ -163,7 +163,7 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql =  $"update Communities " +
-                          $"set DateCreated = @Updatedate, CommunityName = @UpdateName, Description = @UpdateDescription, Creator = @UpdateUserId " +
+                          $"set DateCreated = @Updatedate, CommunityName = @UpdateName, Description = @UpdateDescription, UserId = @UpdateUserId " +
                           $"where CommunityId = @UpdateCommunityId";
 
             SqlCommand cmd = new SqlCommand(sql, conn);

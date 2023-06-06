@@ -40,12 +40,31 @@ namespace SocialMedia.DataAccess
             conn.Open();
 
             string sql = $"delete from CommunityRules " +
-                         $"where CommunityId = '@Id' and Rules = '@Rule' ";
+                         $"where CommunityId = @Id and Rules = @Rule ";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
 
             cmd.Parameters.AddWithValue("@Id", communityId);
             cmd.Parameters.AddWithValue("@Rule", rule);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+        }
+
+        public void DeleteRecords(Guid communityId)
+        {
+            SqlConnection conn = new SqlConnection(connection);
+            conn.Open();
+
+            string sql = $"delete from CommunityRules " +
+                         $"where CommunityId = @Id ";
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Id", communityId);
+           
 
             cmd.ExecuteNonQuery();
 
@@ -86,24 +105,6 @@ namespace SocialMedia.DataAccess
             return rules;
 
         }
-        // could be incorrect
-        public void UpdateRule(Guid communityId, string rule)
-        {
-            SqlConnection conn = new SqlConnection(connection);
-            conn.Open();
-
-            string sql =  $"Update CommunityRules " +
-                          $"set Rules = '@rule' " +
-                          $"where CommunityId = '@Id' ";
-
-            SqlCommand cmd = new SqlCommand(sql, conn);
-
-            cmd.Parameters.AddWithValue("@rule", rule);
-            cmd.Parameters.AddWithValue("@Id", communityId);
-
-            cmd.ExecuteNonQuery();
-
-            conn.Close();
-        }
+       
     }
 }

@@ -16,7 +16,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 
         List<Guid> LoadUserIds(Guid CommunityId);
 
-        void UpdateUserId(Guid communityId, Guid UserId);
+        
 
         bool CheckRecordExists(Guid communityId, Guid UserId);
 
