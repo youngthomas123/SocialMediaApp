@@ -10,5 +10,9 @@ namespace SocialMedia.BusinessLogic.Interfaces
 	public interface IContentFilterAndRanking
 	{
 		List<PostPageDto> PostsforMainFeed(List<PostPageDto> Loadedposts, Guid userId);
+
+		List<PostPageDto> PostsforCommunityFeed(List<PostPageDto> Loadedposts);
+
+		List<CommentPageDto> CommentsforCommentSection(List<CommentPageDto> Loadedcomments);
 	}
 }

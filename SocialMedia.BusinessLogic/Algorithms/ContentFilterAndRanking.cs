@@ -68,6 +68,31 @@ namespace SocialMedia.BusinessLogic.Algorithms
 
 		}
 
+
+		private List<CommentPageDto>FilterRemovedCommentsFromList(List<CommentPageDto> comments, List<Guid> RemovedCommentIds)
+		{
+			List<CommentPageDto> FilteredComments = new List<CommentPageDto>();
+
+			foreach (var comment in comments)
+			{
+				if (!RemovedCommentIds.Contains(comment.CommentId))
+				{
+					FilteredComments.Add(comment);
+				}
+			}
+			return FilteredComments;
+		}
+
+		private List<CommentPageDto>RankCommentsOnScore(List<CommentPageDto> Comments)
+		{
+			List<CommentPageDto> rankedComments = Comments.OrderByDescending(c => c.Score).ToList();
+			return rankedComments;
+		}
+
+
+
+
+
 		public List<PostPageDto>PostsforMainFeed(List<PostPageDto>Loadedposts, Guid userId)
 		{
 			List<PostPageDto> posts = Loadedposts;
@@ -84,5 +109,31 @@ namespace SocialMedia.BusinessLogic.Algorithms
 			return posts;	
 		}
 
+
+		public List<PostPageDto>PostsforCommunityFeed(List<PostPageDto> Loadedposts)
+		{
+			List<PostPageDto> posts = Loadedposts;
+
+			var RemovedPostIds = _removedPostsDataAccess.GetRemovedPostIds();
+
+			posts = FilterRemovedPostsFromList(posts, RemovedPostIds);
+
+			posts = RankPostsOnScore(posts);
+
+			return posts;
+		}
+
+		public List<CommentPageDto>CommentsforCommentSection(List<CommentPageDto> Loadedcomments)
+		{
+			List<CommentPageDto> comments = Loadedcomments;
+
+			var RemovedCommentIds = _removedCommentsAccess.GetRemovedCommentIds();
+
+			comments = FilterRemovedCommentsFromList(comments, RemovedCommentIds);
+
+			comments = RankCommentsOnScore(comments);
+
+			return comments;
+		}
 	}
 }

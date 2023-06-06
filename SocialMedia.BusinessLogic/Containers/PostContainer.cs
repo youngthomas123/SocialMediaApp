@@ -487,7 +487,10 @@ namespace SocialMedia.BusinessLogic.Containers
 
 					postPageDtos.Add(postPageDto);
                 }
-                return postPageDtos;
+
+                var FilteredPosts = _contentFilterAndRanking.PostsforCommunityFeed(postPageDtos);
+
+                return FilteredPosts;
             }
             else
             {

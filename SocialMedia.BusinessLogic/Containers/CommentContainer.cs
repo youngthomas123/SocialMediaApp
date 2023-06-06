@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using SocialMedia.BusinessLogic.Algorithms;
 using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
+using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 
@@ -31,7 +32,9 @@ namespace SocialMedia.BusinessLogic.Containers
 
         private readonly IRemovedCommentsDataAccess _removedCommentsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess)
+        private readonly IContentFilterAndRanking _contentFilterAndRanking;
+
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess, IContentFilterAndRanking contentFilterAndRanking)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
@@ -41,6 +44,7 @@ namespace SocialMedia.BusinessLogic.Containers
             _reportedCommentsDataAccess = reportedCommentsDataAccess;
             _reportReasonsDataAccess = reportReasonsDataAccess;
 			_removedCommentsDataAccess = removedCommentsDataAccess;
+			_contentFilterAndRanking = contentFilterAndRanking;
 
 
 		}
@@ -286,7 +290,10 @@ namespace SocialMedia.BusinessLogic.Containers
 
                     commentPageDtos.Add(commentPageDto);
                 }
-                return commentPageDtos;
+
+                var FilteredComments = _contentFilterAndRanking.CommentsforCommentSection(commentPageDtos);
+
+                return FilteredComments;
             }
             else
             {
