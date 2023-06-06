@@ -39,6 +39,8 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         bool IsPostReported(Guid userId, Guid postId);
 
+        bool IsPostRemoved(Guid postId);
+
 
 		void UpdatePostScore(Post post, Guid userId, string UpOrDown);
 
@@ -50,7 +52,10 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         void ReportPost(Guid postId, Guid userId, int reasonId);
 
-        List<ReportReasonsDto> LoadReportReasonsDtos();
+        void RemovePost(Guid postId, Guid communityId, Guid moderatorId);
+
+
+		List<ReportReasonsDto> LoadReportReasonsDtos();
 
         List<Post> LoadAllReportedPosts();
 

@@ -24,7 +24,9 @@ namespace SocialMedia.BusinessLogic.Containers
 
         private readonly IReportReasonsDataAccess _reportReasonsDataAccess;
 
-        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess)
+        private readonly IRemovedCommentsDataAccess _removedCommentsDataAccess;
+
+        public CommentContainer(ICommentDataAccess dataAcess, IUserDataAccess userDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IPostDataAccess postDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess)
         {
             _commentDataAccess = dataAcess;
             _userDataAccess = userDataAccess;
@@ -33,9 +35,10 @@ namespace SocialMedia.BusinessLogic.Containers
             _postDataAccess = postDataAccess;
             _reportedCommentsDataAccess = reportedCommentsDataAccess;
             _reportReasonsDataAccess = reportReasonsDataAccess;
+			_removedCommentsDataAccess = removedCommentsDataAccess;
 
 
-        }
+		}
 
         public void Upvote(Guid commentId, string direction, Guid userId)
         {
@@ -301,6 +304,13 @@ namespace SocialMedia.BusinessLogic.Containers
             return isCommentReported;
         }
 
+        public bool IsCommentRemoved(Guid commentId)
+        {
+            var isCommentRemoved = _removedCommentsDataAccess.CheckRecordExists(commentId);
+
+            return isCommentRemoved;
+        }
+
         public void UpdateComment(Guid commentId, string body, Guid LoggedInUserId)
         {
             var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
@@ -337,6 +347,7 @@ namespace SocialMedia.BusinessLogic.Containers
 
                 if(comment.UserId == LoggedInUserId)
                 {
+                    _removedCommentsDataAccess.DeleteRecord(commentId);
                     _reportedCommentsDataAccess.DeleteRecord(commentId);
                     _upvotedCommentsDataAccess.DeleteRecord(commentId);
                     _downvotedCommentsDataAccess.DeleteRecord(commentId);

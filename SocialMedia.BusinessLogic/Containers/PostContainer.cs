@@ -13,8 +13,9 @@ namespace SocialMedia.BusinessLogic.Containers
 {
     public class PostContainer : IPostContainer
     {
+		Guid BotModeratorId = new Guid("11111111-1111-1111-1111-111111111111");
 
-        private readonly IPostDataAccess _postDataAccess;
+		private readonly IPostDataAccess _postDataAccess;
 
         private readonly IUserDataAccess _userDataAccess;
 
@@ -35,8 +36,14 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IReportedCommentsDataAccess _reportedCommentsDataAccess;
 
         private readonly IReportReasonsDataAccess _reportReasonsDataAccess;
+
+        private readonly IRemovedPostsDataAccess _removedPostsDataAccess;
+
+        private readonly IRemovedCommentsDataAccess _removedCommentsDataAccess;
+
+        private readonly ICommunityModeratorsDataAccess _communityModeratorsDataAccess;
         
-        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IRemovedPostsDataAccess removedPostsDataAccess, ICommunityModeratorsDataAccess communityModeratorsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess)
         {
             _postDataAccess = postDataAcess;
             _userDataAccess = userDataAccess;
@@ -49,9 +56,12 @@ namespace SocialMedia.BusinessLogic.Containers
 			_reportedPostsDataAccess = reportedPostsDataAccess;
 			_reportedCommentsDataAccess = reportedCommentsDataAccess;
 			_reportReasonsDataAccess = reportReasonsDataAccess;
+			_removedPostsDataAccess = removedPostsDataAccess;
+			_communityModeratorsDataAccess = communityModeratorsDataAccess;
+			_removedCommentsDataAccess = removedCommentsDataAccess;
 
 
-        }
+		}
 
         public void CreateAndSavePost(Guid userId, string title, string? body, string? imageUrl, Guid communityid)
         {
@@ -449,6 +459,13 @@ namespace SocialMedia.BusinessLogic.Containers
             return isPostReported;
         }
 
+        public bool IsPostRemoved(Guid postId)
+        {
+            var isPostRemoved = _removedPostsDataAccess.CheckRecordExists(postId);
+
+            return isPostRemoved;
+        }
+
         public void UpdatePostScore(Post post,Guid userId ,string direction)
         {
             if(direction == "upvotePost")
@@ -538,11 +555,13 @@ namespace SocialMedia.BusinessLogic.Containers
 
                     foreach (var commentId in commentIds)
                     {
+                        _removedCommentsDataAccess.DeleteRecord(commentId);
                         _reportedCommentsDataAccess.DeleteRecord(commentId);
                         _upvotedCommentsDataAccess.DeleteRecord(commentId);
                         _downvotedCommentsDataAccess.DeleteRecord(commentId);
                         _commentDataAccess.DeleteComment(commentId);
                     }
+                    _removedPostsDataAccess.DeleteRecord(PostId);
                     _reportedPostsDataAccess.DeleteRecord(PostId);
                     _upvotedPostsDataAccess.DeleteRecord(PostId);
                     _downvotedPostsDataAccess.DeleteRecord(PostId);
@@ -588,6 +607,42 @@ namespace SocialMedia.BusinessLogic.Containers
                 throw new ItemNotFoundException("Invalid postId or userId");
             }
 			
+        }
+
+        public void RemovePost(Guid postId, Guid communityId, Guid moderatorId)
+        {
+			
+
+			var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
+			var doesModeratorIdExist = _userDataAccess.DoesUserIdExist(moderatorId);
+
+            var isModeratorValid = _communityModeratorsDataAccess.CheckRecordExists(communityId, moderatorId);
+
+            if(doesPostIdExist == true)
+            {
+                if ((doesModeratorIdExist == true && isModeratorValid == true) || moderatorId == BotModeratorId)
+                {
+                    var isPostAlreadyRemoved = IsPostRemoved(postId);
+                    if (isPostAlreadyRemoved == false)
+                    {
+                        _removedPostsDataAccess.CreateRecord(postId);
+                    }
+                    else
+                    {
+                        throw new AccessException("Post has already been removed");
+                    }
+                }
+                else
+                {
+                    throw new AccessException("You dont have access to remove post");
+                }
+			}
+            else
+            {
+                throw new ItemNotFoundException("Invalid postId");
+            }
+
+
         }
 
         public List<ReportReasonsDto>LoadReportReasonsDtos()
