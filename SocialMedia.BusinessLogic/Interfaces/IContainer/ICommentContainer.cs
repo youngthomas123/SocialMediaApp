@@ -26,10 +26,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         Comment LoadCommentById(Guid commentId);
 
-        void UpDateComment(Comment comment);
-
-        void UpdateCommentScore(Comment comment, Guid userId, string UpOrDown);
-
+        
         bool IsCommentUpvoted(Guid userId, Guid commentId);
 
         bool IsCommentDownvoted(Guid userId, Guid commentId);

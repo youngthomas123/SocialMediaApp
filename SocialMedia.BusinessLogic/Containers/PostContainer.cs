@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SocialMedia.BusinessLogic.Containers
 {
@@ -95,57 +96,78 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             // check if user has already upvoted
 
-            var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
 
-            if(didUserAlreadyUpvote == false)
+            if(doesPostIdExist)
             {
-				var post = LoadPostById(postId);
+				var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
 
-				if (post != null)
+				if (didUserAlreadyUpvote == false)
 				{
-					post.Upvote();
+					var post = LoadPostById(postId);
 
-					UpdatePostScore(post, userId, direction);
+					if (post != null)
+					{
+						post.Upvote();
 
+						UpdatePostScore(post, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has already upvoted this post");
 				}
 			}
             else
             {
-                throw new AccessException("User has already upvoted this post");
+                throw new ItemNotFoundException("PostId not found");
             }
+           
            
 
         }
 
         public void RemoveUpvote(Guid postId, string direction, Guid userId)
         {
-            
-            var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
 
-            if(didUserAlreadyUpvote == true)
+			var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
+
+            if(doesPostIdExist)
             {
-				var post = LoadPostById(postId);
+				var didUserAlreadyUpvote = IsPostUpvoted(userId, postId);
 
-				if (post != null)
+				if (didUserAlreadyUpvote == true)
 				{
-					post.RemoveUpvote();
+					var post = LoadPostById(postId);
 
-					UpdatePostScore(post, userId, direction);
+					if (post != null)
+					{
+						post.RemoveUpvote();
 
+						UpdatePostScore(post, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has not upvoted this post");
 				}
 			}
             else
             {
-                throw new AccessException("User has not upvoted this post");
+                throw new ItemNotFoundException("PostId not found");
             }
+
+			
 
 			
 
@@ -153,56 +175,76 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public void Downvote(Guid postId, string direction, Guid userId)
         {
-            var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
 
-            if(didUserAlreadyDownvote == false)
+            if(doesPostIdExist)
             {
-				var post = LoadPostById(postId);
+				var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
 
-				if (post != null)
+				if (didUserAlreadyDownvote == false)
 				{
-					post.Downvote();
+					var post = LoadPostById(postId);
 
-					UpdatePostScore(post, userId, direction);
+					if (post != null)
+					{
+						post.Downvote();
 
+						UpdatePostScore(post, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has already downvoted this post");
 				}
 			}
             else
             {
-                throw new AccessException("User has already downvoted this post");
+                throw new ItemNotFoundException("PostId not found");
             }
+
+			
            
         }
 
         public void RemoveDownvote(Guid postId, string direction, Guid userId)
         {
-            var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
 
-            if(didUserAlreadyDownvote == true)
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
+
+            if(doesPostIdExist)
             {
-				var post = LoadPostById(postId);
+				var didUserAlreadyDownvote = IsPostDownvoted(userId, postId);
 
-				if (post != null)
+				if (didUserAlreadyDownvote == true)
 				{
-					post.RemoveDownvote();
+					var post = LoadPostById(postId);
 
-					UpdatePostScore(post, userId, direction);
+					if (post != null)
+					{
+						post.RemoveDownvote();
 
+						UpdatePostScore(post, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has not downvoted this post");
 				}
 			}
             else
             {
-                throw new AccessException("User has not downvoted this post");
+                throw new ItemNotFoundException("PostId not found");
             }
-
 
 			
         }
@@ -215,36 +257,41 @@ namespace SocialMedia.BusinessLogic.Containers
 
             foreach (Post post in posts)
             {
-                if(_postDataAccess.DoesPostIdExist(post.PostId))
-                {
-					SetVoteUserIds(post);
-				}
-                
-            }
+				SetVoteUserIds(post);
+			}
             return posts;
         }
 
         public Post? LoadPostById(Guid postId)
         {
-      
-            var post = _postDataAccess.LoadPostById(postId);
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(postId);
 
-            SetVoteUserIds(post);
-            return post;
+            if(doesPostIdExist)
+            {
+				var post = _postDataAccess.LoadPostById(postId);
+
+				SetVoteUserIds(post);
+				return post;
+			}
+            else
+            {
+                throw new ItemNotFoundException("PostId not found");
+            }
+      
+            
         }
 
-        public void SavePost(Post post)
+        private void SavePost(Post post)
         {
             _postDataAccess.SavePost(post);
 
-            
         }
 
         public void UpdatePost(Post post)
         {
             if(post.Body !=null && post.ImageURL == null)
-            {
-                if(post.Title.Length <=250 && post.Body.Length <=750)
+			{
+                if(!string.IsNullOrEmpty(post.Title) && !string.IsNullOrEmpty(post.Body) && post.Title.Length <=250 && post.Body.Length <=750)
                 {
                     _postDataAccess.UpdatePost(post);
                 }
@@ -255,7 +302,7 @@ namespace SocialMedia.BusinessLogic.Containers
             }
             else if(post.Body == null && post.ImageURL!=null)
             {
-                if (post.Title.Length <= 250 )
+                if (!string.IsNullOrEmpty(post.Title) && post.Title.Length <= 250 )
                 {
                     _postDataAccess.UpdatePost(post);
                 }
@@ -470,7 +517,7 @@ namespace SocialMedia.BusinessLogic.Containers
             return isPostRemoved;
         }
 
-        public void UpdatePostScore(Post post,Guid userId ,string direction)
+        private void UpdatePostScore(Post post,Guid userId ,string direction)
         {
             if(direction == "upvotePost")
             {

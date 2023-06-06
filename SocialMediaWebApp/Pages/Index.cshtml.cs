@@ -57,6 +57,10 @@ namespace SocialMediaWebApp.Pages
 			{
                 return NotFound();
             }
+			catch(ItemNotFoundException)
+			{
+				return NotFound();
+			}
 
 
 		}
@@ -73,7 +77,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
 
 		public IActionResult OnPostDownvote(Guid postId, string direction)
@@ -89,7 +97,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
 		public IActionResult OnPostRemoveDownvote(Guid postId, string direction)
 		{
@@ -104,7 +116,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
 
 		public IActionResult OnPostViewComments(Guid postId)

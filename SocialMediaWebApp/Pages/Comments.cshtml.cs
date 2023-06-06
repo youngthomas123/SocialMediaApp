@@ -88,6 +88,10 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
+            catch(ItemNotFoundException)
+            {
+				return NotFound();
+			}
 
         }
 
@@ -104,8 +108,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostDownvotePost(Guid PostId, string direction)
         {
@@ -121,8 +128,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostRemoveDownvotePost(Guid PostId, string direction)
         {
@@ -137,7 +147,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostDeletePost(Guid PostId)
         {
@@ -202,7 +216,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostRemoveUpvoteComment(Guid commentId, Guid PostId, string direction)
         {
@@ -217,7 +235,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostDownvoteComment(Guid commentId, Guid PostId, string direction)
         {
@@ -233,7 +255,11 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
-        }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+		}
 
         public IActionResult OnPostRemoveDownvoteComment(Guid commentId, Guid PostId, string direction)
         {
@@ -248,8 +274,12 @@ namespace SocialMediaWebApp.Pages
             {
                 return NotFound();
             }
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
 
-        }
+		}
 
         public IActionResult OnPostDeleteComment(Guid PostId, Guid CommentId)
         {

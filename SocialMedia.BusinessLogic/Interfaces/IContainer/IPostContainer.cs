@@ -23,8 +23,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         // old
         List<Post> LoadAllPosts();
         Post LoadPostById(Guid postId);
-        void SavePost(Post post);
-
+       
         void UpdatePost(Post post);
 
         List<PostPageDto> GetPostPageDtos(Guid userId);
@@ -42,7 +41,6 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
         bool IsPostRemoved(Guid postId);
 
 
-		void UpdatePostScore(Post post, Guid userId, string UpOrDown);
 
         void SetVoteUserIds(Post post);
 

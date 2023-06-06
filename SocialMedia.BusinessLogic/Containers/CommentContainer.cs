@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using SocialMedia.BusinessLogic.Algorithms;
 using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
@@ -45,114 +47,156 @@ namespace SocialMedia.BusinessLogic.Containers
 
         public void Upvote(Guid commentId, string direction, Guid userId)
         {
-            var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
+			var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
 
-            if(didUserAlreadyUpvote == false)
+            if(doesCommentIdExist)
             {
-				var comment = LoadCommentById(commentId);
+				var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
 
-				if (comment != null)
+				if (didUserAlreadyUpvote == false)
 				{
-					comment.Upvote();
+					var comment = LoadCommentById(commentId);
 
-					UpdateCommentScore(comment, userId, direction);
+					if (comment != null)
+					{
+						comment.Upvote();
 
+						UpdateCommentScore(comment, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has already upvoted this comment");
 				}
 			}
             else
             {
-                throw new AccessException("User has already upvoted this comment");
+                throw new ItemNotFoundException("CommentId not found");
             }
+
+			
 
            
         }
 
         public void RemoveUpvote(Guid commentId, string direction, Guid userId)
         {
-			var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
 
-            if(didUserAlreadyUpvote == true)
+            if(doesCommentIdExist)
             {
-				var comment = LoadCommentById(commentId);
+				var didUserAlreadyUpvote = IsCommentUpvoted(userId, commentId);
 
-				if (comment != null)
+				if (didUserAlreadyUpvote == true)
 				{
-					comment.RemoveUpvote();
+					var comment = LoadCommentById(commentId);
 
-					UpdateCommentScore(comment, userId, direction);
+					if (comment != null)
+					{
+						comment.RemoveUpvote();
 
+						UpdateCommentScore(comment, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has not upvoted this comment");
 				}
 			}
             else
             {
-                throw new AccessException("User has not upvoted this comment");
+                throw new ItemNotFoundException("CommentId not found");
             }
+
+			
 
 			
         }
 
         public void Downvote(Guid commentId, string direction, Guid userId)
         {
-            var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
 
-            if(didUserAlreadyDownvote == false)
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
+
+            if(doesCommentIdExist)
             {
-				var comment = LoadCommentById(commentId);
+				var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
 
-				if (comment != null)
+				if (didUserAlreadyDownvote == false)
 				{
-					comment.Downvote();
+					var comment = LoadCommentById(commentId);
 
-					UpdateCommentScore(comment, userId, direction);
+					if (comment != null)
+					{
+						comment.Downvote();
 
+						UpdateCommentScore(comment, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has already downvoted this comment");
 				}
 			}
             else
             {
-                throw new AccessException("User has already downvoted this comment");
+                throw new ItemNotFoundException("CommentId not found");
             }
+
+			
 
 			
         }
 
         public void RemoveDownvote(Guid commentId, string direction, Guid userId)
         {
-			var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
+			var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
 
-            if(didUserAlreadyDownvote == true)
+            if(doesCommentIdExist)
             {
-				var comment = LoadCommentById(commentId);
+				var didUserAlreadyDownvote = IsCommentDownvoted(userId, commentId);
 
-				if (comment != null)
+				if (didUserAlreadyDownvote == true)
 				{
-					comment.Removedownvote();
+					var comment = LoadCommentById(commentId);
 
-					UpdateCommentScore(comment, userId, direction);
+					if (comment != null)
+					{
+						comment.Removedownvote();
 
+						UpdateCommentScore(comment, userId, direction);
+
+					}
+					else
+					{
+						throw new ItemNullException();
+					}
 				}
 				else
 				{
-					throw new ItemNullException();
+					throw new AccessException("User has not downvoted this comment");
 				}
 			}
             else
             {
-                throw new AccessException("User has not downvoted this comment");
+                throw new ItemNotFoundException("CommentId not found");
             }
 
-			
         }
 
 
@@ -165,8 +209,8 @@ namespace SocialMedia.BusinessLogic.Containers
 
         }
         public void AddComment(Comment comment)
-        {
-            if(comment.Body.Length <=350)
+		{
+            if(!string.IsNullOrEmpty(comment.Body) && comment.Body.Length <=350)
             {
                 _commentDataAccess.SaveComment(comment);
             }
@@ -178,8 +222,17 @@ namespace SocialMedia.BusinessLogic.Containers
         }
         public List<Comment> LoadCommentInPost(Guid PostId)
         {
-            var comments = _commentDataAccess.LoadCommentsInPost(PostId);
-            return comments;
+            var doesPostIdExist = _postDataAccess.DoesPostIdExist(PostId);
+            if(doesPostIdExist)
+            {
+				var comments = _commentDataAccess.LoadCommentsInPost(PostId);
+				return comments;
+			}
+            else
+            {
+                throw new ItemNotFoundException("Invalid postId");  
+            }
+            
         }
         public List<CommentPageDto> GetCommentPageDtosInPost(Guid postId, Guid userId)
         {
@@ -257,13 +310,13 @@ namespace SocialMedia.BusinessLogic.Containers
            
         }
 
-        public void UpDateComment(Comment comment)
+        private void UpDateComment(Comment comment)
         {
             _commentDataAccess.UpdateComment(comment);
         }
 
 
-		public void UpdateCommentScore(Comment comment, Guid userId, string direction)
+		private void UpdateCommentScore(Comment comment, Guid userId, string direction)
 		{
 			if (direction == "upvoteComment")
 			{
@@ -323,7 +376,15 @@ namespace SocialMedia.BusinessLogic.Containers
                 var comment = _commentDataAccess.LoadCommentById(commentId);
                 if(comment.UserId == LoggedInUserId)
                 {
-                    _commentDataAccess.UpdateComment(commentId, body);
+                    if (!string.IsNullOrEmpty(body) && body.Length <=350)
+                    {
+					  _commentDataAccess.UpdateComment(commentId, body);
+					}
+                    else
+                    {
+                        throw new InvalidInputException("comment body too big");
+                    }
+                    
                 }
                 else
                 {
@@ -402,7 +463,7 @@ namespace SocialMedia.BusinessLogic.Containers
 
 		}
 
-        public void RemoveComment(Guid commentId, Guid moderatorId)
+        public void RemoveComment(Guid commentId, Guid moderatorId)   // only bot moderator can remove comments
         {
             var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
 			var isBotModerator = moderatorId == BotModeratorId;
