@@ -98,5 +98,36 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 			return doesRecordExists;
 		}
+
+		public List<Guid>GetRemovedPostIds()
+		{
+			List<Guid> postIds = new List<Guid>();
+
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"Select * " +
+						 $"from RemovedPosts ";
+
+			SqlCommand cmd = new SqlCommand(sql, conn);
+
+			SqlDataReader dr = cmd.ExecuteReader();
+
+
+			int PostIdIndex = dr.GetOrdinal("PostId");
+			while (dr.Read())
+			{
+				var PostId = (Guid)dr[PostIdIndex];
+
+				postIds.Add(PostId);
+			}
+
+			dr.Close();
+			conn.Close();
+			return postIds;
+
+
+		}
 	}
 }

@@ -43,6 +43,7 @@ builder.Services.AddTransient<IRemovedCommentsDataAccess, RemovedCommentsDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();
+builder.Services.AddTransient<IContentFilterAndRanking, ContentFilterAndRanking>();
 builder.Services.AddSingleton<BotModerator>();
 
 //Authentication cookies

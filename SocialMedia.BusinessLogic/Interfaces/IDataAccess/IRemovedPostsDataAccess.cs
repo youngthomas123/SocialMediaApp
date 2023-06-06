@@ -13,5 +13,7 @@ namespace SocialMedia.BusinessLogic.Interfaces.IDataAccess
 		void DeleteRecord(Guid postId);
 
 		bool CheckRecordExists(Guid postId);
+
+		List<Guid> GetRemovedPostIds();
 	}
 }

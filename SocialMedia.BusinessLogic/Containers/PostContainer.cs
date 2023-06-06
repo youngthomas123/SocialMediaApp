@@ -1,5 +1,6 @@
 ﻿using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
+using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using System;
@@ -43,8 +44,10 @@ namespace SocialMedia.BusinessLogic.Containers
         private readonly IRemovedCommentsDataAccess _removedCommentsDataAccess;
 
         private readonly ICommunityModeratorsDataAccess _communityModeratorsDataAccess;
+
+        private readonly IContentFilterAndRanking _contentFilterAndRanking;
         
-        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IRemovedPostsDataAccess removedPostsDataAccess, ICommunityModeratorsDataAccess communityModeratorsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess)
+        public PostContainer(IPostDataAccess postDataAcess, IUserDataAccess userDataAccess, ICommunityDataAccess communityDataAccess, IUpvotedPostsDataAccess upvotedPostsDataAccess, IDownvotedPostsDataAccess downvotedPostsDataAccess, ICommentDataAccess commentDataAccess, IUpvotedCommentsDataAccess upvotedCommentsDataAccess, IDownvotedCommentsDataAccess downvotedCommentsDataAccess, IReportedPostsDataAccess reportedPostsDataAccess, IReportReasonsDataAccess reportReasonsDataAccess, IReportedCommentsDataAccess reportedCommentsDataAccess, IRemovedPostsDataAccess removedPostsDataAccess, ICommunityModeratorsDataAccess communityModeratorsDataAccess, IRemovedCommentsDataAccess removedCommentsDataAccess, IContentFilterAndRanking contentFilterAndRanking)
         {
             _postDataAccess = postDataAcess;
             _userDataAccess = userDataAccess;
@@ -60,6 +63,7 @@ namespace SocialMedia.BusinessLogic.Containers
 			_removedPostsDataAccess = removedPostsDataAccess;
 			_communityModeratorsDataAccess = communityModeratorsDataAccess;
 			_removedCommentsDataAccess = removedCommentsDataAccess;
+			_contentFilterAndRanking = contentFilterAndRanking;
 
 
 		}
@@ -367,7 +371,10 @@ namespace SocialMedia.BusinessLogic.Containers
 
 				postPageDtos.Add(postPageDto);  
             }
-            return postPageDtos;
+
+            var filteredPosts = _contentFilterAndRanking.PostsforMainFeed(postPageDtos, userId);
+
+            return filteredPosts;
         }
         public PostPageDto GetPostPageDtoById(Guid postid, Guid userId)  
         {

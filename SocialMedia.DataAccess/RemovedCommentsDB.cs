@@ -99,5 +99,36 @@ namespace SocialMedia.DataAccess
 			conn.Close();
 			return doesRecordExists;
 		}
+
+		public List<Guid> GetRemovedCommentIds()
+		{
+			List<Guid> commentIds = new List<Guid>();
+
+			SqlConnection conn = new SqlConnection(connection);
+
+			conn.Open();
+
+			string sql = $"Select * " +
+						 $"from RemovedComments ";
+
+			SqlCommand cmd = new SqlCommand(sql, conn);
+
+			SqlDataReader dr = cmd.ExecuteReader();
+
+
+			int CommentIdIndex = dr.GetOrdinal("CommentId");
+			while (dr.Read())
+			{
+				var CommentId = (Guid)dr[CommentIdIndex];
+
+				commentIds.Add(CommentId);
+			}
+
+			dr.Close();
+			conn.Close();
+			return commentIds;
+
+
+		}
 	}
 }
