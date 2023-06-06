@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SocialMedia.BusinessLogic.Algorithms;
 using SocialMedia.BusinessLogic.Custom_exception;
 using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
@@ -13,7 +14,9 @@ namespace SocialMedia.BusinessLogic.Containers
 {
     public class CommentContainer : ICommentContainer
     {
-        private readonly ICommentDataAccess _commentDataAccess;
+		Guid BotModeratorId = new Guid("11111111-1111-1111-1111-111111111111");
+
+		private readonly ICommentDataAccess _commentDataAccess;
         private readonly IUserDataAccess _userDataAccess;
         private readonly IUpvotedCommentsDataAccess _upvotedCommentsDataAccess;
         private readonly IDownvotedCommentsDataAccess _downvotedCommentsDataAccess;
@@ -398,7 +401,31 @@ namespace SocialMedia.BusinessLogic.Containers
 			}
 
 		}
-        public List<Comment>LoadAllReportedComments()
+
+        public void RemoveComment(Guid commentId, Guid moderatorId)
+        {
+            var doesCommentIdExist = _commentDataAccess.DoesCommentIdExist(commentId);
+			var isBotModerator = moderatorId == BotModeratorId;
+
+            if(doesCommentIdExist == true && isBotModerator == true)
+            {
+                var isCommentAlreadyRemoved = IsCommentRemoved(commentId);
+                if(isCommentAlreadyRemoved == false)
+                {
+                    _removedCommentsDataAccess.CreateRecord(commentId);
+                }
+                else
+                {
+                    throw new AccessException("Comment has already been removed");
+                }
+            }
+            else
+            {
+                throw new ItemNotFoundException("commentId or bot moderator not found");
+            }
+		}
+
+		public List<Comment>LoadAllReportedComments()
         {
             var ReportedCommentIds = _reportedCommentsDataAccess.LoadAllReportedCommentIds();
 

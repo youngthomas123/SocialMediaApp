@@ -52,6 +52,9 @@ namespace SocialMedia.BusinessLogic.Interfaces.IContainer
 
         int GetNumberOfReportsInComment(Guid commentId);
 
+        void RemoveComment(Guid commentId, Guid moderatorId);
 
-    }
+
+
+	}
 }

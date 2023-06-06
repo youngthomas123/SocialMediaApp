@@ -215,7 +215,11 @@ namespace SocialMedia.BusinessLogic.Containers
 
             foreach (Post post in posts)
             {
-                SetVoteUserIds(post);
+                if(_postDataAccess.DoesPostIdExist(post.PostId))
+                {
+					SetVoteUserIds(post);
+				}
+                
             }
             return posts;
         }

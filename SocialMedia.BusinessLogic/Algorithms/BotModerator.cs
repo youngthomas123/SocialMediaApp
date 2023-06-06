@@ -1,4 +1,5 @@
 ﻿using SocialMedia.BusinessLogic.Custom_exception;
+using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.BusinessLogic.Algorithms
 {
-    public class BotModerator
+    public class BotModerator 
     {
         private readonly IPostContainer _postContainer;
         private readonly ICommentContainer _commentContainer;
-        private readonly IUserContainer _userContainer;
         private readonly IMessageContainer _messageContainer;
 
 		Guid BotModeratorId = new Guid("11111111-1111-1111-1111-111111111111");
@@ -23,11 +23,10 @@ namespace SocialMedia.BusinessLogic.Algorithms
 		private readonly List<string> offensiveWords; // List of offensive words.
 
 
-		public BotModerator(IPostContainer postContainer, ICommentContainer commentContainer, IUserContainer userContainer, IMessageContainer messageContainer  ) 
+		public BotModerator(IPostContainer postContainer, ICommentContainer commentContainer, IMessageContainer messageContainer ) 
         {
             _postContainer = postContainer;
             _commentContainer = commentContainer;
-            _userContainer = userContainer;
             _messageContainer = messageContainer;
 
 
@@ -46,52 +45,56 @@ namespace SocialMedia.BusinessLogic.Algorithms
 
         public async Task StartModerationAsync()
         {
-
-            var Posts = _postContainer.LoadAllPosts();
-
-            var Comments = _commentContainer.GetComments();
-
-
-            foreach (var post in Posts)
+            while(true)
             {
-                int ReportCount = _postContainer.GetNumberOfReportsInPost(post.PostId);
+				var Posts = _postContainer.LoadAllPosts();
 
-                
-				if (CheckPostForOffensiveWords(post))
+				var Comments = _commentContainer.GetComments();
+
+
+				foreach (var post in Posts)
 				{
-					NofityAndRemovePost(post);
+					int ReportCount = _postContainer.GetNumberOfReportsInPost(post.PostId);
+
+
+					if (CheckPostForOffensiveWords(post))
+					{
+						NofityAndRemovePost(post);
+					}
+
+					if (ReportCount >= ReportThreshold)
+					{
+						NotifyAndDeletePost(post);
+					}
 				}
 
-				if (ReportCount >= ReportThreshold)
+
+				foreach (var comment in Comments)
 				{
-					NotifyAndDeletePost(post);
+					int ReportCount = _commentContainer.GetNumberOfReportsInComment(comment.CommentId);
+
+
+					if (CheckCommentForOffesiveWords(comment))
+					{
+						NofityAndRemoveComment(comment);
+					}
+
+					if (ReportCount >= ReportThreshold)
+					{
+						NotifyAndDeleteComment(comment);
+					}
+
 				}
+
+
+				await Task.Delay(TimeSpan.FromMinutes(5));
 			}
-
-
-            foreach (var comment in Comments)
-            {
-                int ReportCount = _commentContainer.GetNumberOfReportsInComment(comment.CommentId);
-
-				
-				if (CheckCommentForOffesiveWords(comment))
-                {
-					NofityAndRemoveComment(comment);
-				}
-
-                if (ReportCount >= ReportThreshold)
-                {
-                    NotifyAndDeleteComment(comment);
-                }
-                
-            }
-
-
-            await Task.Delay(TimeSpan.FromMinutes(5));
+          
         }
 
         public void NotifyAndDeletePost(Post post)
         {
+            
             _messageContainer.CreateAndSaveMessage("Post deletion", "Your post has been deleted by the bot modeator for violating the community guidlines", BotModeratorId, post.UserId);
             try
             {
@@ -105,6 +108,7 @@ namespace SocialMedia.BusinessLogic.Algorithms
 
         public void NofityAndRemovePost(Post post)
         {
+             
             var isPostAlreadyRemoved = _postContainer.IsPostRemoved(post.PostId);
             if(isPostAlreadyRemoved == false)
             {
@@ -135,23 +139,61 @@ namespace SocialMedia.BusinessLogic.Algorithms
 
 		public void NofityAndRemoveComment(Comment comment)
 		{
-            var isCommentAlreadyRemoved = true;
+            var isCommentAlreadyRemoved = _commentContainer.IsCommentRemoved(comment.CommentId);
             if(isCommentAlreadyRemoved == false)
             {
-
+                _messageContainer.CreateAndSaveMessage("Comment removal", "Your comment has been removed and will not be shown in feed beacuse it contains offensive words", BotModeratorId, comment.UserId);
+                try
+                {
+                    _commentContainer.RemoveComment(comment.CommentId, BotModeratorId);
+                }
+                catch(ItemNotFoundException)
+                {
+                }
             }
 		}
 
 		public bool CheckPostForOffensiveWords(Post post)
         {
-            return true;
+            bool check = false;
+
+            var title = post.Title.ToLower();
+
+            var body = "";
+
+            if(post.Body != null)
+            {
+                body = post.Body.ToLower();
+            }
+
+            foreach(var word in offensiveWords)
+            {
+                if(title.Contains(word) || body.Contains(word))
+                {
+                    check = true;
+                    break;
+                }
+            }
+
+            return check;
         }
 
         public bool CheckCommentForOffesiveWords(Comment comment)
         {
+            bool check = false;
 
+            var body = comment.Body.ToLower();  
 
-            return true;
+            foreach(var word in offensiveWords)
+            {
+                if(body.Contains(word))
+                {
+                    check = true;
+                    break;
+                }
+            }
+
+            return check;
         }
     }
 }

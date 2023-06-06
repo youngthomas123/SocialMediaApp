@@ -8,6 +8,7 @@ using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
 using SocialMedia.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using SocialMedia.BusinessLogic.Algorithms;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +38,12 @@ builder.Services.AddTransient<IReportedCommentsDataAccess, ReportedCommentsDB>()
 builder.Services.AddTransient<ICommunityModeratorsDataAccess, CommunityModeratorsDB>();
 builder.Services.AddTransient<IReportReasonsDataAccess, ReportReasonsDB>();
 builder.Services.AddTransient<IMessageDataAccess, MessageDB>();
+builder.Services.AddTransient<IRemovedPostsDataAccess, RemovedPostsDB>();
+builder.Services.AddTransient<IRemovedCommentsDataAccess, RemovedCommentsDB>();
 //other
 builder.Services.AddTransient<IPasswordHelper, PasswordHelper>();
 builder.Services.AddTransient<IAuthenticationSystem, AuthenticationSystem>();
+builder.Services.AddSingleton<BotModerator>();
 
 //Authentication cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
@@ -58,6 +62,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
+var botModerator = app.Services.GetService<BotModerator>();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -75,5 +81,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+_ = botModerator.StartModerationAsync();
 
 app.Run();
