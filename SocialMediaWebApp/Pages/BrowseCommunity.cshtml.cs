@@ -214,5 +214,30 @@ namespace SocialMediaWebApp.Pages
             return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
 		}
 
+        // mod feature
+
+        public IActionResult OnPostRemovePost(Guid PostId, string CommunityName)
+        {
+
+			var userId = Guid.Parse(User.FindFirst("UserId").Value);
+
+            var communityId = new Guid(_communityContainer.GetCommunityId(CommunityName));
+
+			try
+			{
+                _postContainer.RemovePost(PostId, communityId, userId);
+			}
+			catch (AccessException)
+			{
+				return BadRequest();
+			}
+			catch (ItemNotFoundException)
+			{
+				return NotFound();
+			}
+
+
+			return RedirectToPage("/BrowseCommunity", new { CommunityName = CommunityName });
+		}
 	}
 }

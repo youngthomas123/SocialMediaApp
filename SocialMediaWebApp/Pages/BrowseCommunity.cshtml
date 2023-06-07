@@ -140,7 +140,6 @@
 
 											</li>
 
-											
 										}
 
 										@if (post.IsReported == false)
@@ -151,7 +150,19 @@
 										{
 											<li class="dropdown-item disabled" aria-disabled="true">Report</li>
 										}
+										<!-- Mod feature -->
+										@if (Model.Community.ModNames.Contains(User.FindFirst("UserName").Value) && post.Author != User.FindFirst("UserName").Value)
+										{
+											<li>
+												<form method="post" asp asp-page-handler="RemovePost">
 
+													<button type="submit" class="dropdown-item">Remove</button>
+													<input type="hidden" name="PostId" value="@post.PostId" />
+													<input type="hidden" name="CommunityName" value="@Model.Community.CommunityName" />
+												</form>
+
+											</li>
+										}
 
 									</ul>
 								</div>
