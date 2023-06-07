@@ -3,6 +3,7 @@ using SocialMedia.BusinessLogic.Dto;
 using SocialMedia.BusinessLogic.Interfaces;
 using SocialMedia.BusinessLogic.Interfaces.IContainer;
 using SocialMedia.BusinessLogic.Interfaces.IDataAccess;
+using SocialMedia.BusinessLogic.PostRendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace SocialMedia.BusinessLogic.Containers
         {
             if(body!=null && imageUrl == null)
             {
-                if(title.Length <=250 && body.Length <=750)
+                if(!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(body) && title.Length <=250 && body.Length <=750)
                 {
                     Post post = new Post(userId, title, body, null, communityid);
                     SavePost(post);
@@ -84,7 +85,7 @@ namespace SocialMedia.BusinessLogic.Containers
             }
             else if(body == null && imageUrl != null)
             {
-                if(title.Length <=250)
+                if(!string.IsNullOrEmpty(title) && title.Length <=250)
                 {
                     Post post = new Post(userId, title, null, imageUrl, communityid);
                     SavePost(post);
@@ -366,6 +367,17 @@ namespace SocialMedia.BusinessLogic.Containers
                 else
                 {
 					postPageDto.IsReported = false;
+				}
+
+                if(post.Body !=null && post.ImageURL == null)
+                {
+                    postPageDto.Content = new TextContent { Body = post.Body };
+
+				}
+                else if(post.Body == null && post.ImageURL != null)
+                {
+					postPageDto.Content = new ImageContent { Image = post.ImageURL };
+
 				}
 
 

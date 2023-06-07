@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialMedia.BusinessLogic.PostRendering;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.Globalization;
@@ -37,6 +38,9 @@ namespace SocialMedia.BusinessLogic.Dto
 
         public bool IsDownvoted { get; set; }
 
-        public bool IsReported { get; set; }    
-    }
+        public bool IsReported { get; set; }
+
+
+		public PostContent Content { get; set; }
+	}
 }
