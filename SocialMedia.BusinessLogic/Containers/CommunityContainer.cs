@@ -145,43 +145,50 @@ namespace SocialMedia.BusinessLogic.Containers
 
 		public CommunityFullDto LoadCompleteCommunityDto(string communityName)
 		{
-
-            var doesCommunityNameExist = _communityDataAccess.DoesCommunityNameExist(communityName);
-
-            if (doesCommunityNameExist == true) 
+            if(!string.IsNullOrEmpty(communityName))
             {
-                var community = _communityDataAccess.LoadCommunity(communityName);
+				var doesCommunityNameExist = _communityDataAccess.DoesCommunityNameExist(communityName);
+
+				if (doesCommunityNameExist == true)
+				{
+					var community = _communityDataAccess.LoadCommunity(communityName);
 
 
-                var rules = _communityRulesAccess.LoadRules(community.CommunityId);
-                var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
-                var postids = _postDataAccess.GetPostIds(community.CommunityId);
-                var modIds = _communityModeratorsAccess.GetModsInCommunity(community.CommunityId);
-				var ModNames = GetModNamesInCommunity(community.CommunityId);
+					var rules = _communityRulesAccess.LoadRules(community.CommunityId);
+					var UserIds = _communityMembersAccess.LoadUserIds(community.CommunityId);
+					var postids = _postDataAccess.GetPostIds(community.CommunityId);
+					var modIds = _communityModeratorsAccess.GetModsInCommunity(community.CommunityId);
+					var ModNames = GetModNamesInCommunity(community.CommunityId);
 
-				CommunityFullDto communityFullDto = new CommunityFullDto();
-
-
-                communityFullDto.UserId = community.UserId;
-                communityFullDto.Rules = rules;
-                communityFullDto.Mods = modIds;
-				communityFullDto.ModNames = ModNames;
-
-				communityFullDto.DateCreated = community.DateCreated;
-                communityFullDto.CommunityId = community.CommunityId;
-                communityFullDto.CommunityName = community.CommunityName;
-                communityFullDto.Description = community.Description;
-                communityFullDto.PostIds = postids;
-                communityFullDto.FollowingUserIds = UserIds;
-              
+					CommunityFullDto communityFullDto = new CommunityFullDto();
 
 
-                return communityFullDto;
-            }
+					communityFullDto.UserId = community.UserId;
+					communityFullDto.Rules = rules;
+					communityFullDto.Mods = modIds;
+					communityFullDto.ModNames = ModNames;
+
+					communityFullDto.DateCreated = community.DateCreated;
+					communityFullDto.CommunityId = community.CommunityId;
+					communityFullDto.CommunityName = community.CommunityName;
+					communityFullDto.Description = community.Description;
+					communityFullDto.PostIds = postids;
+					communityFullDto.FollowingUserIds = UserIds;
+
+
+
+					return communityFullDto;
+				}
+				else
+				{
+					throw new ItemNotFoundException("Invalid community name");
+				}
+			}
             else
             {
-                throw new ItemNotFoundException("Invalid community name");
+                throw new ItemNullException("CommunityName not supplied");
             }
+           
 			
 		}
 
@@ -208,6 +215,10 @@ namespace SocialMedia.BusinessLogic.Containers
                     _communityModeratorsAccess.CreateRecord(communityFullDto.CommunityId, modId);
                 }
 
+            }
+            else
+            {
+                throw new ItemNotFoundException("Community not found");
             }
             
         }
