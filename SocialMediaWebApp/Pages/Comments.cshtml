@@ -106,16 +106,9 @@
             <div class="card-body">
                 <h5 class="card-title">@Model.PostDto.Title</h5>
 
-                @if (Model.PostDto.Body != null && Model.PostDto.ImageUrl == null)
-                {
-                    <div class="card-text">
-                        <p>@Model.PostDto.Body</p>
-                    </div>
-                }
-                @if (Model.PostDto.Body == null && Model.PostDto.ImageUrl != null)
-                {
-                    <img src="@Model.PostDto.ImageUrl" alt="Image" class="img-fluid">
-                }
+                <!-- Post body -->
+                @Html.Raw(Model.PostDto.Content.RenderContent())
+
             </div>
 
         </div>

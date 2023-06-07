@@ -439,6 +439,17 @@ namespace SocialMedia.BusinessLogic.Containers
 					postPageDto.IsReported = false;
 				}
 
+				if (post.Body != null && post.ImageURL == null)
+				{
+					postPageDto.Content = new TextContent { Body = post.Body };
+
+				}
+				else if (post.Body == null && post.ImageURL != null)
+				{
+					postPageDto.Content = new ImageContent { Image = post.ImageURL };
+
+				}
+
 				return postPageDto;
             }
             else
@@ -496,6 +507,16 @@ namespace SocialMedia.BusinessLogic.Containers
 						postPageDto.IsReported = false;
 					}
 
+					if (post.Body != null && post.ImageURL == null)
+					{
+						postPageDto.Content = new TextContent { Body = post.Body };
+
+					}
+					else if (post.Body == null && post.ImageURL != null)
+					{
+						postPageDto.Content = new ImageContent { Image = post.ImageURL };
+
+					}
 
 					postPageDtos.Add(postPageDto);
                 }

@@ -170,16 +170,10 @@
 							<div class="card-body">
 								<h5 class="card-title">@post.Title</h5>
 
-								@if (post.Body != null && post.ImageUrl == null)
-								{
-									<div class="card-text">
-										<p>@post.Body</p>
-									</div>
-								}
-								@if (post.Body == null && post.ImageUrl != null)
-								{
-									<img src="@post.ImageUrl" alt="Image" class="img-fluid">
-								}
+								<!-- Post body -->
+
+								@Html.Raw(post.Content.RenderContent())
+
 							</div>
 							<div class="card-footer">
 								<form method="post" asp-page-handler="ViewComments">

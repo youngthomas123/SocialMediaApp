@@ -102,17 +102,6 @@
 
                         <!-- Post body -->
                    
-                        @*@if (post.Body != null && post.ImageUrl == null)
-                        {
-                            <div class="card-text">
-                                <p>@post.Body</p>
-                            </div>
-                        }
-                        @if (post.Body == null && post.ImageUrl != null)
-                        {
-                            <img src="@post.ImageUrl" alt="Image" class="img-fluid">
-                        }*@
-
                         @Html.Raw(post.Content.RenderContent())
                     </div>
                     <div class="card-footer">

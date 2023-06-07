@@ -374,11 +374,12 @@ namespace SocialMedia.DataAccess
 				var UserName = (string)dr[UserNameIndex];
                 var UserId = (Guid)dr[UserIdIndex];
                
+                if(UserName !="BotModerator" && UserId != new Guid("11111111-1111-1111-1111-111111111111"))
+                {
+					string[] UserNameAndId = { UserName, UserId.ToString() };
+					UserNamesAndIds.Add(UserNameAndId);
+				}
 
-
-				string[] UserNameAndId = { UserName, UserId.ToString() };
-
-				UserNamesAndIds.Add(UserNameAndId);
 			}
 
 
