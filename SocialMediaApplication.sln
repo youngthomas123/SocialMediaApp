@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialMedia.DataAccess", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{9D776523-68AE-498B-B1D2-3295CC445EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaFormsApp", "SocialMediaFormsApp\SocialMediaFormsApp.csproj", "{E599BED8-0BCB-437B-824F-9BA953353C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialMediaFormsApp", "SocialMediaFormsApp\SocialMediaFormsApp.csproj", "{E599BED8-0BCB-437B-824F-9BA953353C36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{740816D4-29B7-422C-94A3-E4FDD3144951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E599BED8-0BCB-437B-824F-9BA953353C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E599BED8-0BCB-437B-824F-9BA953353C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E599BED8-0BCB-437B-824F-9BA953353C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740816D4-29B7-422C-94A3-E4FDD3144951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740816D4-29B7-422C-94A3-E4FDD3144951}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740816D4-29B7-422C-94A3-E4FDD3144951}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740816D4-29B7-422C-94A3-E4FDD3144951}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
