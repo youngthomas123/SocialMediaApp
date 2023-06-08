@@ -71,7 +71,7 @@ namespace UnitTests
             int downvotes = 0;
             Guid userId = new Guid();
 
-            Comment comment = new Comment(datecreated,  commentId,  userId,  body,  postId,  upvotes,  downvotes);
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
 
 
             commentDataAccessMock.Setup(d => d.DoesCommentIdExist(commentId)).Returns(true);
@@ -464,7 +464,7 @@ namespace UnitTests
         {
             // Arrange
             var postId = Guid.NewGuid();
-           
+
             postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
 
             var comments = new List<Comment>
@@ -478,7 +478,7 @@ namespace UnitTests
             postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
             commentDataAccessMock.Setup(d => d.LoadCommentsInPost(postId)).Returns(comments);
 
-         
+
 
             // Act
             var result = commentContainer.LoadCommentInPost(postId);
@@ -508,7 +508,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void UpdateComment_WhenPostIdExistsAndUserIsOwner_CallsUpdateComment()
+        public void UpdateComment_WhenCommentIdExistsAndUserIsOwner_CallsUpdateComment()
         {
             // Arrange
             Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
@@ -527,22 +527,232 @@ namespace UnitTests
             commentDataAccessMock.Setup(d => d.DoesCommentIdExist(commentId)).Returns(true);
             userDataAccessMock.Setup(d => d.DoesUserIdExist(LoggedInUserId)).Returns(true);
             commentDataAccessMock.Setup(d => d.LoadCommentById(commentId)).Returns(comment);
-            commentDataAccessMock.Setup(d => d.UpdateComment(commentId,body));
+            commentDataAccessMock.Setup(d => d.UpdateComment(commentId, body));
 
             // Act
             commentContainer.UpdateComment(commentId, body, LoggedInUserId);
 
             // Assert
-            
+
             commentDataAccessMock.Verify(d => d.DoesCommentIdExist(commentId), Times.Once);
 
-           
+
             commentDataAccessMock.Verify(d => d.LoadCommentById(commentId), Times.Once);
 
-            
+
             commentDataAccessMock.Verify(d => d.UpdateComment(commentId, body), Times.Once);
         }
-       
+
+        [TestMethod]
+        public void UpdateComment_WhenCommentIdExistsButUserIsNotTheOwner_ThrowsAccessException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+
+            Guid LoggedInUserId = Guid.NewGuid();
+
+            DateTime datecreated = DateTime.Now;
+            string body = "body";
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid userId = new Guid();
+            Guid commentId = new Guid();
+
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
+
+            commentDataAccessMock.Setup(d => d.DoesCommentIdExist(commentId)).Returns(true);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(LoggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(d => d.LoadCommentById(commentId)).Returns(comment);
+            commentDataAccessMock.Setup(d => d.UpdateComment(commentId, body));
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                commentContainer.UpdateComment(commentId, body, LoggedInUserId);
+            });
+
+        }
+
+        [TestMethod]
+        public void UpdateComment_WhenCommentIdDoesNotExist_ThrowsItemNotFoundException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+
+            Guid LoggedInUserId = Guid.NewGuid();
+
+            DateTime datecreated = DateTime.Now;
+            string body = "body";
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid userId = LoggedInUserId;
+            Guid commentId = new Guid();
+
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
+
+            commentDataAccessMock.Setup(d => d.DoesCommentIdExist(commentId)).Returns(false);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(LoggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(d => d.LoadCommentById(commentId)).Returns(comment);
+            commentDataAccessMock.Setup(d => d.UpdateComment(commentId, body));
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                commentContainer.UpdateComment(commentId, body, LoggedInUserId);
+            });
+        }
+
+        [TestMethod]
+        public void DeleteComment_ValidInputAndUserIsOwner_DeletesTheComment()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+
+            Guid LoggedInUserId = Guid.NewGuid();
+
+            DateTime datecreated = DateTime.Now;
+            string body = "body";
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid userId = LoggedInUserId;
+            Guid commentId = Guid.NewGuid();
+
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
+
+             commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(true);
+             userDataAccessMock.Setup(x => x.DoesUserIdExist(LoggedInUserId)).Returns(true);
+             commentDataAccessMock.Setup(x => x.LoadCommentById(commentId)).Returns(comment);
+
+            // Act
+             commentContainer.DeleteComment(commentId, userId);
+
+            // Assert
+             removedCommentsDataAccessMock.Verify(x => x.DeleteRecord(commentId), Times.Once);
+             reportedCommentsDataAccessMock.Verify(x => x.DeleteRecord(commentId), Times.Once);
+             upvotedCommentsDataAccessMock.Verify(x => x.DeleteRecord(commentId), Times.Once);
+             downvotedCommentsDataAccessMock.Verify(x => x.DeleteRecord(commentId), Times.Once);
+             commentDataAccessMock.Verify(x => x.DeleteComment(commentId), Times.Once);
+
+
+        }
+
+        [TestMethod]
+        public void DeleteComment_ValidInputButUserIsNotTheOwner_ThrowsAccessException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+
+            Guid LoggedInUserId = Guid.NewGuid();
+
+            DateTime datecreated = DateTime.Now;
+            string body = "body";
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid userId = Guid.NewGuid();
+            Guid commentId = Guid.NewGuid();
+
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
+
+            commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(true);
+            userDataAccessMock.Setup(x => x.DoesUserIdExist(LoggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(x => x.LoadCommentById(commentId)).Returns(comment);
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                commentContainer.DeleteComment(commentId, LoggedInUserId);
+            });
+        }
+
+        [TestMethod]
+        public void DeleteComment_WhenCommentIdDoesNotExist_Throws_ItemNotFoundException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+
+            Guid LoggedInUserId = Guid.NewGuid();
+
+            DateTime datecreated = DateTime.Now;
+            string body = "body";
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid userId = Guid.NewGuid();
+            Guid commentId = Guid.NewGuid();
+
+            Comment comment = new Comment(datecreated, commentId, userId, body, postId, upvotes, downvotes);
+
+            commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(false);
+            userDataAccessMock.Setup(x => x.DoesUserIdExist(LoggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(x => x.LoadCommentById(commentId)).Returns(comment);
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                commentContainer.DeleteComment(commentId, LoggedInUserId);
+            });
+        }
+
+        [TestMethod]
+        public void ReportComment_ValidInput_CreateReportRecord()
+        {
+            // Arrange
+            var commentId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var reasonId = 1;
+
+             commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(true);
+             userDataAccessMock.Setup(x => x.DoesUserIdExist(userId)).Returns(true);
+            reportedCommentsDataAccessMock.Setup(d => d.CreateRecord(commentId, userId, reasonId));
+            reportedCommentsDataAccessMock.Setup(d => d.CheckRecordExists(commentId, userId)).Returns(false);
+
+            // Act
+            commentContainer.ReportComment(commentId, userId, reasonId);
+
+            // Assert
+             reportedCommentsDataAccessMock.Verify(x => x.CreateRecord(commentId, userId, reasonId), Times.Once);
+
+        }
+
+        [TestMethod]
+        public void ReportComment_WhenCommentIdExistsButUserHasAlreadyReported_ThrowsAccessException()
+        {
+            // Arrange
+            var commentId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var reasonId = 1;
+
+            commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(true);
+            userDataAccessMock.Setup(x => x.DoesUserIdExist(userId)).Returns(true);
+            reportedCommentsDataAccessMock.Setup(d => d.CreateRecord(commentId, userId, reasonId));
+            reportedCommentsDataAccessMock.Setup(d => d.CheckRecordExists(commentId, userId)).Returns(true);
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                commentContainer.ReportComment(commentId, userId, reasonId);
+            });
+        }
+
+        [TestMethod]
+        public void ReportComment_WhenCommentIdDoesNotExist_ThrowsItemNotFoundException()
+        {
+            // Arrange
+            var commentId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var reasonId = 1;
+
+            commentDataAccessMock.Setup(x => x.DoesCommentIdExist(commentId)).Returns(false);
+            userDataAccessMock.Setup(x => x.DoesUserIdExist(userId)).Returns(true);
+            reportedCommentsDataAccessMock.Setup(d => d.CreateRecord(commentId, userId, reasonId));
+            reportedCommentsDataAccessMock.Setup(d => d.CheckRecordExists(commentId, userId)).Returns(false);
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                commentContainer.ReportComment(commentId, userId, reasonId);
+            });
+        }
+
     }
 
 }
