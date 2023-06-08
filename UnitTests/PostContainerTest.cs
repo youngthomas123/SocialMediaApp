@@ -735,6 +735,302 @@ namespace UnitTests
                 postContainer.UpdatePost(postId, title, body, imageUrl, userId);
             });
         }
+
+        [TestMethod]
+        public void DeletePost_WhenPostIdAndUserIdExistAndUserIsOwner_DeletesPostAndAssociatedComments()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid loggedInUserId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+
+
+            Guid userId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+
+            DateTime datecreated = DateTime.Now;
+            string title = "Title";
+            string body = "body";
+            string imageUrl = null;
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid communityId = new Guid();
+
+
+
+            Post post = new Post(datecreated, postId, userId, title, body, upvotes, downvotes, communityId, imageUrl);
+
+
+            List<Guid> commentIds = new List<Guid>()
+            {
+              new Guid("31111111-1111-1111-1111-111111111311"),
+              new Guid("22222222-2222-2222-2222-222222222222")
+            };
+
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            postDataAccessMock.Setup(d => d.LoadPostById(postId)).Returns(post);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(loggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(d => d.LoadCommentIdsInPost(postId)).Returns(commentIds);
+
+            // Act
+            postContainer.DeletePost(postId, loggedInUserId);
+
+            // Assert
+            // Verify that DoesPostIdExist was called with the expected postId
+            postDataAccessMock.Verify(d => d.DoesPostIdExist(postId), Times.Once);
+
+            // Verify that DoesUserIdExist was called with the expected loggedInUserId
+            userDataAccessMock.Verify(d => d.DoesUserIdExist(loggedInUserId), Times.Once);
+
+            // Verify that LoadPostById was called with the expected postId
+            postDataAccessMock.Verify(d => d.LoadPostById(postId), Times.Once);
+
+            // Verify that DeleteRecord was called for each commentId in commentIds
+            foreach (var commentId in commentIds)
+            {
+                removedCommentsDataAccessMock.Verify(d => d.DeleteRecord(commentId), Times.Once);
+                reportedCommentsDataAccessMock.Verify(d => d.DeleteRecord(commentId), Times.Once);
+                upvotedCommentsDataAccessMock.Verify(d => d.DeleteRecord(commentId), Times.Once);
+                downvotedCommentsDataAccessMock.Verify(d => d.DeleteRecord(commentId), Times.Once);
+                commentDataAccessMock.Verify(d => d.DeleteComment(commentId), Times.Once);
+            }
+
+            // Verify that DeleteRecord was called for the postId
+            removedPostsDataAccessMock.Verify(d => d.DeleteRecord(postId), Times.Once);
+            reportedPostsDataAccessMock.Verify(d => d.DeleteRecord(postId), Times.Once);
+            upvotedPostsDataAccessMock.Verify(d => d.DeleteRecord(postId), Times.Once);
+            downvotedPostsDataAccessMock.Verify(d => d.DeleteRecord(postId), Times.Once);
+            postDataAccessMock.Verify(d => d.DeletePost(postId), Times.Once);
+        }
+
+        [TestMethod]
+        public void DeletePost_WhenPostIdAndUserIdExistButUserIsNotTheOwner_ThrowsAccessException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid loggedInUserId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+
+
+            Guid userId = new Guid();
+
+            DateTime datecreated = DateTime.Now;
+            string title = "Title";
+            string body = "body";
+            string imageUrl = null;
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid communityId = new Guid();
+
+
+
+            Post post = new Post(datecreated, postId, userId, title, body, upvotes, downvotes, communityId, imageUrl);
+
+
+            List<Guid> commentIds = new List<Guid>()
+            {
+              new Guid("31111111-1111-1111-1111-111111111311"),
+              new Guid("22222222-2222-2222-2222-222222222222")
+            };
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            postDataAccessMock.Setup(d => d.LoadPostById(postId)).Returns(post);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(loggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(d => d.LoadCommentIdsInPost(postId)).Returns(commentIds);
+
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                postContainer.DeletePost(postId, loggedInUserId);
+            });
+        }
+
+        [TestMethod]
+        public void DeletePost_WhenPostIdDoesNotExist_ThrowsItemNotFoundException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid loggedInUserId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+
+
+            Guid userId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+
+            DateTime datecreated = DateTime.Now;
+            string title = "Title";
+            string body = "body";
+            string imageUrl = null;
+            int upvotes = 0;
+            int downvotes = 0;
+            Guid communityId = new Guid();
+
+
+
+            Post post = new Post(datecreated, postId, userId, title, body, upvotes, downvotes, communityId, imageUrl);
+
+
+            List<Guid> commentIds = new List<Guid>()
+            {
+              new Guid("31111111-1111-1111-1111-111111111311"),
+              new Guid("22222222-2222-2222-2222-222222222222")
+            };
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(false);
+            postDataAccessMock.Setup(d => d.LoadPostById(postId)).Returns(post);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(loggedInUserId)).Returns(true);
+            commentDataAccessMock.Setup(d => d.LoadCommentIdsInPost(postId)).Returns(commentIds);
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                postContainer.DeletePost(postId, loggedInUserId);
+            });
+
+        }
+
+        [TestMethod]
+        public void ReportPost_WhenPostIdAndUserIdExistAndUserHasNotReportedThePost_CallsCreateReport()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid userId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            int reasonId = 1;
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(userId)).Returns(true);
+            reportedPostsDataAccessMock.Setup(d => d.CreateRecord(postId, userId, reasonId));
+            reportedPostsDataAccessMock.Setup(d => d.CheckRecordExists(postId, userId)).Returns(false);
+
+            // Act
+            postContainer.ReportPost(postId, userId, reasonId);
+
+            // Assert
+            // Verify that DoesPostIdExist was called with the expected postId
+            postDataAccessMock.Verify(d => d.DoesPostIdExist(postId), Times.Once);
+
+            // Verify that DoesUserIdExist was called with the expected userId
+            userDataAccessMock.Verify(d => d.DoesUserIdExist(userId), Times.Once);
+
+            // Verify that CreateRecord was called with the expected postId, userId, and reasonId
+            reportedPostsDataAccessMock.Verify(d => d.CreateRecord(postId, userId, reasonId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ReportPost_WhenPostIdExistsButUserHasAlreadyReported_ThrowsAccessException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid userId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            int reasonId = 1;
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(userId)).Returns(true);
+            reportedPostsDataAccessMock.Setup(d => d.CreateRecord(postId, userId, reasonId));
+            reportedPostsDataAccessMock.Setup(d => d.CheckRecordExists(postId, userId)).Returns(true);
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                postContainer.ReportPost(postId, userId, reasonId);
+            });
+
+        }
+
+        [TestMethod]
+        public void ReportPost_WhenPostIdDoesNotExist_ThrowItemNotFoundException()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid userId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            int reasonId = 1;
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(false);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(userId)).Returns(true);
+            reportedPostsDataAccessMock.Setup(d => d.CreateRecord(postId, userId, reasonId));
+            reportedPostsDataAccessMock.Setup(d => d.CheckRecordExists(postId, userId)).Returns(true);
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                postContainer.ReportPost(postId, userId, reasonId);
+            });
+        }
+
+        [TestMethod]
+        public void RemovePost_WhenPostIdExistsAndModeratorIsValid_CreatesRemovedPostRecord()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid communityId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            Guid moderatorId = new Guid("a2a22d1f-2f97-4f4b-9c10-f4ec3637b763");
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(moderatorId)).Returns(true);
+            communityModeratorsDataAccessMock.Setup(d => d.CheckRecordExists(communityId, moderatorId)).Returns(true);
+            removedPostsDataAccessMock.Setup(d => d.CreateRecord(postId));
+
+            // Act
+            postContainer.RemovePost(postId, communityId, moderatorId);
+
+            // Assert
+            // Verify that DoesPostIdExist was called with the expected postId
+            postDataAccessMock.Verify(d => d.DoesPostIdExist(postId), Times.Once);
+
+            // Verify that DoesUserIdExist was called with the expected moderatorId
+            userDataAccessMock.Verify(d => d.DoesUserIdExist(moderatorId), Times.Once);
+
+            // Verify that CheckRecordExists was called with the expected communityId and moderatorId
+            communityModeratorsDataAccessMock.Verify(d => d.CheckRecordExists(communityId, moderatorId), Times.Once);
+
+           
+
+            // Verify that CreateRecord was called with the expected postId
+            removedPostsDataAccessMock.Verify(d => d.CreateRecord(postId), Times.Once);
+        }
+
+        [TestMethod]
+        public void RemovePost_WhenPostIdExistsButModeratorIsInvalid_ThrowsAccessExeption()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid communityId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            Guid moderatorId = new Guid("a2a22d1f-2f97-4f4b-9c10-f4ec3637b763");
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(true);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(moderatorId)).Returns(true);
+            communityModeratorsDataAccessMock.Setup(d => d.CheckRecordExists(communityId, moderatorId)).Returns(false);
+            removedPostsDataAccessMock.Setup(d => d.CreateRecord(postId));
+
+
+            // Act & Assert
+            Assert.ThrowsException<AccessException>(() =>
+            {
+                postContainer.RemovePost(postId, communityId, moderatorId);
+            });
+
+        }
+
+        [TestMethod]
+        public void RemovePost_WhenPostIdDoesNotExist_ThrowsItemNotFoundExecption()
+        {
+            // Arrange
+            Guid postId = new Guid("0ec5e11f-7927-4ebf-a224-fd6c7589b2d2");
+            Guid communityId = new Guid("1b02981f-4687-4a63-9d4c-1af2eae82759");
+            Guid moderatorId = new Guid("a2a22d1f-2f97-4f4b-9c10-f4ec3637b763");
+
+            postDataAccessMock.Setup(d => d.DoesPostIdExist(postId)).Returns(false);
+            userDataAccessMock.Setup(d => d.DoesUserIdExist(moderatorId)).Returns(true);
+            communityModeratorsDataAccessMock.Setup(d => d.CheckRecordExists(communityId, moderatorId)).Returns(true);
+            removedPostsDataAccessMock.Setup(d => d.CreateRecord(postId));
+
+            // Act & Assert
+            Assert.ThrowsException<ItemNotFoundException>(() =>
+            {
+                postContainer.RemovePost(postId, communityId, moderatorId);
+            });
+
+        }
+
+
+
     }
 
 }

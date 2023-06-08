@@ -55,7 +55,7 @@ namespace SocialMedia.BusinessLogic
 			}
 			 set
 			 {
-                if (value.Length <= 350)
+                if (value == null || value.Length <= 350)
                 {
 					_body = value;
                 }
