@@ -64,7 +64,7 @@ namespace SocialMedia.BusinessLogic.Containers
 
         }
 
-        public void SaveUser(User user)
+        public void SaveUser(User user)                           // This is used like a private method
         {
             var salt = _passwordHelper.GetSalt();
             user.SetSalt(salt);
