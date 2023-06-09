@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialMediaWebApp.ViewModels
 {
@@ -11,11 +12,13 @@ namespace SocialMediaWebApp.ViewModels
 
 
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
 
         [Required]
         [Compare("Password", ErrorMessage = "The passwords do not match.")]
+        [DataType(DataType.Password)]
         public string RepeatPassword { get; set; }
 
 
